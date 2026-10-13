@@ -9,6 +9,9 @@ import { initialSchema } from '../migrations/001_initial_schema';
 import type { SqlDatabase } from '../SqlDatabase';
 import { openNodeSqlDatabase } from './support/nodeSqlDatabase';
 
+const ALL_VERSIONS = MIGRATIONS.map((migration) => migration.version);
+const ALL_VERSION_ROWS = ALL_VERSIONS.map((version) => ({ version }));
+
 async function tableNames(db: SqlDatabase): Promise<string[]> {
   const rows = await db.getAllAsync<{ name: string }>(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name",
@@ -55,8 +58,9 @@ describe('database migrations', () => {
   });
 
   it('creates topics, messages, summaries and summary_templates on a fresh database', async () => {
-    expect(await migrate(db)).toEqual([1]);
+    expect(await migrate(db)).toEqual(ALL_VERSIONS);
     expect(await tableNames(db)).toEqual([
+      'context_summaries',
       'messages',
       'schema_migrations',
       'summaries',
@@ -72,7 +76,7 @@ describe('database migrations', () => {
 
     expect(await migrate(db)).toEqual([]);
     const migrationRows = await db.getAllAsync('SELECT version FROM schema_migrations');
-    expect(migrationRows).toEqual([{ version: 1 }]);
+    expect(migrationRows).toEqual(ALL_VERSION_ROWS);
     expect(await db.getAllAsync('SELECT title FROM topics')).toEqual([{ title: 'Wakacje 2026' }]);
   });
 
@@ -107,11 +111,16 @@ describe('database migrations', () => {
   it('leaves no trace of a migration that fails halfway', async () => {
     const broken = [
       ...MIGRATIONS,
-      { version: 2, name: 'broken', up: ['CREATE TABLE extra (id INTEGER)', 'NOT SQL'], down: [] },
+      {
+        version: MIGRATIONS.length + 1,
+        name: 'broken',
+        up: ['CREATE TABLE extra (id INTEGER)', 'NOT SQL'],
+        down: [],
+      },
     ];
     await expect(migrate(db, broken)).rejects.toThrow();
     expect(await tableNames(db)).not.toContain('extra');
-    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual([{ version: 1 }]);
+    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual(ALL_VERSION_ROWS);
   });
 
   it('refuses migrations whose versions are not consecutive', async () => {
@@ -121,9 +130,9 @@ describe('database migrations', () => {
 
   it('rolls the schema back with down migrations', async () => {
     await migrate(db);
-    expect(await rollbackTo(db, 0)).toEqual([1]);
+    expect(await rollbackTo(db, 0)).toEqual([...ALL_VERSIONS].reverse());
     expect(await tableNames(db)).toEqual(['schema_migrations']);
-    expect(await migrate(db)).toEqual([1]);
+    expect(await migrate(db)).toEqual(ALL_VERSIONS);
   });
 });
 

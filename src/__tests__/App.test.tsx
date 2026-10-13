@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react-native';
 import App from '../App';
 import { openNodeSqlDatabase } from '../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../db/migrate';
+import { MIGRATIONS } from '../db/migrations';
 import type { SqlDatabase } from '../db/SqlDatabase';
 
 const mockOpenAppDatabase = jest.fn<Promise<SqlDatabase>, []>();
@@ -41,7 +42,9 @@ describe('App', () => {
     resolveOpen(db);
 
     expect(await screen.findByTestId('topic-list-screen')).toBeTruthy();
-    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual([{ version: 1 }]);
+    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual(
+      MIGRATIONS.map(({ version }) => ({ version })),
+    );
   });
 
   it('shows a storage error instead of the app when the database cannot be opened', async () => {
