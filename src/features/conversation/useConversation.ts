@@ -13,6 +13,7 @@ export interface ConversationState {
   error: DomainError | null;
   send(text: string): Promise<void>;
   stop(): void;
+  setTopicPrompt(prompt: string): Promise<void>;
 }
 
 function toDomainError(error: unknown): DomainError {
@@ -76,5 +77,12 @@ export function useConversation(topicId: number): ConversationState {
 
   const stop = useCallback(() => abort.current?.abort(), []);
 
-  return { topic, messages, streaming, error, send, stop };
+  const setTopicPrompt = useCallback(
+    async (prompt: string) => {
+      setTopic(await services.topics.setSystemPrompt(topicId, prompt));
+    },
+    [services, topicId],
+  );
+
+  return { topic, messages, streaming, error, send, stop, setTopicPrompt };
 }

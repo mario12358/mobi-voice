@@ -50,6 +50,17 @@ export const pl = {
   settings: {
     title: 'Ustawienia',
     openModels: 'Modele',
+    systemPromptTitle: 'Prompt systemowy',
+    systemPromptHint: 'Instrukcja dla modelu we wszystkich tematach, które nie mają własnej.',
+  },
+  promptEditor: {
+    save: 'Zapisz',
+    saved: 'Zapisano',
+    restoreDefault: 'Przywróć domyślny',
+    topicTitle: 'Prompt tego tematu',
+    topicHint: 'Pusty — temat używa promptu z ustawień.',
+    openTopicPrompt: 'Prompt tematu',
+    close: 'Zamknij',
   },
   models: {
     title: 'Modele',

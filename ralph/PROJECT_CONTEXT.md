@@ -74,6 +74,7 @@ Konwencje:
 | 2026-10-13 | 📌 `ConversationService.send(topicId, text, {onToken, signal})`: zapis pytania → ContextBuilder → `llm().generate` → zapis odpowiedzi (przerwana z `interrupted`, pusta pomijana); zależności wstrzykiwane (budżet i prompt per temat) | 2.5 |
 | 2026-10-13 | 📌 `ServicesProvider`/`useServices()` (pod DatabaseProvider i EngineProvider): repozytoria, `conversation`, `downloads`, `modelForTopic`, `isModelReady`; testy ekranów przez `src/__tests__/support/TestProviders.tsx` | 2.7 |
 | 2026-10-13 | 📌 Tytuły tematów: `title_source` default/auto/manual; „Nowy temat" tworzy `default`, zmiana nazwy → `manual`, `TopicTitler` po pierwszej wymianie → `auto` tylko przez `applyAutoTitle` (warunek w SQL) | MV-TOP-3 |
+| 2026-10-13 | 📌 Prompt systemowy: `resolveSystemPrompt(temat, globalny)` → temat, potem globalny, potem `DEFAULT_SYSTEM_PROMPT` (`services/prompts.ts`); globalny równy domyślnemu zapisywany jako null; edytor `PromptEditor` w Ustawieniach i w oknie tematu | MV-CHAT-4 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -111,6 +112,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.7 zmergowane; 2.8 w PR #18
-- Następne zadanie: 2.9 Prompt systemowy
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.8 zmergowane; 2.9 w PR #19
+- Następne zadanie: 2.10 Test e2e Fazy 2
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)

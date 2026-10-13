@@ -113,16 +113,16 @@
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDHM1ENPJ1BSBYH39A)
 - [x] Test: 2.7 — wysyłka tekstu, strumień, przerwanie, stan bez modelu (pr: #17)
-- [ ] Zadanie 2.8: Automatyczny tytuł tematu generowany przez LLM po pierwszej wymianie (tylko gdy user nie nadał nazwy ręcznie) (wymaga: 2.5) (tech: typescript) (pr: #18)
+- [x] Zadanie 2.8: Automatyczny tytuł tematu generowany przez LLM po pierwszej wymianie (tylko gdy user nie nadał nazwy ręcznie) (wymaga: 2.5) (tech: typescript) (pr: #18)
   - AC: wejście — zapis pierwszej odpowiedzi asystenta w temacie z tytułem domyślnym
   - Specky: (req: 01M4TPSBMNDK44C94VSYQGXZSZ v1.0 @fa3165a)
   - Specky kryteria: (crit: 01M4TPSBN0GQJGEGSSKYGGKXAP) (crit: 01M4TPSBN0DRTYPHEH2TNZAC6A)
-- [ ] Test: 2.8 — tytuł nadany raz, nie nadpisuje nazwy nadanej ręcznie (pr: #18)
-- [ ] Zadanie 2.9: Prompt systemowy — domyślny po polsku (zwięzłe odpowiedzi do odczytu), edycja globalna w Ustawieniach i nadpisanie per temat (wymaga: 2.4, 2.6) (tech: react-native, typescript)
+- [x] Test: 2.8 — tytuł nadany raz, nie nadpisuje nazwy nadanej ręcznie (pr: #18)
+- [ ] Zadanie 2.9: Prompt systemowy — domyślny po polsku (zwięzłe odpowiedzi do odczytu), edycja globalna w Ustawieniach i nadpisanie per temat (wymaga: 2.4, 2.6) (tech: react-native, typescript) (pr: #19)
   - AC: prompt tematu ma pierwszeństwo przed globalnym; pusty → globalny
   - Specky: (req: 01M4TPSBXRAA4FKEE3X2EG9P27 v1.0 @61d158e)
   - Specky kryteria: (crit: 01M4TPSBY57E67QRW2PBZ737AJ) (crit: 01M4TPSBY58VX983CNTS28VG7P)
-- [ ] Test: 2.9 — wybór promptu w ContextBuilder, edycja w UI
+- [ ] Test: 2.9 — wybór promptu w ContextBuilder, edycja w UI (pr: #19)
 - [ ] Zadanie 2.10: Test e2e — utworzenie tematu, rozmowa tekstowa z atrapą LLM (strumień), przerwanie STOP, automatyczny tytuł, zmiana nazwy, wyszukiwanie, usunięcie, powrót do tematu po restarcie (wymaga: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9) (spec: spec.md) (tech: detox, typescript)
 
 ### Faza 3: Potok głosowy — tryb ciągły

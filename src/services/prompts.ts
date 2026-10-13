@@ -2,6 +2,20 @@ import type { ChatMessage } from '../engines/types';
 
 // Model-facing instructions (not UI text). Polish, because the conversation is in Polish.
 
+// Answers are read aloud, so: short, plain sentences, no Markdown or lists (MV-CHAT-4).
+export const DEFAULT_SYSTEM_PROMPT =
+  'Jesteś pomocnym asystentem głosowym. Odpowiadaj po polsku, zwięźle (zwykle 2–4 zdania), prostym językiem, ' +
+  'bez list, tabel i formatowania Markdown, bo odpowiedź będzie czytana na głos.';
+
+function blankToNull(value: string | null): string | null {
+  return value === null || value.trim().length === 0 ? null : value;
+}
+
+// The topic's own prompt wins; an empty one means "use the global prompt", which defaults to ours.
+export function resolveSystemPrompt(topicPrompt: string | null, globalPrompt: string | null): string {
+  return blankToNull(topicPrompt) ?? blankToNull(globalPrompt) ?? DEFAULT_SYSTEM_PROMPT;
+}
+
 export const CONTEXT_SUMMARY_HEADER = 'Streszczenie wcześniejszej części rozmowy:';
 
 export const SUMMARIZER_SYSTEM_PROMPT =

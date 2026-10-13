@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 wydana jako v0.1.0; 28 pozycji planu zmergowanych (Faza 1, 2.1–2.7 z testami); 2.8 + Test 2.8 w PR #18
+- **Postęp**: Faza 1 wydana jako v0.1.0; 30 pozycji planu zmergowanych (Faza 1, 2.1–2.8 z testami); 2.9 + Test 2.9 w PR #19
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -38,11 +38,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 157 |
-| Pass | 157 |
+| Łącznie testów | 165 |
+| Pass | 165 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.8-auto-tytul) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.9-prompt-systemowy) |
 
 ## Historia realizacji
 
@@ -64,7 +64,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 2.4 ContextBuilder + Test 2.4 | ✅ zmergowane (PR #15) | 134/134 | 1 | d097231 | 2026-10-13 |
 | 2.5 ConversationService + Test 2.5 | ✅ zmergowane (PR #16) | 141/141 | 1 | 0f959db | 2026-10-13 |
 | 2.7 Ekran Rozmowa (tekstowy) + Test 2.7 | ✅ zmergowane (PR #17) | 147/147 | 2 | 825ec83 | 2026-10-13 |
-| 2.8 Automatyczny tytuł + Test 2.8 | PR #18 otwarty | 157/157 | 1 | — | 2026-10-13 |
+| 2.8 Automatyczny tytuł + Test 2.8 | ✅ zmergowane (PR #18) | 157/157 | 2 | 4b72425 | 2026-10-13 |
+| 2.9 Prompt systemowy + Test 2.9 | PR #19 otwarty | 165/165 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -143,3 +144,5 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 2.5: PR łańcuchowy na 2.4 (#15). Pusta odpowiedź (stop przed pierwszym tokenem) nie zapisuje wiadomości asystenta; błąd modelu zostawia pytanie w historii. Mutacja flagi interrupted → test czerwony. Wejścia (ekran Rozmowa, potok głosowy) w 2.7/3.6.
 - [2026-10-13] Zadanie 2.7: `ServicesProvider` składa usługi aplikacji (rozmowa, pobieranie, gotowość modelu; w trybie e2e model zawsze gotowy). Testy ekranów renderują przez `TestProviders` (prawdziwy SQLite, silniki testowe, pobieranie w pamięci) — RootNavigator.test i TopicListScreen.test przełączone z samego DatabaseProvider, bo Rozmowa potrzebuje usług. Test kończący się w trakcie generowania zamykał bazę przed zapisem odpowiedzi — testy kończą odpowiedź przed sprzątaniem. Mutacja STOP → test czerwony; zestaw 3× stabilny.
 - [2026-10-13] Zadanie 2.8: migracja 003 `title_source` (default/auto/manual) z migracją danych tematów o tytule „Nowa rozmowa" na `default`; `applyAutoTitle` atomowo tylko przy `default`. Test repozytorium uzupełniony o nowe pole `titleSource` (zmiana kształtu encji). Mutacja warunku → test wyścigu czerwony.
+- [2026-10-13] Zadanie 2.8: kontrola lint-typy zablokowała commit — typograficzne cudzysłowy w wyrażeniu regularnym `cleanTitle`; narzędzie Edit zamieniło ucieczki `\u201E` z powrotem na znaki, zapis przez skrypt.
+- [2026-10-13] Zadanie 2.9: prompt domyślny przechowywany jako `null` (zmiana domyślnego dociera do osób, które go nie zmieniały); pusty prompt tematu = globalny. Mutacja kolejności w resolverze → 2 testy czerwone.
