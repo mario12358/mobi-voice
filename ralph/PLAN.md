@@ -123,7 +123,7 @@
   - Specky: (req: 01M4TPSBXRAA4FKEE3X2EG9P27 v1.0 @61d158e)
   - Specky kryteria: (crit: 01M4TPSBY57E67QRW2PBZ737AJ) (crit: 01M4TPSBY58VX983CNTS28VG7P)
 - [x] Test: 2.9 — wybór promptu w ContextBuilder, edycja w UI (pr: #19)
-- [ ] Zadanie 2.10: Test e2e — utworzenie tematu, rozmowa tekstowa z atrapą LLM (strumień), przerwanie STOP, automatyczny tytuł, zmiana nazwy, wyszukiwanie, usunięcie, powrót do tematu po restarcie (wymaga: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9) (spec: spec.md) (tech: detox, typescript) (pr: #20)
+- [x] Zadanie 2.10: Test e2e — utworzenie tematu, rozmowa tekstowa z atrapą LLM (strumień), przerwanie STOP, automatyczny tytuł, zmiana nazwy, wyszukiwanie, usunięcie, powrót do tematu po restarcie (wymaga: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9) (spec: spec.md) (tech: detox, typescript) (pr: #20)
 
 ### Faza 3: Potok głosowy — tryb ciągły
 

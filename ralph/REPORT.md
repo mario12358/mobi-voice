@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 wydana jako v0.1.0; 32 pozycje planu zmergowane (Faza 1, 2.1–2.9 z testami); 2.10 (e2e Fazy 2) w PR #20
+- **Postęp**: Fazy 1–2 ukończone (33 pozycje planu zmergowane); Faza 1 wydana jako v0.1.0; następna: 3.1
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -36,13 +36,15 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 **Regresja po Fazie 1 (2026-10-13) — ZIELONA:** main `1237d1a`: `npx tsc --noEmit`, `npm run lint`, `npm test` 84/84 (18 zestawów); e2e Detox 3/3 na Androidzie (lokalnie API 36, CI API 34) i iOS (CI). Kontrole fazowe bez blokad: 5 ostrzeżeń audytu zależności (braces, node-forge, sprintf-js bez poprawek; stream-json dev; uuid 7.0.3 medium) i 6 `martwe-wejscie` — wejścia podepną zadania Fazy 2 (networkPolicy → 2.2/6.1, MessageRepository → 2.5, useSettingsStore → 2.9/3.x, rollbackTo zostaje jako `down` migracji), `encodeWav` przeniesiony do pomocników testów. Tag `ralph/faza-1`.
 
+**Regresja po Fazie 2 (2026-10-13) — ZIELONA:** main `0f60d41`: `npx tsc --noEmit`, `npm run lint`, `npm test` 165/165 (28 zestawów); e2e Detox 7/7 na Androidzie (lokalnie API 36, CI API 34) i iOS (CI). Kontrole fazowe bez blokad: te same 5 ostrzeżeń audytu zależności co po Fazie 1, `martwe-wejscie` tylko `validateCatalog` (przeniesiony do pomocników testów). Tag `ralph/faza-2`. Po drodze e2e iOS ujawnił 2 błędy produktu z 2.7/2.6 (klawiatura zasłaniała pole wiadomości; pierwsze dotknięcie przy otwartej klawiaturze tylko ją chowało) — naprawione w PR #20.
+
 | Metryka | Wartość |
 |---------|---------|
 | Łącznie testów | 165 |
 | Pass | 165 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.10-e2e-faza2; e2e Android 7/7) |
+| Ostatnie uruchomienie | 2026-10-13 (main 0f60d41; e2e 7/7 Android i iOS) |
 
 ## Historia realizacji
 
@@ -66,7 +68,7 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 2.7 Ekran Rozmowa (tekstowy) + Test 2.7 | ✅ zmergowane (PR #17) | 147/147 | 2 | 825ec83 | 2026-10-13 |
 | 2.8 Automatyczny tytuł + Test 2.8 | ✅ zmergowane (PR #18) | 157/157 | 2 | 4b72425 | 2026-10-13 |
 | 2.9 Prompt systemowy + Test 2.9 | ✅ zmergowane (PR #19) | 165/165 | 1 | 4db9e34 | 2026-10-13 |
-| 2.10 Test e2e Fazy 2 (Detox) | PR #20 otwarty | 165/165 + e2e Android 7/7 | 2 | — | 2026-10-13 |
+| 2.10 Test e2e Fazy 2 (Detox) | ✅ zmergowane (PR #20) | 165/165 + e2e 7/7 Android i iOS | 8 | 0f60d41 | 2026-10-13 |
 
 ## Historia zmian
 

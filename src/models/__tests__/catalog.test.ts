@@ -1,5 +1,5 @@
 import { catalogEntry, downloadSizeBytes, llmEntries, MODEL_CATALOG, type CatalogEntry } from '../catalog';
-import { validateCatalog } from '../validateCatalog';
+import { validateCatalog } from './support/validateCatalog';
 
 describe('model catalog', () => {
   it('passes validation: unique ids, SHA-256, sizes, https download host, safe paths, known dependencies', () => {
