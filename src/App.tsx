@@ -6,8 +6,16 @@ import { DatabaseProvider } from './db/DatabaseProvider';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
 import { pl } from './i18n/pl';
+import { blobUtilFileSystem } from './models/download/blobUtilFileSystem';
+import { expoNetworkInfo } from './models/download/expoNetworkInfo';
 import { RootNavigator } from './navigation/RootNavigator';
+import { ServicesProvider, type DownloadPorts } from './services/ServicesProvider';
 import { usePalette } from './theme/theme';
+
+const deviceDownloadPorts = (): DownloadPorts => ({
+  fileSystem: blobUtilFileSystem,
+  network: expoNetworkInfo,
+});
 
 // e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.
 function TestModeBadge() {
@@ -27,7 +35,9 @@ export default function App() {
     <SafeAreaProvider>
       <EngineProvider>
         <DatabaseProvider open={openAppDatabase}>
-          <RootNavigator />
+          <ServicesProvider ports={deviceDownloadPorts}>
+            <RootNavigator />
+          </ServicesProvider>
           <TestModeBadge />
           <StatusBar style="auto" />
         </DatabaseProvider>

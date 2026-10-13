@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
+import { TestProviders } from '../../__tests__/support/TestProviders';
 import { openNodeSqlDatabase } from '../../db/__tests__/support/nodeSqlDatabase';
-import { DatabaseProvider } from '../../db/DatabaseProvider';
 import { prepareDatabase } from '../../db/migrate';
 import { MessageRepository } from '../../db/repositories/MessageRepository';
 import { TopicRepository } from '../../db/repositories/TopicRepository';
@@ -12,9 +12,9 @@ import { visibleHeaderTitle } from './support/header';
 
 async function renderNavigator(db: SqlDatabase) {
   await render(
-    <DatabaseProvider open={async () => db}>
+    <TestProviders db={db}>
       <RootNavigator />
-    </DatabaseProvider>,
+    </TestProviders>,
   );
 }
 

@@ -72,6 +72,7 @@ Konwencje:
 | 2026-10-13 | 📌 LLM lokalny: `LocalLlmEngine` (llama.rn 0.12.9) przez `LlamaContextSlot` — jeden model w pamięci, zmiana modelu zwalnia poprzedni; model z `defaultModelId` (domyślnie qwen2.5-1.5b), ścieżka z `ModelDownloadService`; brak pliku → `model_missing` | 2.3, MV-MOD-1 |
 | 2026-10-13 | 📌 Kontekst LLM: `ContextBuilder` (`src/services`) — budżet = contextTokens − maxOutputTokens, tokeny z `services/tokens.ts` (3 znaki/token); mieści się → cała historia, inaczej najnowsze wiadomości + streszczenie starszej części (`context_summaries`, `LlmSummarizer`, ~25% budżetu); ostatnia wiadomość zawsze, w razie potrzeby obcięta od początku; prompty dla modelu w `services/prompts.ts` | S1, MV-CHAT-2 |
 | 2026-10-13 | 📌 `ConversationService.send(topicId, text, {onToken, signal})`: zapis pytania → ContextBuilder → `llm().generate` → zapis odpowiedzi (przerwana z `interrupted`, pusta pomijana); zależności wstrzykiwane (budżet i prompt per temat) | 2.5 |
+| 2026-10-13 | 📌 `ServicesProvider`/`useServices()` (pod DatabaseProvider i EngineProvider): repozytoria, `conversation`, `downloads`, `modelForTopic`, `isModelReady`; testy ekranów przez `src/__tests__/support/TestProviders.tsx` | 2.7 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -108,6 +109,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3 zmergowane; 2.4 w PR #15, 2.5 w PR #16 (łańcuch)
-- Następne zadanie: 2.7 Ekran Rozmowa (tekstowy)
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.5 zmergowane; 2.7 w PR #17
+- Następne zadanie: 2.8 Automatyczny tytuł tematu
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
