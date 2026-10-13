@@ -51,14 +51,14 @@
   - Specky: (req: 01M4TPSB35CE08M2G3KTB8CBV8 v1.0 @fad5a6a)
   - Specky kryteria: (crit: 01M4TPSB44SA09NE6D546BP4WB)
 - [x] Test: 1.4 — repozytoria na bazie w pamięci (pr: #4)
-- [ ] Zadanie 1.5: Magazyn ustawień (Zustand + persist w AsyncStorage) i SecretStore na klucze API przez expo-secure-store — klucze nigdy w SQLite, logach ani eksporcie (wymaga: 1.2) (tech: react-native, typescript) (pr: #5)
+- [x] Zadanie 1.5: Magazyn ustawień (Zustand + persist w AsyncStorage) i SecretStore na klucze API przez expo-secure-store — klucze nigdy w SQLite, logach ani eksporcie (wymaga: 1.2) (tech: react-native, typescript) (pr: #5)
   - AC: klucz API zapisany i odczytany przez SecretStore; brak klucza w AsyncStorage i SQLite
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFM4FPPHT855MEXC1P9)
-- [ ] Test: 1.5 — persystencja ustawień i SecretStore z atrapą secure-store (pr: #5)
-- [ ] Zadanie 1.6: Interfejsy silników SttEngine, TtsEngine, LlmEngine, VadEngine, KeywordSpotter + atrapy deterministyczne i EngineRegistry z trybem testowym (wstrzykiwanie plików WAV zamiast mikrofonu) (wymaga: 1.1) (tech: typescript)
+- [x] Test: 1.5 — persystencja ustawień i SecretStore z atrapą secure-store (pr: #5)
+- [ ] Zadanie 1.6: Interfejsy silników SttEngine, TtsEngine, LlmEngine, VadEngine, KeywordSpotter + atrapy deterministyczne i EngineRegistry z trybem testowym (wstrzykiwanie plików WAV zamiast mikrofonu) (wymaga: 1.1) (tech: typescript) (pr: #6)
   - AC: wejście — EngineRegistry wybiera atrapy, gdy aplikacja działa w trybie testowym (flaga buildu e2e)
-- [ ] Test: 1.6 — atrapy spełniają kontrakty interfejsów (strumień tokenów, abort, segmenty VAD)
+- [ ] Test: 1.6 — atrapy spełniają kontrakty interfejsów (strumień tokenów, abort, segmenty VAD) (pr: #6)
 - [ ] Zadanie 1.7: Nawigacja (stack: Lista tematów, Rozmowa, Podsumowanie, Ustawienia, Modele), plik tekstów PL (gotowość i18n), motyw jasny/ciemny wg systemu, ekrany-szkielety (wymaga: 1.2, 1.5) (spec: spec.md) (tech: react-native, typescript)
   - AC: przy starcie aplikacja otwiera ostatnio aktywny temat, a bez tematów — Listę tematów
   - Specky: (req: 01M4TPSBA2GXAHZ7W4734NBAEC v1.0 @6f3590a)
