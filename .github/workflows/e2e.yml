@@ -65,10 +65,11 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: brew tap wix/brew && brew install applesimutils
+      # Detox drives iOS simulators through applesimutils; recent Homebrew requires trusting the tap explicitly.
+      - run: brew tap wix/brew && brew trust wix/brew && brew install applesimutils
       - run: npm ci
       - name: Pick an available iPhone simulator
-        run: echo "DETOX_IOS_DEVICE=$(xcrun simctl list devicetypes | grep -o 'iPhone [0-9][0-9]* Pro' | tail -1)" >> "$GITHUB_ENV"
+        run: echo "DETOX_IOS_DEVICE=$(xcrun simctl list devices available | grep -o 'iPhone [^(]*' | sed 's/ *$//' | head -1)" >> "$GITHUB_ENV"
       - run: npx detox build -c ios.sim.release
       - run: npx detox test -c ios.sim.release --headless --record-logs failing --take-screenshots failing
       - uses: actions/upload-artifact@v4
