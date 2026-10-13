@@ -10,6 +10,7 @@ import { downloadSizeBytes } from '../../models/catalog';
 import type { RootScreenProps } from '../../navigation/types';
 import { SPACING, usePalette } from '../../theme/theme';
 import { MessageBubble } from './MessageBubble';
+import { TopicPromptDialog } from './TopicPromptDialog';
 import { useConversation } from './useConversation';
 import { formatSize, useModelReadiness, type ModelReadiness } from './useModelReadiness';
 
@@ -37,6 +38,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
   const conversation = useConversation(topicId);
   const readiness = useModelReadiness(conversation.topic);
   const [draft, setDraft] = useState('');
+  const [editingPrompt, setEditingPrompt] = useState(false);
   const list = useRef<FlatList<Message>>(null);
   const generating = conversation.streaming !== null;
   const title = conversation.topic?.title;
@@ -61,10 +63,17 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={96}
       >
-        <TextButton
-          label={pl.conversation.openSummary}
-          onPress={() => navigation.navigate('Summary', { topicId })}
-        />
+        <View style={styles.toolbar}>
+          <TextButton
+            label={pl.conversation.openSummary}
+            onPress={() => navigation.navigate('Summary', { topicId })}
+          />
+          <TextButton
+            testID="conversation.open-topic-prompt"
+            label={pl.promptEditor.openTopicPrompt}
+            onPress={() => setEditingPrompt(true)}
+          />
+        </View>
         <FlatList
           ref={list}
           style={styles.fill}
@@ -128,12 +137,20 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
           </View>
         )}
       </KeyboardAvoidingView>
+      {editingPrompt && (
+        <TopicPromptDialog
+          prompt={conversation.topic?.systemPrompt ?? null}
+          onSave={(prompt) => void conversation.setTopicPrompt(prompt)}
+          onClose={() => setEditingPrompt(false)}
+        />
+      )}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  toolbar: { flexDirection: 'row', gap: SPACING.sm },
   messages: { gap: SPACING.sm, paddingVertical: SPACING.sm },
   notice: { gap: SPACING.sm },
   composer: { flexDirection: 'row', alignItems: 'flex-end', gap: SPACING.sm },

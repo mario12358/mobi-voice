@@ -14,6 +14,7 @@ import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
 import { useSettingsStore } from '../state/settings';
 import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
+import { resolveSystemPrompt } from './prompts';
 import { TopicTitler } from './TopicTitler';
 
 export interface AppServices {
@@ -49,7 +50,8 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     context,
     llm: () => engines.llm(),
     budget: modelForTopic,
-    systemPrompt: (topic) => topic.systemPrompt ?? useSettingsStore.getState().globalSystemPrompt,
+    systemPrompt: (topic) =>
+      resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),
   });
   return {
