@@ -8,7 +8,9 @@ export type DomainErrorCode =
   | 'checksum_mismatch'
   | 'microphone_denied'
   | 'host_not_allowed'
-  | 'storage_error';
+  | 'storage_error'
+  | 'empty_title'
+  | 'topic_not_found';
 
 const USER_MESSAGES: Record<DomainErrorCode, string> = {
   invalid_api_key: 'Nieprawidłowy klucz API',
@@ -21,6 +23,8 @@ const USER_MESSAGES: Record<DomainErrorCode, string> = {
   microphone_denied: 'Brak dostępu do mikrofonu',
   host_not_allowed: 'Połączenie z tym adresem jest zablokowane',
   storage_error: 'Błąd zapisu danych na urządzeniu',
+  empty_title: 'Nazwa tematu nie może być pusta',
+  topic_not_found: 'Temat nie istnieje',
 };
 
 export class DomainError extends Error {
