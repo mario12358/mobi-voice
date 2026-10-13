@@ -52,4 +52,33 @@ describe('App', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Błąd zapisu danych na urządzeniu');
     expect(screen.queryByRole('header', { name: 'MobiVoice' })).toBeNull();
   });
+
+  describe('engine mode from the e2e build flag', () => {
+    const originalFlag = process.env.EXPO_PUBLIC_E2E;
+
+    afterEach(() => {
+      process.env.EXPO_PUBLIC_E2E = originalFlag;
+    });
+
+    it('runs on test engines in an e2e build', async () => {
+      process.env.EXPO_PUBLIC_E2E = '1';
+      await prepareDatabase(db);
+      mockOpenAppDatabase.mockResolvedValue(db);
+
+      await render(<App />);
+
+      expect(await screen.findByTestId('engine-mode-test')).toHaveTextContent('Tryb testowy');
+    });
+
+    it('runs on production engines in a regular build', async () => {
+      delete process.env.EXPO_PUBLIC_E2E;
+      await prepareDatabase(db);
+      mockOpenAppDatabase.mockResolvedValue(db);
+
+      await render(<App />);
+
+      expect(await screen.findByRole('header', { name: 'MobiVoice' })).toBeTruthy();
+      expect(screen.queryByTestId('engine-mode-test')).toBeNull();
+    });
+  });
 });

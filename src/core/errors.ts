@@ -10,7 +10,8 @@ export type DomainErrorCode =
   | 'host_not_allowed'
   | 'storage_error'
   | 'empty_title'
-  | 'topic_not_found';
+  | 'topic_not_found'
+  | 'engine_unavailable';
 
 const USER_MESSAGES: Record<DomainErrorCode, string> = {
   invalid_api_key: 'Nieprawidłowy klucz API',
@@ -25,6 +26,7 @@ const USER_MESSAGES: Record<DomainErrorCode, string> = {
   storage_error: 'Błąd zapisu danych na urządzeniu',
   empty_title: 'Nazwa tematu nie może być pusta',
   topic_not_found: 'Temat nie istnieje',
+  engine_unavailable: 'Ta funkcja nie jest jeszcze dostępna na tym urządzeniu',
 };
 
 export class DomainError extends Error {

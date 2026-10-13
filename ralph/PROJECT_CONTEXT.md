@@ -63,6 +63,7 @@ Konwencje:
 | 2026-10-13 | Znaczniki czasu w SQLite jako INTEGER (ms epoki); `PRAGMA foreign_keys = ON` w `prepareDatabase` przy każdym otwarciu | sortowanie po last_activity_at, kaskady FK |
 | 2026-10-13 | Repozytoria (`src/db/repositories`) zwracają encje camelCase, brak wiersza przy update/delete → `DomainError('topic_not_found')`; dodanie wiadomości aktualizuje `last_activity_at` w tej samej transakcji | spójność listy tematów |
 | 2026-10-13 | 📌 Ustawienia: `useSettingsStore` (Zustand persist → AsyncStorage, klucz `mobivoice-settings`, `update(partial)`), bez sekretów; klucze API wyłącznie przez `SecretStore` (expo-secure-store, `apiKey.<dostawca>`, WHEN_UNLOCKED_THIS_DEVICE_ONLY) | MV-SEC-1 |
+| 2026-10-13 | 📌 Silniki za interfejsami `src/engines/types.ts`; `EngineProvider`/`useEngines()` w App; `EXPO_PUBLIC_E2E=1` (build e2e) → atrapy (`src/engines/fakes`, WAV zamiast mikrofonu), inaczej adaptery natywne — `PRODUCTION_FACTORIES` uzupełniają 2.3/3.x, brak adaptera → `engine_unavailable`, nigdy cichy fallback na atrapę | e2e deterministyczne, produkcja bez atrap |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -95,6 +96,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.4 (zmergowane, PR #4); 1.5 w PR #5
-- Następne zadanie: 1.6 Interfejsy silników i atrapy
+- Ostatnie ukończone zadanie: 1.5 (zmergowane, PR #5); 1.6 w PR #6
+- Następne zadanie: 1.7 Nawigacja, teksty PL, motyw
 - Blokery: lokalnie brak platformy iOS 26.5 w Xcode (build iOS tylko w CI); brak emulatora Android 10 i symulatora iOS 16
