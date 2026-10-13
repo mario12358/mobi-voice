@@ -13,9 +13,11 @@
 
 ## Podsumowanie
 
-- **Start**: [data rozpoczęcia]
-- **Status**: W trakcie | Ukończony | Zablokowany
-- **Postęp**: 0/0 zadań ukończonych
+- **Start**: 2026-10-13
+- **Status**: W trakcie
+- **Postęp**: 0/57 zadań zmergowanych; 1.1 w PR
+- Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
+- Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
 ## Stan testów
 
@@ -34,17 +36,17 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 0 |
-| Pass | 0 |
+| Łącznie testów | 20 |
+| Pass | 20 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | - |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-1.1-szkielet-architektury) |
 
 ## Historia realizacji
 
 | Zadanie | Status | Testy | Próby | Commit | Czas |
 |---------|--------|-------|-------|--------|------|
-| | | | | | |
+| 1.1 Szkielet architektury i konwencje | PR #1 otwarty | 20/20 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -90,3 +92,9 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 
 <!-- Format: [data] Zadanie X.X: opis problemu - rozwiązanie/status -->
 <!-- Listy zmienionych plików NIE prowadzimy — git zna ją lepiej: git log --stat -->
+
+- [2026-10-13] Zadanie 1.1: zdalne repo było puste (brak gałęzi main) — wypchnięto istniejący commit doprecyzowania jako main, żeby PR-y miały bazę.
+- [2026-10-13] Zadanie 1.1: brak `.github/workflows/specky-ci.yml` w repo — skopiowany z szablonu Ralpha i dopasowany (Node 22, tsc, jest + jest-junit).
+- [2026-10-13] Zadanie 1.1: `networkPolicy.assertAllowedOutboundUrl` nie ma jeszcze wejścia — podepną je 2.2 (pobieranie modeli), 6.1 (klient HTTP) i 9.1 (raporty awarii).
+- [2026-10-13] [check] PR #1 — Specky contract check: kryteria „CI go nie uruchomił", bo jest-junit dawał name = describe + tytuł; Specky dopasowuje plik + ostatni segment po ` > ` — classNameTemplate `{filepath}`, titleTemplate `{title}`.
+- [2026-10-13] Zadanie 1.1: `npm audit` — 34 podatności (5 moderate, 29 high) w zależnościach deweloperskich Jest 29 (braces, sprintf-js itp.), naprawa tylko `--force`; zestaw zależności testowych wymieni 1.2 (preset Expo), wtedy audyt ponownie.

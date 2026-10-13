@@ -1,0 +1,14 @@
+node_modules/
+reports/
+artifacts/
+coverage/
+.env
+.env.*
+*.log
+*.tmp
+.DS_Store
+*.sqlite
+__pycache__/
+.claude/settings.local.json
+ralph/PERMISSIONS.jsonl
+ralph/KONTROLE.jsonl
