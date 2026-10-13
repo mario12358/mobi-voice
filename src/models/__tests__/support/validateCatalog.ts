@@ -1,5 +1,5 @@
-import { findAllowedHost } from '../core/networkPolicy';
-import type { CatalogEntry } from './catalog';
+import { findAllowedHost } from '../../../core/networkPolicy';
+import type { CatalogEntry } from '../../catalog';
 
 const SHA256 = /^[0-9a-f]{64}$/;
 
