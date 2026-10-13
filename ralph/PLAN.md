@@ -87,12 +87,12 @@
   - Specky: (req: 01M4TPSCN9WC02W8F3WJEFP4FF v1.0 @8cd370f)
   - Specky kryteria: (crit: 01M4TPSCNMGEE6WVQX15T9B7CV)
 - [ ] Test: 2.3 — adapter z atrapą natywnego modułu (strumień, abort, przeładowanie modelu) (pr: #14)
-- [ ] Zadanie 2.4: ContextBuilder — prompt systemowy + streszczenie starszej części tematu + ostatnie wiadomości w budżecie tokenów modelu (budżet per model w katalogu); aktualizacja streszczenia, gdy historia wychodzi poza budżet (wymaga: 1.4, 2.3) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 2.4: ContextBuilder — prompt systemowy + streszczenie starszej części tematu + ostatnie wiadomości w budżecie tokenów modelu (budżet per model w katalogu); aktualizacja streszczenia, gdy historia wychodzi poza budżet (wymaga: 1.4, 2.3) (spec: spec.md) (tech: typescript) (pr: #15)
   - AC: pełna historia zawsze zapisana w bazie; do modelu trafia kontekst ≤ budżetu tokenów
   - AC: dla modeli z dużym budżetem (chmura) wysyłana jest cała historia
   - Specky: (req: 01M4TPSBSFSQB42EM1EPJXWZAB v1.0 @f2ad1a6)
   - Specky kryteria: (crit: 01M4TPSBSQMMJJXSTTVE150DAW) (crit: 01M4TPSBSQR8MDHPK0NX5E7WCM) (crit: 01M4TPSBSQ1783VCEV6RBY62XS)
-- [ ] Test: 2.4 — przycinanie przy różnych budżetach, obecność streszczenia, kolejność wiadomości
+- [ ] Test: 2.4 — przycinanie przy różnych budżetach, obecność streszczenia, kolejność wiadomości (pr: #15)
 - [ ] Zadanie 2.5: ConversationService — wysłanie wiadomości usera, budowa kontekstu, strumień odpowiedzi, zapis wiadomości; przerwanie zapisuje tekst częściowy z flagą interrupted (wymaga: 2.4) (spec: spec.md) (tech: typescript)
   - AC: przerwana odpowiedź zostaje w historii z flagą interrupted i jest częścią kolejnego kontekstu
   - AC: wejście — wysłanie tekstu z ekranu Rozmowa (2.7) i zakończona wypowiedź z potoku głosowego (3.6)

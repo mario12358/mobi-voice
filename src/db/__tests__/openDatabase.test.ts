@@ -1,3 +1,4 @@
+import { MIGRATIONS } from '../migrations';
 import { openAppDatabase, DATABASE_NAME } from '../openDatabase';
 import type { SqlDatabase } from '../SqlDatabase';
 import { openNodeSqlDatabase } from './support/nodeSqlDatabase';
@@ -17,7 +18,9 @@ describe('openAppDatabase', () => {
 
     expect(mockOpenDatabaseAsync).toHaveBeenCalledWith(DATABASE_NAME);
     expect(await db.getFirstAsync('PRAGMA foreign_keys')).toEqual({ foreign_keys: 1 });
-    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual([{ version: 1 }]);
+    expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual(
+      MIGRATIONS.map(({ version }) => ({ version })),
+    );
     await db.closeAsync();
   });
 });
