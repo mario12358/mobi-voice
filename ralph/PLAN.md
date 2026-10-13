@@ -66,7 +66,7 @@
   - Specky: (req: 01M4TPSDM116PMW5YJJ4B6A34X v1.0 @178a85c)
   - Specky kryteria: (crit: 01M4TPSDMBK9W28VSKZWA1MT4Y) (crit: 01M4TPSDMB35F61TVKWA51MDVV)
 - [x] Test: 1.7 — nawigacja między ekranami i wybór ekranu startowego (pr: #7)
-- [ ] Zadanie 1.8: Test e2e — start aplikacji, przejścia Lista tematów → Ustawienia → Modele → powrót, motyw wg systemu (wymaga: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7) (spec: spec.md) (tech: detox, typescript) (pr: #8)
+- [x] Zadanie 1.8: Test e2e — start aplikacji, przejścia Lista tematów → Ustawienia → Modele → powrót, motyw wg systemu (wymaga: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7) (spec: spec.md) (tech: detox, typescript) (pr: #8)
 
 ### Faza 2: Tematy i czat tekstowy z modelem lokalnym
 

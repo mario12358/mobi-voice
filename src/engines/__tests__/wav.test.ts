@@ -1,5 +1,5 @@
-import { encodeWav, parseWav } from '../wav';
-import { synthesize } from './support/audio';
+import { parseWav } from '../wav';
+import { encodeWav, synthesize } from './support/audio';
 
 function stereoWav(left: number, right: number): ArrayBuffer {
   const buffer = new ArrayBuffer(48);
