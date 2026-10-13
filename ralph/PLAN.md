@@ -76,17 +76,17 @@
   - Specky: (req: 01M4TPSCN9WC02W8F3WJEFP4FF v1.0 @8cd370f)
   - Specky kryteria: (crit: 01M4TPSCNMTHEHN090MN55X0HD)
 - [x] Test: 2.1 — walidacja schematu katalogu (unikalne id, poprawny SHA256, URL https) (pr: #11)
-- [ ] Zadanie 2.2: ModelDownloadService — pobieranie do katalogu dokumentów aplikacji z postępem, wznawianiem, weryfikacją SHA256, flagą „tylko Wi-Fi"; usuwanie pliku modelu (wymaga: 2.1) (tech: react-native, typescript) (pr: #12)
+- [x] Zadanie 2.2: ModelDownloadService — pobieranie do katalogu dokumentów aplikacji z postępem, wznawianiem, weryfikacją SHA256, flagą „tylko Wi-Fi"; usuwanie pliku modelu (wymaga: 2.1) (tech: react-native, typescript) (pr: #12)
   - AC: przerwane pobieranie wznawia się od miejsca przerwania; zła suma SHA256 → plik usunięty, błąd
   - AC: wejście — akcja „Pobierz" (CTA w Rozmowie, potem Menedżer modeli 5.2)
   - Specky: (req: 01M4TPSCQHCPGKAQAJ8E6QGB2M v1.0 @aeb1edd)
   - Specky kryteria: (crit: 01M4TPSCQV28RW1SM9HX2Y25E7) (crit: 01M4TPSCQVVZ0CY1K7VS5PGGQW) (crit: 01M4TPSCQVX5S8GVFJ4EG4PWMG)
-- [ ] Test: 2.2 — wznowienie, błędna suma, blokada bez Wi-Fi (atrapy sieci i systemu plików) (pr: #12)
-- [ ] Zadanie 2.3: LocalLlmEngine na llama.rn — ładowanie GGUF, strumieniowanie tokenów, przerwanie generowania, zwalnianie pamięci przy zmianie modelu (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript)
+- [x] Test: 2.2 — wznowienie, błędna suma, blokada bez Wi-Fi (atrapy sieci i systemu plików) (pr: #12)
+- [ ] Zadanie 2.3: LocalLlmEngine na llama.rn — ładowanie GGUF, strumieniowanie tokenów, przerwanie generowania, zwalnianie pamięci przy zmianie modelu (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #14)
   - AC: tokeny przychodzą strumieniowo; abort zatrzymuje generowanie i zwraca tekst do momentu przerwania
   - Specky: (req: 01M4TPSCN9WC02W8F3WJEFP4FF v1.0 @8cd370f)
   - Specky kryteria: (crit: 01M4TPSCNMGEE6WVQX15T9B7CV)
-- [ ] Test: 2.3 — adapter z atrapą natywnego modułu (strumień, abort, przeładowanie modelu)
+- [ ] Test: 2.3 — adapter z atrapą natywnego modułu (strumień, abort, przeładowanie modelu) (pr: #14)
 - [ ] Zadanie 2.4: ContextBuilder — prompt systemowy + streszczenie starszej części tematu + ostatnie wiadomości w budżecie tokenów modelu (budżet per model w katalogu); aktualizacja streszczenia, gdy historia wychodzi poza budżet (wymaga: 1.4, 2.3) (spec: spec.md) (tech: typescript)
   - AC: pełna historia zawsze zapisana w bazie; do modelu trafia kontekst ≤ budżetu tokenów
   - AC: dla modeli z dużym budżetem (chmura) wysyłana jest cała historia
@@ -97,14 +97,14 @@
   - AC: przerwana odpowiedź zostaje w historii z flagą interrupted i jest częścią kolejnego kontekstu
   - AC: wejście — wysłanie tekstu z ekranu Rozmowa (2.7) i zakończona wypowiedź z potoku głosowego (3.6)
 - [ ] Test: 2.5 — pełny cykl z atrapą LLM, przerwanie w trakcie
-- [ ] Zadanie 2.6: Ekran Lista tematów — FlatList po ostatniej aktywności, wyszukiwanie po tytule, „Nowy temat", zmiana nazwy, usunięcie z potwierdzeniem (wymaga: 1.4, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #13)
+- [x] Zadanie 2.6: Ekran Lista tematów — FlatList po ostatniej aktywności, wyszukiwanie po tytule, „Nowy temat", zmiana nazwy, usunięcie z potwierdzeniem (wymaga: 1.4, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #13)
   - AC: można utworzyć nowy temat i wejść do dowolnego istniejącego, by kontynuować rozmowę
   - AC: usunięcie wymaga potwierdzenia
   - Specky: (req: 01M4TPSBA2GXAHZ7W4734NBAEC v1.0 @6f3590a)
   - Specky kryteria: (crit: 01M4TPSBAVP0JTTN6KFJ401ECW) (crit: 01M4TPSBAVEH57XMG9P1Z3BJ8B)
   - Specky: (req: 01M4TPSBGVNJP0KXVH4T0EJH2C v1.0 @e538957)
   - Specky kryteria: (crit: 01M4TPSBHTWE0PKKEXKEDAYGTK) (crit: 01M4TPSBHTKV9C661RVDKGZJZP) (crit: 01M4TPSBHTZD1GCPMPGTCWKPPG) (crit: 01M4TPSBHTQ3Y0DS0QSMZQJAXM)
-- [ ] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie (pr: #13)
+- [x] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie (pr: #13)
 - [ ] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript)
   - AC: odpowiedź pojawia się na bieżąco w dymku; STOP przerywa generowanie
   - AC: odpowiedź przerwana ma oznaczenie „przerwano"

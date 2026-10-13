@@ -6,6 +6,7 @@ import { FakeLlmEngine } from '../fakes/FakeLlmEngine';
 import { FakeSttEngine } from '../fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../fakes/FakeTtsEngine';
 import { WavAudioSource } from '../fakes/WavAudioSource';
+import { LocalLlmEngine } from '../llm/LocalLlmEngine';
 
 describe('EngineRegistry', () => {
   it.each([
@@ -31,7 +32,9 @@ describe('EngineRegistry', () => {
 
   it('never falls back to fakes in production mode', () => {
     const registry = createEngineRegistry('production');
-    expect(() => registry.llm()).toThrow(DomainError);
+    expect(registry.llm()).toBeInstanceOf(LocalLlmEngine);
+    expect(registry.llm()).not.toBeInstanceOf(FakeLlmEngine);
+    expect(() => registry.audioSource()).toThrow(DomainError);
     expect(() => registry.audioSource()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
   });
 });
