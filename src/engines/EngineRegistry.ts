@@ -1,7 +1,7 @@
 import { DomainError } from '../core/errors';
 import { EnergyVadEngine } from './fakes/EnergyVadEngine';
 import { FakeKeywordSpotter } from './fakes/FakeKeywordSpotter';
-import { FakeLlmEngine } from './fakes/FakeLlmEngine';
+import { E2E_SCRIPT, FakeLlmEngine } from './fakes/FakeLlmEngine';
 import { FakeSttEngine } from './fakes/FakeSttEngine';
 import { FakeTtsEngine } from './fakes/FakeTtsEngine';
 import { WavAudioSource } from './fakes/WavAudioSource';
@@ -29,7 +29,7 @@ export function resolveEngineMode(flag: string | undefined): EngineMode {
 
 export function createTestFactories(): EngineFactories {
   return {
-    llm: () => new FakeLlmEngine(undefined, 30),
+    llm: () => new FakeLlmEngine(E2E_SCRIPT, 60),
     stt: () => new FakeSttEngine(),
     tts: () => new FakeTtsEngine(500),
     vad: () => new EnergyVadEngine(),

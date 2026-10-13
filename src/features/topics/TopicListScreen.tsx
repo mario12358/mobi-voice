@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react';
-import { Alert, FlatList, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, StyleSheet, TextInput, View } from 'react-native';
 
 import { BodyText } from '../../components/BodyText';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Screen } from '../../components/Screen';
 import { TextButton } from '../../components/TextButton';
 import type { Topic } from '../../db/repositories/TopicRepository';
@@ -16,21 +17,19 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
   const palette = usePalette();
   const topics = useTopics();
   const [renaming, setRenaming] = useState<Topic | null>(null);
+  const [deleting, setDeleting] = useState<Topic | null>(null);
 
   const openTopic = useCallback(
     (topic: Topic) => navigation.navigate('Conversation', { topicId: topic.id }),
     [navigation],
   );
 
-  const { remove } = topics;
-  const confirmDelete = useCallback(
-    (topic: Topic) =>
-      Alert.alert(pl.topicList.deleteConfirmTitle, pl.topicList.deleteConfirmMessage(topic.title), [
-        { text: pl.topicList.cancel, style: 'cancel' },
-        { text: pl.topicList.delete, style: 'destructive', onPress: () => void remove(topic.id) },
-      ]),
-    [remove],
-  );
+  async function confirmDelete() {
+    if (deleting === null) return;
+    const topic = deleting;
+    setDeleting(null);
+    await topics.remove(topic.id);
+  }
 
   async function createTopic() {
     openTopic(await topics.create());
@@ -68,12 +67,25 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
       <FlatList
         data={topics.topics}
         keyExtractor={(topic) => String(topic.id)}
+        // A tap on a row button must act even while the keyboard (search/message field) is open.
+        keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => (
-          <TopicRow topic={item} onOpen={openTopic} onRename={setRenaming} onDelete={confirmDelete} />
+          <TopicRow topic={item} onOpen={openTopic} onRename={setRenaming} onDelete={setDeleting} />
         )}
         ItemSeparatorComponent={Separator}
         ListEmptyComponent={topics.loaded ? <BodyText>{emptyText}</BodyText> : null}
       />
+      {deleting !== null && (
+        <ConfirmDialog
+          testID="topic-list.delete-dialog"
+          title={pl.topicList.deleteConfirmTitle}
+          message={pl.topicList.deleteConfirmMessage(deleting.title)}
+          confirmLabel={pl.topicList.delete}
+          cancelLabel={pl.topicList.cancel}
+          onConfirm={() => void confirmDelete()}
+          onCancel={() => setDeleting(null)}
+        />
+      )}
       {renaming !== null && (
         <RenameTopicDialog
           key={renaming.id}

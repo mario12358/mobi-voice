@@ -1,3 +1,4 @@
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useEffect, useRef, useState } from 'react';
 import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View } from 'react-native';
 
@@ -35,6 +36,7 @@ function ModelMissing({ readiness }: { readiness: ModelReadiness }) {
 export function ConversationScreen({ navigation, route }: RootScreenProps<'Conversation'>) {
   const { topicId } = route.params;
   const palette = usePalette();
+  const headerHeight = useHeaderHeight();
   const conversation = useConversation(topicId);
   const readiness = useModelReadiness(conversation.topic);
   const [draft, setDraft] = useState('');
@@ -61,7 +63,8 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
       <KeyboardAvoidingView
         style={styles.fill}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={96}
+        // The screen starts below the navigation header, whose height depends on the device (notch, island).
+        keyboardVerticalOffset={headerHeight}
       >
         <View style={styles.toolbar}>
           <TextButton
@@ -80,6 +83,8 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
           contentContainerStyle={styles.messages}
           data={conversation.messages}
           keyExtractor={(message) => String(message.id)}
+          // A tap on a row button must act even while the keyboard (search/message field) is open.
+          keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
             <MessageBubble
               testID={`conversation.message-${item.id}`}
