@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 wydana jako v0.1.0; 30 pozycji planu zmergowanych (Faza 1, 2.1–2.8 z testami); 2.9 + Test 2.9 w PR #19
+- **Postęp**: Faza 1 wydana jako v0.1.0; 32 pozycje planu zmergowane (Faza 1, 2.1–2.9 z testami); 2.10 (e2e Fazy 2) w PR #20
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -42,7 +42,7 @@ na zawsze i rośnie w prompcie każdej sesji.
 | Pass | 165 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.9-prompt-systemowy) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.10-e2e-faza2; e2e Android 7/7) |
 
 ## Historia realizacji
 
@@ -65,7 +65,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 2.5 ConversationService + Test 2.5 | ✅ zmergowane (PR #16) | 141/141 | 1 | 0f959db | 2026-10-13 |
 | 2.7 Ekran Rozmowa (tekstowy) + Test 2.7 | ✅ zmergowane (PR #17) | 147/147 | 2 | 825ec83 | 2026-10-13 |
 | 2.8 Automatyczny tytuł + Test 2.8 | ✅ zmergowane (PR #18) | 157/157 | 2 | 4b72425 | 2026-10-13 |
-| 2.9 Prompt systemowy + Test 2.9 | PR #19 otwarty | 165/165 | 1 | — | 2026-10-13 |
+| 2.9 Prompt systemowy + Test 2.9 | ✅ zmergowane (PR #19) | 165/165 | 1 | 4db9e34 | 2026-10-13 |
+| 2.10 Test e2e Fazy 2 (Detox) | PR #20 otwarty | 165/165 + e2e Android 7/7 | 2 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -146,3 +147,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 2.8: migracja 003 `title_source` (default/auto/manual) z migracją danych tematów o tytule „Nowa rozmowa" na `default`; `applyAutoTitle` atomowo tylko przy `default`. Test repozytorium uzupełniony o nowe pole `titleSource` (zmiana kształtu encji). Mutacja warunku → test wyścigu czerwony.
 - [2026-10-13] Zadanie 2.8: kontrola lint-typy zablokowała commit — typograficzne cudzysłowy w wyrażeniu regularnym `cleanTitle`; narzędzie Edit zamieniło ucieczki `\u201E` z powrotem na znaki, zapis przez skrypt.
 - [2026-10-13] Zadanie 2.9: prompt domyślny przechowywany jako `null` (zmiana domyślnego dociera do osób, które go nie zmieniały); pusty prompt tematu = globalny. Mutacja kolejności w resolverze → 2 testy czerwone.
+- [2026-10-13] Zadanie 2.10: atrapa LLM w buildzie e2e (`E2E_SCRIPT`) odpowiada stałym tytułem na prośbę o tytuł (echo promptu tytułującego dawało nieprzewidywalny tytuł) i długą odpowiedzią na pytanie z „długo" (STOP w trakcie strumienia, z wyłączoną synchronizacją Detox). Pierwszy przebieg: 3 testy czerwone przez założenia testu (tytuł, czekanie na tekst wewnątrz dymka, `toBeVisible` dla małej etykiety) — aplikacja działała poprawnie.

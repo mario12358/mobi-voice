@@ -1,3 +1,4 @@
+import { TITLE_SYSTEM_PROMPT } from '../../services/prompts';
 import type { LlmEngine, LlmRequest, LlmResult } from '../types';
 
 export type LlmScript = (request: LlmRequest) => string;
@@ -5,6 +6,20 @@ export type LlmScript = (request: LlmRequest) => string;
 export const ECHO_SCRIPT: LlmScript = (request) => {
   const lastUser = [...request.messages].reverse().find((message) => message.role === 'user');
   return `Odpowiedź testowa na: ${lastUser?.content ?? ''}. To jest drugie zdanie.`;
+};
+
+// e2e builds: a question containing "długo" gets a long answer so the test can press STOP mid-stream.
+export const E2E_LONG_ANSWER_TRIGGER = 'długo';
+
+export const E2E_TOPIC_TITLE = 'Rozmowa testowa';
+
+export const E2E_SCRIPT: LlmScript = (request) => {
+  if (request.systemPrompt === TITLE_SYSTEM_PROMPT) return E2E_TOPIC_TITLE;
+  const lastUser = [...request.messages].reverse().find((message) => message.role === 'user');
+  if (lastUser?.content.includes(E2E_LONG_ANSWER_TRIGGER)) {
+    return Array.from({ length: 60 }, (_, index) => `Zdanie numer ${index + 1}.`).join(' ');
+  }
+  return ECHO_SCRIPT(request);
 };
 
 export function splitIntoTokens(text: string): string[] {

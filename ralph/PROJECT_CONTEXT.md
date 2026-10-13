@@ -98,6 +98,7 @@ Konwencje:
 | npm „deduped", a pakietu brak w node_modules | usuń `node_modules/.package-lock.json` i `npm install` |
 | RNTL 14: `fireEvent` zwraca Promise — bez `await` stan pola nie zdąży przed kolejnym zdarzeniem | zawsze `await fireEvent.…` |
 | Typograficzne cudzysłowy („ ” « ») w kodzie blokuje kontrola lint-typy — narzędzie Edit zamienia `\\u201E` na znak | wpisuj ucieczki `\\u…` przez skrypt, nie Edit → strażnik: lint-typy/cudzyslow-typograficzny |
+| Detox czeka na bezczynność — strumień tokenów (timery) blokuje tap w STOP | `device.disableSynchronization()` na czas strumienia, w `finally` włącz z powrotem |
 | Błędy better-sqlite3 przy równoległych workerach Jest z innego realmu — `rejects.toThrow` ich nie widzi | adapter `nodeSqlDatabase` przepakowuje je w `Error` (`sameRealm`) |
 
 ## Zależności między komponentami
@@ -112,6 +113,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.8 zmergowane; 2.9 w PR #19
-- Następne zadanie: 2.10 Test e2e Fazy 2
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.1–2.9 zmergowane; 2.10 w PR #20
+- Następne zadanie: regresja Fazy 2 na main, potem 3.1 AudioSessionService
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
