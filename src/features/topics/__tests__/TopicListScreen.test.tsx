@@ -3,8 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import { Alert, type AlertButton } from 'react-native';
 
+import { TestProviders } from '../../../__tests__/support/TestProviders';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
-import { DatabaseProvider } from '../../../db/DatabaseProvider';
 import { prepareDatabase } from '../../../db/migrate';
 import { MessageRepository } from '../../../db/repositories/MessageRepository';
 import { TopicRepository } from '../../../db/repositories/TopicRepository';
@@ -22,7 +22,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // The app opens the last active topic at start; these tests need the list itself in front.
 async function renderList(db: SqlDatabase) {
   await render(
-    <DatabaseProvider open={async () => db}>
+    <TestProviders db={db}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="TopicList">
           <Stack.Screen name="TopicList" component={TopicListScreen} />
@@ -31,7 +31,7 @@ async function renderList(db: SqlDatabase) {
           <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-    </DatabaseProvider>,
+    </TestProviders>,
   );
   await screen.findByTestId('topic-list-screen');
 }
@@ -149,6 +149,31 @@ describe('TopicListScreen', () => {
     await fireEvent.press(screen.getByTestId(`topic-list.topic-${topic.id}`));
     await screen.findByTestId('conversation-screen');
     await waitFor(() => expect(visibleHeaderTitle()).toBe('Budżet domowy'));
+  });
+
+  // specky: crit 01M4TPSBAVEH57XMG9P1Z3BJ8B
+  it('choosing a topic opens its full history and the conversation can continue', async () => {
+    const trip = await topics.create('Wakacje');
+    await topics.create('Praca');
+    await messages.add({ topicId: trip.id, role: 'user', content: 'Mam tydzień urlopu.' });
+    await messages.add({ topicId: trip.id, role: 'assistant', content: 'Może Mazury?' });
+    await renderList(db);
+
+    await fireEvent.press(await screen.findByTestId(`topic-list.topic-${trip.id}`));
+
+    expect(await screen.findByText('Mam tydzień urlopu.')).toBeTruthy();
+    expect(screen.getByText('Może Mazury?')).toBeTruthy();
+    await fireEvent.changeText(screen.getByTestId('conversation.input'), 'A w górach?');
+    await fireEvent.press(screen.getByTestId('conversation.send'));
+    await waitFor(async () =>
+      expect((await messages.listByTopic(trip.id)).map((message) => message.role)).toEqual([
+        'user',
+        'assistant',
+        'user',
+        'assistant',
+      ]),
+    );
+    expect(await screen.findByText('A w górach?')).toBeTruthy();
   });
 
   it('keeps the old name when the new one is empty', async () => {

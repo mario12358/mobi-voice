@@ -1,0 +1,84 @@
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
+
+import { useDatabase } from '../db/DatabaseProvider';
+import { ContextSummaryRepository } from '../db/repositories/ContextSummaryRepository';
+import { MessageRepository } from '../db/repositories/MessageRepository';
+import { TopicRepository, type Topic } from '../db/repositories/TopicRepository';
+import type { SqlDatabase } from '../db/SqlDatabase';
+import { useEngines } from '../engines/EngineProvider';
+import type { EngineRegistry } from '../engines/EngineRegistry';
+import { selectedLocalModel } from '../engines/llm/createLocalLlmEngine';
+import type { LlmEntry } from '../models/catalog';
+import { ModelDownloadService } from '../models/download/ModelDownloadService';
+import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
+import { useSettingsStore } from '../state/settings';
+import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
+import { ConversationService } from './ConversationService';
+
+export interface AppServices {
+  topics: TopicRepository;
+  messages: MessageRepository;
+  conversation: ConversationService;
+  downloads: ModelDownloadService;
+  modelForTopic(topic: Topic | null): LlmEntry;
+  isModelReady(model: LlmEntry): Promise<boolean>;
+}
+
+export interface DownloadPorts {
+  fileSystem: ModelFileSystem;
+  network: NetworkInfo;
+}
+
+export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DownloadPorts): AppServices {
+  const topics = new TopicRepository(db);
+  const messages = new MessageRepository(db);
+  const modelForTopic = (topic: Topic | null) =>
+    selectedLocalModel(topic?.modelOverride ?? useSettingsStore.getState().defaultModelId);
+  const downloads = new ModelDownloadService(ports.fileSystem, ports.network, {
+    wifiOnly: () => useSettingsStore.getState().wifiOnlyDownloads,
+  });
+  const context = new ContextBuilder(
+    messages,
+    new ContextSummaryRepository(db),
+    new LlmSummarizer(engines.llm()),
+  );
+  const conversation = new ConversationService({
+    topics,
+    messages,
+    context,
+    llm: () => engines.llm(),
+    budget: modelForTopic,
+    systemPrompt: (topic) => topic.systemPrompt ?? useSettingsStore.getState().globalSystemPrompt,
+  });
+  return {
+    topics,
+    messages,
+    conversation,
+    downloads,
+    modelForTopic,
+    // Test builds talk to the fake LLM, which needs no model file.
+    isModelReady: async (model) =>
+      engines.mode === 'test' || (await downloads.status(model.id)) === 'downloaded',
+  };
+}
+
+const ServicesContext = createContext<AppServices | null>(null);
+
+interface Props {
+  children: ReactNode;
+  ports: () => DownloadPorts;
+}
+
+export function ServicesProvider({ children, ports }: Props) {
+  const db = useDatabase();
+  const engines = useEngines();
+  const [downloadPorts] = useState(ports);
+  const services = useMemo(() => createServices(db, engines, downloadPorts), [db, engines, downloadPorts]);
+  return <ServicesContext.Provider value={services}>{children}</ServicesContext.Provider>;
+}
+
+export function useServices(): AppServices {
+  const services = useContext(ServicesContext);
+  if (services === null) throw new Error('useServices must be used inside ServicesProvider');
+  return services;
+}

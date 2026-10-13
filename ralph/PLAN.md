@@ -87,16 +87,16 @@
   - Specky: (req: 01M4TPSCN9WC02W8F3WJEFP4FF v1.0 @8cd370f)
   - Specky kryteria: (crit: 01M4TPSCNMGEE6WVQX15T9B7CV)
 - [x] Test: 2.3 — adapter z atrapą natywnego modułu (strumień, abort, przeładowanie modelu) (pr: #14)
-- [ ] Zadanie 2.4: ContextBuilder — prompt systemowy + streszczenie starszej części tematu + ostatnie wiadomości w budżecie tokenów modelu (budżet per model w katalogu); aktualizacja streszczenia, gdy historia wychodzi poza budżet (wymaga: 1.4, 2.3) (spec: spec.md) (tech: typescript) (pr: #15)
+- [x] Zadanie 2.4: ContextBuilder — prompt systemowy + streszczenie starszej części tematu + ostatnie wiadomości w budżecie tokenów modelu (budżet per model w katalogu); aktualizacja streszczenia, gdy historia wychodzi poza budżet (wymaga: 1.4, 2.3) (spec: spec.md) (tech: typescript) (pr: #15)
   - AC: pełna historia zawsze zapisana w bazie; do modelu trafia kontekst ≤ budżetu tokenów
   - AC: dla modeli z dużym budżetem (chmura) wysyłana jest cała historia
   - Specky: (req: 01M4TPSBSFSQB42EM1EPJXWZAB v1.0 @f2ad1a6)
   - Specky kryteria: (crit: 01M4TPSBSQMMJJXSTTVE150DAW) (crit: 01M4TPSBSQR8MDHPK0NX5E7WCM) (crit: 01M4TPSBSQ1783VCEV6RBY62XS)
-- [ ] Test: 2.4 — przycinanie przy różnych budżetach, obecność streszczenia, kolejność wiadomości (pr: #15)
-- [ ] Zadanie 2.5: ConversationService — wysłanie wiadomości usera, budowa kontekstu, strumień odpowiedzi, zapis wiadomości; przerwanie zapisuje tekst częściowy z flagą interrupted (wymaga: 2.4) (spec: spec.md) (tech: typescript) (pr: #16)
+- [x] Test: 2.4 — przycinanie przy różnych budżetach, obecność streszczenia, kolejność wiadomości (pr: #15)
+- [x] Zadanie 2.5: ConversationService — wysłanie wiadomości usera, budowa kontekstu, strumień odpowiedzi, zapis wiadomości; przerwanie zapisuje tekst częściowy z flagą interrupted (wymaga: 2.4) (spec: spec.md) (tech: typescript) (pr: #16)
   - AC: przerwana odpowiedź zostaje w historii z flagą interrupted i jest częścią kolejnego kontekstu
   - AC: wejście — wysłanie tekstu z ekranu Rozmowa (2.7) i zakończona wypowiedź z potoku głosowego (3.6)
-- [ ] Test: 2.5 — pełny cykl z atrapą LLM, przerwanie w trakcie (pr: #16)
+- [x] Test: 2.5 — pełny cykl z atrapą LLM, przerwanie w trakcie (pr: #16)
 - [x] Zadanie 2.6: Ekran Lista tematów — FlatList po ostatniej aktywności, wyszukiwanie po tytule, „Nowy temat", zmiana nazwy, usunięcie z potwierdzeniem (wymaga: 1.4, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #13)
   - AC: można utworzyć nowy temat i wejść do dowolnego istniejącego, by kontynuować rozmowę
   - AC: usunięcie wymaga potwierdzenia
@@ -105,14 +105,14 @@
   - Specky: (req: 01M4TPSBGVNJP0KXVH4T0EJH2C v1.0 @e538957)
   - Specky kryteria: (crit: 01M4TPSBHTWE0PKKEXKEDAYGTK) (crit: 01M4TPSBHTKV9C661RVDKGZJZP) (crit: 01M4TPSBHTZD1GCPMPGTCWKPPG) (crit: 01M4TPSBHTQ3Y0DS0QSMZQJAXM)
 - [x] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie (pr: #13)
-- [ ] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #17)
   - AC: odpowiedź pojawia się na bieżąco w dymku; STOP przerywa generowanie
   - AC: odpowiedź przerwana ma oznaczenie „przerwano"
   - Specky: (req: 01M4TPSBVARMFASRVTYM6ERQB3 v1.0 @9adb713)
   - Specky kryteria: (crit: 01M4TPSBVHVSTT9FRBA7G3CJCD)
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDHM1ENPJ1BSBYH39A)
-- [ ] Test: 2.7 — wysyłka tekstu, strumień, przerwanie, stan bez modelu
+- [ ] Test: 2.7 — wysyłka tekstu, strumień, przerwanie, stan bez modelu (pr: #17)
 - [ ] Zadanie 2.8: Automatyczny tytuł tematu generowany przez LLM po pierwszej wymianie (tylko gdy user nie nadał nazwy ręcznie) (wymaga: 2.5) (tech: typescript)
   - AC: wejście — zapis pierwszej odpowiedzi asystenta w temacie z tytułem domyślnym
   - Specky: (req: 01M4TPSBMNDK44C94VSYQGXZSZ v1.0 @fa3165a)
