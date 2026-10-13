@@ -25,7 +25,7 @@ function TestModeBadge() {
   return (
     <View style={styles.badge} pointerEvents="none">
       <Text testID="engine-mode-test">{pl.common.testMode}</Text>
-      <View testID={`theme-${palette.scheme}`} />
+      <View testID={`theme-${palette.scheme}`} collapsable={false} style={styles.marker} />
     </View>
   );
 }
@@ -47,5 +47,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  marker: { width: 1, height: 1 },
   badge: { position: 'absolute', bottom: 4, alignSelf: 'center', opacity: 0.6 },
 });
