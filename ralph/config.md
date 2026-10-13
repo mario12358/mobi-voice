@@ -8,15 +8,15 @@
 
 ## Testy
 
-- **Komenda testów**: [np. pytest -v, npm test, cargo test]
-- **Komenda pełnego suite**: [np. pytest -v --tb=short, npm run test:all]
+- **Komenda testów**: npm test -- <ścieżka testu zadania>
+- **Komenda pełnego suite**: npx tsc --noEmit && npm test
 - **Smoke suite**: brak
   <!-- Szybki podzbiór testów uruchamiany po KAŻDYM zadaniu (regresja wykrywana od razu,     -->
   <!-- nie po całej fazie). Np. testy ukończonych modułów. Małe projekty: pełny suite.       -->
   <!-- "brak" = pomiń (tylko testy zadania + pełny suite po fazie).                           -->
 - **Pełny suite po**: każdej fazie
-- **Linter/formatter**: [np. ruff check, eslint, cargo fmt -- brak jeśli nie używasz]
-- **Komenda typów**: brak
+- **Linter/formatter**: brak
+- **Komenda typów**: npx tsc --noEmit
   <!-- Typechecker, np. `mypy src`, `pyright`, `npx tsc --noEmit`. Kontrola lint-typy (## Kontrole)  -->
   <!-- uruchamia linter na zmienionych plikach przy commicie, a typechecker przy fazie.          -->
   <!-- "brak" = bez typecheckera.                                                               -->
@@ -472,24 +472,32 @@
   <!-- nie = wpisy zostają dokładnie takie, jak zatwierdzono                             -->
 
 - **Dozwolone komendy**:
-  - Bash(git add:\*)
-  - Bash(git commit:\*)
-  - Bash(git describe:\*)
-  - Bash(git diff:\*)
-  - Bash(git log:\*)
-  - Bash(git status:\*)
-  - Bash(git tag:\*)
-  - Bash(ls:\*)
-  - Bash(mkdir:\*)
-  - Bash(npm install:\*)
-  - Bash(npm run:\*)
-  - Bash(npm test:\*)
-  - Bash(npx:\*)
-  - Bash(pytest:\*)
+  - Bash(git add:*)
+  - Bash(git commit:*)
+  - Bash(git describe:*)
+  - Bash(git diff:*)
+  - Bash(git log:*)
+  - Bash(git status:*)
+  - Bash(git tag:*)
+  - Bash(ls:*)
+  - Bash(mkdir:*)
+  - Bash(npm install:*)
+  - Bash(npm run:*)
+  - Bash(npm test:*)
+  - Bash(npx:*)
+  - Bash(pytest:*)
   - WebFetch(domain:claude.ai)
+  - mcp__plugin_specky_specky-record__create_project
+  - mcp__plugin_specky_specky__list_projects
+  - mcp__plugin_specky_specky__whoami
 
 - **Zabronione komendy**:
+  - Bash(git push --force:*)
   - Bash(git push --force:\*)
+  - Bash(git reset --hard:*)
   - Bash(git reset --hard:\*)
+  - Bash(rm -rf:*)
   - Bash(rm -rf:\*)
+  - Bash(sudo:*)
   - Bash(sudo:\*)
+

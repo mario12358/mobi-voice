@@ -30,7 +30,7 @@
 
 ### Faza 1: Fundament aplikacji
 
-- [ ] Zadanie 1.1: Szkielet architektury i konwencje — mapa modułów (src/features, services/engines, db, navigation), wzorzec warstw (UI → serwisy → repozytoria/silniki), format błędów domenowych, konwencje nazw; wynik do PROJECT_CONTEXT.md; dopasuj .github/workflows/specky-ci.yml (szablon Ralpha) do Jest + raport JUnit (tech: typescript, react-native)
+- [ ] Zadanie 1.1: Szkielet architektury i konwencje — mapa modułów (src/features, services/engines, db, navigation), wzorzec warstw (UI → serwisy → repozytoria/silniki), format błędów domenowych, konwencje nazw; wynik do PROJECT_CONTEXT.md; dopasuj .github/workflows/specky-ci.yml (szablon Ralpha) do Jest + raport JUnit (tech: typescript, react-native) (pr: #1)
   - Specky: (req: 01M4TPSAWRTTG99VMV7T9TC89Y v1.0 @c05a0d4)
   - Specky kryteria: (crit: 01M4TPSAXFSFAKMYTR66T2XE10) (crit: 01M4TPSAXFZS7QFASVK9MH6MTT)
 - [ ] Zadanie 1.2: Inicjalizacja projektu Expo (prebuild, dev client) w TypeScript strict — iOS 16+, Android API 29+, tylko arm64; Jest + React Native Testing Library, ESLint + Prettier; uzupełnij komendy testów/lintera/typów w ralph/config.md (wymaga: 1.1) (spec: spec.md) (tech: react-native, typescript)

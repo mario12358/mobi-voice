@@ -1,0 +1,38 @@
+# Źródło: Specky plugin/templates/specky-ci.yml (Specky v0.32.0) — dopasowane do stacku w zadaniu 1.1.
+# Kontrakt ze Specky — TYLKO te dwie rzeczy muszą się zgadzać:
+#   - artefakt z raportami JUnit XML ma w nazwie "junit"
+#   - pokaz kryterium (nagranie/zrzut) to artefakt "specky-demo-<criterion_id>"
+#
+# Specky czyta raport JUnit z tego workflow i przy każdym kryterium oznaczonym w kodzie
+# komentarzem `specky: crit <criterion_id>` (linia nad testem) pokazuje na PR ✅/❌.
+
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+      - run: npx tsc --noEmit
+      # jest-junit (jest.config.js) zapisuje raport do reports/junit.xml
+      - run: npm run test:ci
+
+      # --- Kontrakt 1: raport JUnit jako artefakt z "junit" w nazwie ---------------
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-reports
+          path: reports/*.xml
+          if-no-files-found: error
