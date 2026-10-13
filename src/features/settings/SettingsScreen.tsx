@@ -6,7 +6,11 @@ import type { RootScreenProps } from '../../navigation/types';
 export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
   return (
     <Screen testID="settings-screen">
-      <TextButton label={pl.settings.openModels} onPress={() => navigation.navigate('Models')} />
+      <TextButton
+        testID="settings.open-models"
+        label={pl.settings.openModels}
+        onPress={() => navigation.navigate('Models')}
+      />
     </Screen>
   );
 }

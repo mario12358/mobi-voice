@@ -1,0 +1,85 @@
+# Detox e2e na buildzie testowym (EXPO_PUBLIC_E2E=1: atrapy silników, WAV zamiast mikrofonu).
+# Raport JUnit idzie do artefaktu "junit-e2e" — Specky czyta z niego testy kryteriów oznaczone w e2e/.
+
+name: e2e
+
+on:
+  pull_request:
+    paths:
+      - e2e/**
+      - .detoxrc.js
+      - plugins/**
+      - .github/workflows/e2e.yml
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - run: npm ci
+      - run: npx detox build -c android.att.release
+        env:
+          DETOX_ANDROID_ARCHS: x86_64
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          script: npx detox test -c android.att.release --headless --record-logs failing --take-screenshots failing
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-e2e-android
+          path: reports/junit-e2e.xml
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: detox-artifacts-android
+          path: artifacts/detox
+
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      # Detox drives iOS simulators through applesimutils; recent Homebrew requires trusting the tap explicitly.
+      - run: brew tap wix/brew && brew trust wix/brew && brew install applesimutils
+      - run: npm ci
+      - name: Pick an available iPhone simulator
+        run: echo "DETOX_IOS_DEVICE=$(xcrun simctl list devices available | grep -o 'iPhone [^(]*' | sed 's/ *$//' | head -1)" >> "$GITHUB_ENV"
+      - run: npx detox build -c ios.sim.release
+      - run: npx detox test -c ios.sim.release --headless --record-logs failing --take-screenshots failing
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-e2e-ios
+          path: reports/junit-e2e.xml
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: detox-artifacts-ios
+          path: artifacts/detox

@@ -55,7 +55,7 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer theme={navigationTheme(palette)} initialState={startState}>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerBackTitle: pl.common.back }}>
         <Stack.Screen name="TopicList" component={TopicListScreen} options={{ title: pl.topicList.title }} />
         <Stack.Screen
           name="Conversation"

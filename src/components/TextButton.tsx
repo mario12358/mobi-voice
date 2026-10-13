@@ -5,13 +5,15 @@ import { SPACING, usePalette } from '../theme/theme';
 interface Props {
   label: string;
   onPress: () => void;
+  testID?: string;
 }
 
-export function TextButton({ label, onPress }: Props) {
+export function TextButton({ label, onPress, testID }: Props) {
   const palette = usePalette();
   return (
     <Pressable
       accessibilityRole="button"
+      testID={testID}
       onPress={onPress}
       style={({ pressed }) => [styles.button, { borderColor: palette.border, opacity: pressed ? 0.6 : 1 }]}
     >
