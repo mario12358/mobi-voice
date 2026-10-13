@@ -83,6 +83,8 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
           contentContainerStyle={styles.messages}
           data={conversation.messages}
           keyExtractor={(message) => String(message.id)}
+          // A tap on a row button must act even while the keyboard (search/message field) is open.
+          keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
             <MessageBubble
               testID={`conversation.message-${item.id}`}

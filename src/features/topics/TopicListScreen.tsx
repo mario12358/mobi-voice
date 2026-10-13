@@ -67,6 +67,8 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
       <FlatList
         data={topics.topics}
         keyExtractor={(topic) => String(topic.id)}
+        // A tap on a row button must act even while the keyboard (search/message field) is open.
+        keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => (
           <TopicRow topic={item} onOpen={openTopic} onRename={setRenaming} onDelete={setDeleting} />
         )}
