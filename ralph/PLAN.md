@@ -38,19 +38,19 @@
   - Specky: (req: 01M4TPSAN97DVJH98SGHWK0JB5 v1.0 @4c3b1e3)
   - Specky kryteria: (crit: 01M4TPSANWZWEE880DMAXVXJC1) (crit: 01M4TPSANWRF6MW9YG8DYN8NVE)
 - [x] Test: 1.2 — test dymny renderu komponentu App (pr: #2)
-- [ ] Zadanie 1.3: Baza SQLite + wersjonowane migracje — tabele topics, messages, summaries, summary_templates (snake_case, FK z ON DELETE CASCADE) (wymaga: 1.2) (spec: spec.md) (tech: sql, typescript) (pr: #3)
+- [x] Zadanie 1.3: Baza SQLite + wersjonowane migracje — tabele topics, messages, summaries, summary_templates (snake_case, FK z ON DELETE CASCADE) (wymaga: 1.2) (spec: spec.md) (tech: sql, typescript) (pr: #3)
   - AC: temat ma tytuł, created_at, last_activity_at, system_prompt (opcjonalny), model_override (opcjonalny)
   - AC: wiadomość ma rolę (user/assistant), treść, created_at i flagę interrupted
   - AC: wejście — migracje uruchamiane przy starcie aplikacji przed pierwszym ekranem
   - Specky: (req: 01M4TPSB35CE08M2G3KTB8CBV8 v1.0 @fad5a6a)
   - Specky kryteria: (crit: 01M4TPSB43B3FSN8QSKBQJTABH) (crit: 01M4TPSB44R4TGWZV7K4HZT7HV)
-- [ ] Test: 1.3 — migracje na czystej bazie i ponowne uruchomienie bez zmian (pr: #3)
-- [ ] Zadanie 1.4: Repozytoria TopicRepository i MessageRepository (CRUD, lista tematów po last_activity_at, wyszukiwanie po tytule, historia tematu) (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql)
+- [x] Test: 1.3 — migracje na czystej bazie i ponowne uruchomienie bez zmian (pr: #3)
+- [ ] Zadanie 1.4: Repozytoria TopicRepository i MessageRepository (CRUD, lista tematów po last_activity_at, wyszukiwanie po tytule, historia tematu) (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #4)
   - AC: usunięcie tematu usuwa jego wiadomości i podsumowania
   - AC: dodanie wiadomości aktualizuje last_activity_at tematu
   - Specky: (req: 01M4TPSB35CE08M2G3KTB8CBV8 v1.0 @fad5a6a)
   - Specky kryteria: (crit: 01M4TPSB44SA09NE6D546BP4WB)
-- [ ] Test: 1.4 — repozytoria na bazie w pamięci
+- [ ] Test: 1.4 — repozytoria na bazie w pamięci (pr: #4)
 - [ ] Zadanie 1.5: Magazyn ustawień (Zustand + persist w AsyncStorage) i SecretStore na klucze API przez expo-secure-store — klucze nigdy w SQLite, logach ani eksporcie (wymaga: 1.2) (tech: react-native, typescript)
   - AC: klucz API zapisany i odczytany przez SecretStore; brak klucza w AsyncStorage i SQLite
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
