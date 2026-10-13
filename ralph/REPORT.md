@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: 9/57 zadań zmergowanych (1.1–1.5 z testami); 1.6 + Test 1.6 w PR #6
+- **Postęp**: 11/57 zadań zmergowanych (1.1–1.6 z testami); 1.7 + Test 1.7 w PR #7
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -36,11 +36,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 76 |
-| Pass | 76 |
+| Łącznie testów | 84 |
+| Pass | 84 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-1.6-silniki-atrapy) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-1.7-nawigacja) |
 
 ## Historia realizacji
 
@@ -51,7 +51,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 1.3 Baza SQLite + migracje + Test 1.3 | ✅ zmergowane (PR #3) | 34/34 | 2 | 562d090 | 2026-10-13 |
 | 1.4 Repozytoria tematów i wiadomości + Test 1.4 | ✅ zmergowane (PR #4) | 44/44 | 1 | 0dc6097 | 2026-10-13 |
 | 1.5 Ustawienia (Zustand) i SecretStore + Test 1.5 | ✅ zmergowane (PR #5) | 55/55 | 1 | 53368a9 | 2026-10-13 |
-| 1.6 Interfejsy silników, atrapy, EngineRegistry + Test 1.6 | PR #6 otwarty | 76/76 | 1 | — | 2026-10-13 |
+| 1.6 Interfejsy silników, atrapy, EngineRegistry + Test 1.6 | ✅ zmergowane (PR #6) | 76/76 | 1 | 95973c2 | 2026-10-13 |
+| 1.7 Nawigacja, teksty PL, motyw + Test 1.7 | PR #7 otwarty | 84/84 | 2 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -112,3 +113,5 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 1.4: wyszukiwanie tematów po tytule filtrowane w JS (`toLocaleLowerCase('pl')`), bo LIKE/lower() w SQLite składają tylko ASCII; mutacja aktualizacji last_activity_at → 2 testy czerwone.
 - [2026-10-13] Zadanie 1.5: `jest.mock` z fabryką odwołującą się do stałej modułu testu łamie się na hoistingu importów (TDZ) — fabryka wywołuje `require('./support/…')`, uchwyt przez `jest.requireMock`. Testowe klucze bez prefiksów `sk-…`, żeby nie wyglądały jak prawdziwe dla kontroli `sekrety`.
 - [2026-10-13] Zadanie 1.6: mutacja `resolveEngineMode` (flaga e2e ignorowana) → 2 testy czerwone, w tym test App przez wejście (badge „Tryb testowy").
+- [2026-10-13] [check] PR #6 — Specky contract check: brak trailera w zadaniu bez wymagania — dopisane `Specky-Req: none` (status neutral jest dla tej deklaracji zamierzony). Przy okazji opis PR poprawiony przez `gh pr edit --body`, czego 17.5 nie przewiduje — od teraz `Specky-Req: none` od razu w commicie i opisie.
+- [2026-10-13] Zadanie 1.7: tytuły native-stack są propem `RNSScreenStackHeaderConfig`, nie `<Text>` — test czyta tytuł widocznego ekranu z drzewa JSON. App.test zmieniony (pierwszy ekran to lista tematów zamiast nagłówka „MobiVoice") — zmiana zachowania, nie dopasowanie do implementacji. Mutacja motywu → test czerwony.
