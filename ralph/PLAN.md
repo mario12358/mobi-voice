@@ -45,17 +45,17 @@
   - Specky: (req: 01M4TPSB35CE08M2G3KTB8CBV8 v1.0 @fad5a6a)
   - Specky kryteria: (crit: 01M4TPSB43B3FSN8QSKBQJTABH) (crit: 01M4TPSB44R4TGWZV7K4HZT7HV)
 - [x] Test: 1.3 — migracje na czystej bazie i ponowne uruchomienie bez zmian (pr: #3)
-- [ ] Zadanie 1.4: Repozytoria TopicRepository i MessageRepository (CRUD, lista tematów po last_activity_at, wyszukiwanie po tytule, historia tematu) (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #4)
+- [x] Zadanie 1.4: Repozytoria TopicRepository i MessageRepository (CRUD, lista tematów po last_activity_at, wyszukiwanie po tytule, historia tematu) (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #4)
   - AC: usunięcie tematu usuwa jego wiadomości i podsumowania
   - AC: dodanie wiadomości aktualizuje last_activity_at tematu
   - Specky: (req: 01M4TPSB35CE08M2G3KTB8CBV8 v1.0 @fad5a6a)
   - Specky kryteria: (crit: 01M4TPSB44SA09NE6D546BP4WB)
-- [ ] Test: 1.4 — repozytoria na bazie w pamięci (pr: #4)
-- [ ] Zadanie 1.5: Magazyn ustawień (Zustand + persist w AsyncStorage) i SecretStore na klucze API przez expo-secure-store — klucze nigdy w SQLite, logach ani eksporcie (wymaga: 1.2) (tech: react-native, typescript)
+- [x] Test: 1.4 — repozytoria na bazie w pamięci (pr: #4)
+- [ ] Zadanie 1.5: Magazyn ustawień (Zustand + persist w AsyncStorage) i SecretStore na klucze API przez expo-secure-store — klucze nigdy w SQLite, logach ani eksporcie (wymaga: 1.2) (tech: react-native, typescript) (pr: #5)
   - AC: klucz API zapisany i odczytany przez SecretStore; brak klucza w AsyncStorage i SQLite
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFM4FPPHT855MEXC1P9)
-- [ ] Test: 1.5 — persystencja ustawień i SecretStore z atrapą secure-store
+- [ ] Test: 1.5 — persystencja ustawień i SecretStore z atrapą secure-store (pr: #5)
 - [ ] Zadanie 1.6: Interfejsy silników SttEngine, TtsEngine, LlmEngine, VadEngine, KeywordSpotter + atrapy deterministyczne i EngineRegistry z trybem testowym (wstrzykiwanie plików WAV zamiast mikrofonu) (wymaga: 1.1) (tech: typescript)
   - AC: wejście — EngineRegistry wybiera atrapy, gdy aplikacja działa w trybie testowym (flaga buildu e2e)
 - [ ] Test: 1.6 — atrapy spełniają kontrakty interfejsów (strumień tokenów, abort, segmenty VAD)

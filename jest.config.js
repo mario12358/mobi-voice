@@ -3,6 +3,7 @@ module.exports = {
   preset: 'jest-expo',
   roots: ['<rootDir>/src'],
   testMatch: ['**/*.test.ts', '**/*.test.tsx'],
+  setupFiles: ['<rootDir>/jest-setup.ts'],
   reporters: [
     'default',
     // Specky matches a criterion test by file + last ' > ' segment of the test name.
