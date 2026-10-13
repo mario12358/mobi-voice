@@ -8,7 +8,11 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
   return (
     <Screen testID="topic-list-screen">
       <BodyText>{pl.topicList.empty}</BodyText>
-      <TextButton label={pl.topicList.openSettings} onPress={() => navigation.navigate('Settings')} />
+      <TextButton
+        testID="topic-list.open-settings"
+        label={pl.topicList.openSettings}
+        onPress={() => navigation.navigate('Settings')}
+      />
     </Screen>
   );
 }

@@ -59,14 +59,14 @@
 - [x] Zadanie 1.6: Interfejsy silników SttEngine, TtsEngine, LlmEngine, VadEngine, KeywordSpotter + atrapy deterministyczne i EngineRegistry z trybem testowym (wstrzykiwanie plików WAV zamiast mikrofonu) (wymaga: 1.1) (tech: typescript) (pr: #6)
   - AC: wejście — EngineRegistry wybiera atrapy, gdy aplikacja działa w trybie testowym (flaga buildu e2e)
 - [x] Test: 1.6 — atrapy spełniają kontrakty interfejsów (strumień tokenów, abort, segmenty VAD) (pr: #6)
-- [ ] Zadanie 1.7: Nawigacja (stack: Lista tematów, Rozmowa, Podsumowanie, Ustawienia, Modele), plik tekstów PL (gotowość i18n), motyw jasny/ciemny wg systemu, ekrany-szkielety (wymaga: 1.2, 1.5) (spec: spec.md) (tech: react-native, typescript) (pr: #7)
+- [x] Zadanie 1.7: Nawigacja (stack: Lista tematów, Rozmowa, Podsumowanie, Ustawienia, Modele), plik tekstów PL (gotowość i18n), motyw jasny/ciemny wg systemu, ekrany-szkielety (wymaga: 1.2, 1.5) (spec: spec.md) (tech: react-native, typescript) (pr: #7)
   - AC: przy starcie aplikacja otwiera ostatnio aktywny temat, a bez tematów — Listę tematów
   - Specky: (req: 01M4TPSBA2GXAHZ7W4734NBAEC v1.0 @6f3590a)
   - Specky kryteria: (crit: 01M4TPSBAVNP2W68X6ATSBXC2C)
   - Specky: (req: 01M4TPSDM116PMW5YJJ4B6A34X v1.0 @178a85c)
   - Specky kryteria: (crit: 01M4TPSDMBK9W28VSKZWA1MT4Y) (crit: 01M4TPSDMB35F61TVKWA51MDVV)
-- [ ] Test: 1.7 — nawigacja między ekranami i wybór ekranu startowego (pr: #7)
-- [ ] Zadanie 1.8: Test e2e — start aplikacji, przejścia Lista tematów → Ustawienia → Modele → powrót, motyw wg systemu (wymaga: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7) (spec: spec.md) (tech: detox, typescript)
+- [x] Test: 1.7 — nawigacja między ekranami i wybór ekranu startowego (pr: #7)
+- [ ] Zadanie 1.8: Test e2e — start aplikacji, przejścia Lista tematów → Ustawienia → Modele → powrót, motyw wg systemu (wymaga: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7) (spec: spec.md) (tech: detox, typescript) (pr: #8)
 
 ### Faza 2: Tematy i czat tekstowy z modelem lokalnym
 

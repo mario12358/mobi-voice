@@ -11,7 +11,11 @@
     "test": "jest",
     "test:ci": "jest --ci",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . && prettier --check ."
+    "lint": "eslint . && prettier --check .",
+    "e2e:build:android": "detox build -c android.emu.release",
+    "e2e:test:android": "detox test -c android.emu.release",
+    "e2e:build:ios": "detox build -c ios.sim.release",
+    "e2e:test:ios": "detox test -c ios.sim.release"
   },
   "devDependencies": {
     "@react-native/jest-preset": "^0.86.3",
@@ -20,7 +24,9 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.0",
     "@types/react": "^19.3.0",
+    "babel-preset-expo": "^57.0.15",
     "better-sqlite3": "^12.11.1",
+    "detox": "^20.51.4",
     "eslint": "^9.39.5",
     "eslint-config-expo": "^57.0.2",
     "eslint-config-prettier": "^10.1.8",
@@ -29,6 +35,7 @@
     "jest-junit": "^17.0.0",
     "prettier": "^3.9.10",
     "test-renderer": "^1.3.1",
+    "tslib": "^2.8.1",
     "typescript": "^5.9.3"
   },
   "dependencies": {

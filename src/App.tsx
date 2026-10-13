@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DatabaseProvider } from './db/DatabaseProvider';
@@ -7,14 +7,18 @@ import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
 import { pl } from './i18n/pl';
 import { RootNavigator } from './navigation/RootNavigator';
+import { usePalette } from './theme/theme';
 
+// e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.
 function TestModeBadge() {
   const engines = useEngines();
+  const palette = usePalette();
   if (engines.mode !== 'test') return null;
   return (
-    <Text testID="engine-mode-test" style={styles.badge}>
-      {pl.common.testMode}
-    </Text>
+    <View style={styles.badge} pointerEvents="none">
+      <Text testID="engine-mode-test">{pl.common.testMode}</Text>
+      <View testID={`theme-${palette.scheme}`} />
+    </View>
   );
 }
 
@@ -33,5 +37,5 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  badge: { position: 'absolute', bottom: 4, alignSelf: 'center', fontSize: 10, opacity: 0.6 },
+  badge: { position: 'absolute', bottom: 4, alignSelf: 'center', opacity: 0.6 },
 });

@@ -66,6 +66,7 @@ Konwencje:
 | 2026-10-13 | 📌 Silniki za interfejsami `src/engines/types.ts`; `EngineProvider`/`useEngines()` w App; `EXPO_PUBLIC_E2E=1` (build e2e) → atrapy (`src/engines/fakes`, WAV zamiast mikrofonu), inaczej adaptery natywne — `PRODUCTION_FACTORIES` uzupełniają 2.3/3.x, brak adaptera → `engine_unavailable`, nigdy cichy fallback na atrapę | e2e deterministyczne, produkcja bez atrap |
 | 2026-10-13 | 📌 Teksty UI tylko z `src/i18n/pl.ts` (strażnik: `src/i18n/__tests__/translations.test.ts`); kolory z `usePalette()` (`src/theme/theme.ts`, za systemem); wspólne `Screen`/`BodyText`/`TextButton` w `src/components` | MV-UI-1 |
 | 2026-10-13 | 📌 Nawigacja: native-stack `RootStackParamList` (TopicList, Conversation{topicId}, Summary{topicId}, Settings, Models); start = ostatnio aktywny temat nad listą (`resolveStartState`) | MV-TOP-1 |
+| 2026-10-13 | 📌 e2e: Detox, release z EXPO_PUBLIC_E2E=1 (`npm run e2e:build:android` / `e2e:test:android`, iOS analogicznie), testy w `e2e/*.e2e.ts`, selektory tylko testID, motyw widoczny przez `theme-<scheme>` w trybie testowym; CI `e2e.yml` (Android API 34 x86_64, iOS macos-latest) | 1.8 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -85,6 +86,8 @@ Konwencje:
 | SQLite LIKE/lower() nie składa polskich liter (Ł/ł) | porównania bez wielkości liter w JS przez `toLocaleLowerCase('pl')` |
 | `jest.mock` z fabryką używającą stałej z pliku testu → TDZ przy hoistingu | fabryka `() => require('./support/x').create()`, uchwyt `jest.requireMock(...)`; AsyncStorage mockowany globalnie w `jest-setup.ts` |
 | Tytuł ekranu native-stack nie jest `<Text>` w testach | odczyt `RNSScreenStackHeaderConfig.props.title` widocznego `RNSScreen` z `screen.toJSON()` |
+| `assembleAndroidTest` w całym projekcie pada na modułach bibliotek Expo | buduj `:app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release` |
+| npm „deduped", a pakietu brak w node_modules | usuń `node_modules/.package-lock.json` i `npm install` |
 | Błędy better-sqlite3 przy równoległych workerach Jest z innego realmu — `rejects.toThrow` ich nie widzi | adapter `nodeSqlDatabase` przepakowuje je w `Error` (`sameRealm`) |
 
 ## Zależności między komponentami
@@ -99,6 +102,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.6 (zmergowane, PR #6); 1.7 w PR #7
-- Następne zadanie: 1.8 Test e2e (Detox) fazy 1
+- Ostatnie ukończone zadanie: 1.7 (zmergowane, PR #7); 1.8 w PR #8
+- Następne zadanie: po merge 1.8 — regresja Fazy 1 na main, potem 2.1 Katalog modeli
 - Blokery: lokalnie brak platformy iOS 26.5 w Xcode (build iOS tylko w CI); brak emulatora Android 10 i symulatora iOS 16
