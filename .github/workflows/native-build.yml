@@ -1,0 +1,51 @@
+# Build dev clienta iOS i Android z tej samej bazy kodu (MV-PLAT-1).
+# Uruchamiany tylko przy zmianach zależności lub konfiguracji natywnej — pełny build trwa kilkanaście minut.
+
+name: native-build
+
+on:
+  pull_request:
+    paths:
+      - package.json
+      - package-lock.json
+      - app.json
+      - .github/workflows/native-build.yml
+  push:
+    branches: [main]
+    paths:
+      - package.json
+      - package-lock.json
+      - app.json
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+      - run: npm ci
+      - run: CI=1 npx expo prebuild --platform android --clean
+      - run: ./gradlew assembleDebug --console=plain
+        working-directory: android
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: CI=1 npx expo prebuild --platform ios --clean
+      - run: >
+          xcodebuild -workspace ios/MobiVoice.xcworkspace -scheme MobiVoice -configuration Debug
+          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

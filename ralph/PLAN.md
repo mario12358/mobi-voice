@@ -30,14 +30,14 @@
 
 ### Faza 1: Fundament aplikacji
 
-- [ ] Zadanie 1.1: Szkielet architektury i konwencje — mapa modułów (src/features, services/engines, db, navigation), wzorzec warstw (UI → serwisy → repozytoria/silniki), format błędów domenowych, konwencje nazw; wynik do PROJECT_CONTEXT.md; dopasuj .github/workflows/specky-ci.yml (szablon Ralpha) do Jest + raport JUnit (tech: typescript, react-native) (pr: #1)
+- [x] Zadanie 1.1: Szkielet architektury i konwencje — mapa modułów (src/features, services/engines, db, navigation), wzorzec warstw (UI → serwisy → repozytoria/silniki), format błędów domenowych, konwencje nazw; wynik do PROJECT_CONTEXT.md; dopasuj .github/workflows/specky-ci.yml (szablon Ralpha) do Jest + raport JUnit (tech: typescript, react-native) (pr: #1)
   - Specky: (req: 01M4TPSAWRTTG99VMV7T9TC89Y v1.0 @c05a0d4)
   - Specky kryteria: (crit: 01M4TPSAXFSFAKMYTR66T2XE10) (crit: 01M4TPSAXFZS7QFASVK9MH6MTT)
-- [ ] Zadanie 1.2: Inicjalizacja projektu Expo (prebuild, dev client) w TypeScript strict — iOS 16+, Android API 29+, tylko arm64; Jest + React Native Testing Library, ESLint + Prettier; uzupełnij komendy testów/lintera/typów w ralph/config.md (wymaga: 1.1) (spec: spec.md) (tech: react-native, typescript)
-  - AC: build dev clienta przechodzi na iOS i Android; `npx tsc --noEmit` i `npm test` zielone
+- [ ] Zadanie 1.2: Inicjalizacja projektu Expo (prebuild, dev client) w TypeScript strict — iOS 16+, Android API 29+, tylko arm64; Jest + React Native Testing Library, ESLint + Prettier; uzupełnij komendy testów/lintera/typów w ralph/config.md (wymaga: 1.1) (spec: spec.md) (tech: react-native, typescript) (pr: #2)
+  - AC: build dev clienta przechodzi na iOS i Android (iOS 16.4+ — wymóg SDK 57); `npx tsc --noEmit` i `npm test` zielone
   - Specky: (req: 01M4TPSAN97DVJH98SGHWK0JB5 v1.0 @4c3b1e3)
   - Specky kryteria: (crit: 01M4TPSANWZWEE880DMAXVXJC1) (crit: 01M4TPSANWRF6MW9YG8DYN8NVE)
-- [ ] Test: 1.2 — test dymny renderu komponentu App
+- [ ] Test: 1.2 — test dymny renderu komponentu App (pr: #2)
 - [ ] Zadanie 1.3: Baza SQLite + wersjonowane migracje — tabele topics, messages, summaries, summary_templates (snake_case, FK z ON DELETE CASCADE) (wymaga: 1.2) (spec: spec.md) (tech: sql, typescript)
   - AC: temat ma tytuł, created_at, last_activity_at, system_prompt (opcjonalny), model_override (opcjonalny)
   - AC: wiadomość ma rolę (user/assistant), treść, created_at i flagę interrupted

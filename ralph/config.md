@@ -9,13 +9,13 @@
 ## Testy
 
 - **Komenda testów**: npm test -- <ścieżka testu zadania>
-- **Komenda pełnego suite**: npx tsc --noEmit && npm test
+- **Komenda pełnego suite**: npx tsc --noEmit && npm run lint && npm test
 - **Smoke suite**: brak
   <!-- Szybki podzbiór testów uruchamiany po KAŻDYM zadaniu (regresja wykrywana od razu,     -->
   <!-- nie po całej fazie). Np. testy ukończonych modułów. Małe projekty: pełny suite.       -->
   <!-- "brak" = pomiń (tylko testy zadania + pełny suite po fazie).                           -->
 - **Pełny suite po**: każdej fazie
-- **Linter/formatter**: brak
+- **Linter/formatter**: npx eslint
 - **Komenda typów**: npx tsc --noEmit
   <!-- Typechecker, np. `mypy src`, `pyright`, `npx tsc --noEmit`. Kontrola lint-typy (## Kontrole)  -->
   <!-- uruchamia linter na zmienionych plikach przy commicie, a typechecker przy fazie.          -->

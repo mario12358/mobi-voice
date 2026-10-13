@@ -1,0 +1,10 @@
+node_modules/
+ios/
+android/
+reports/
+ralph/
+ralph-kontrole/
+ralph-guidelines/
+spec/
+changes/
+package-lock.json
