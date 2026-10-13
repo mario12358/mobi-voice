@@ -1,9 +1,12 @@
 import { DomainError } from '../../core/errors';
 import type { SqlDatabase } from '../SqlDatabase';
 
+export type TitleSource = 'default' | 'auto' | 'manual';
+
 export interface Topic {
   id: number;
   title: string;
+  titleSource: TitleSource;
   createdAt: number;
   lastActivityAt: number;
   systemPrompt: string | null;
@@ -13,18 +16,20 @@ export interface Topic {
 interface TopicRow {
   id: number;
   title: string;
+  title_source: TitleSource;
   created_at: number;
   last_activity_at: number;
   system_prompt: string | null;
   model_override: string | null;
 }
 
-const TOPIC_COLUMNS = 'id, title, created_at, last_activity_at, system_prompt, model_override';
+const TOPIC_COLUMNS = 'id, title, title_source, created_at, last_activity_at, system_prompt, model_override';
 
 function toTopic(row: TopicRow): Topic {
   return {
     id: row.id,
     title: row.title,
+    titleSource: row.title_source,
     createdAt: row.created_at,
     lastActivityAt: row.last_activity_at,
     systemPrompt: row.system_prompt,
@@ -49,11 +54,12 @@ export class TopicRepository {
     private readonly now: () => number = Date.now,
   ) {}
 
-  async create(title: string): Promise<Topic> {
+  // `default` marks a placeholder title that the first exchange may replace (MV-TOP-3).
+  async create(title: string, titleSource: TitleSource = 'manual'): Promise<Topic> {
     const createdAt = this.now();
     const result = await this.db.runAsync(
-      'INSERT INTO topics (title, created_at, last_activity_at) VALUES (?, ?, ?)',
-      [normalizeTitle(title), createdAt, createdAt],
+      'INSERT INTO topics (title, title_source, created_at, last_activity_at) VALUES (?, ?, ?, ?)',
+      [normalizeTitle(title), titleSource, createdAt, createdAt],
     );
     return this.require(result.lastInsertRowId);
   }
@@ -82,8 +88,20 @@ export class TopicRepository {
   }
 
   async rename(id: number, title: string): Promise<Topic> {
-    await this.update(id, 'UPDATE topics SET title = ? WHERE id = ?', [normalizeTitle(title), id]);
+    await this.update(id, "UPDATE topics SET title = ?, title_source = 'manual' WHERE id = ?", [
+      normalizeTitle(title),
+      id,
+    ]);
     return this.require(id);
+  }
+
+  // Applies a generated title only while the topic still has its placeholder — never over a user's name.
+  async applyAutoTitle(id: number, title: string): Promise<boolean> {
+    const result = await this.db.runAsync(
+      "UPDATE topics SET title = ?, title_source = 'auto' WHERE id = ? AND title_source = 'default'",
+      [normalizeTitle(title), id],
+    );
+    return result.changes > 0;
   }
 
   async setSystemPrompt(id: number, systemPrompt: string | null): Promise<Topic> {

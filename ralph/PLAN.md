@@ -105,19 +105,19 @@
   - Specky: (req: 01M4TPSBGVNJP0KXVH4T0EJH2C v1.0 @e538957)
   - Specky kryteria: (crit: 01M4TPSBHTWE0PKKEXKEDAYGTK) (crit: 01M4TPSBHTKV9C661RVDKGZJZP) (crit: 01M4TPSBHTZD1GCPMPGTCWKPPG) (crit: 01M4TPSBHTQ3Y0DS0QSMZQJAXM)
 - [x] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie (pr: #13)
-- [ ] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #17)
+- [x] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #17)
   - AC: odpowiedź pojawia się na bieżąco w dymku; STOP przerywa generowanie
   - AC: odpowiedź przerwana ma oznaczenie „przerwano"
   - Specky: (req: 01M4TPSBVARMFASRVTYM6ERQB3 v1.0 @9adb713)
   - Specky kryteria: (crit: 01M4TPSBVHVSTT9FRBA7G3CJCD)
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDHM1ENPJ1BSBYH39A)
-- [ ] Test: 2.7 — wysyłka tekstu, strumień, przerwanie, stan bez modelu (pr: #17)
-- [ ] Zadanie 2.8: Automatyczny tytuł tematu generowany przez LLM po pierwszej wymianie (tylko gdy user nie nadał nazwy ręcznie) (wymaga: 2.5) (tech: typescript)
+- [x] Test: 2.7 — wysyłka tekstu, strumień, przerwanie, stan bez modelu (pr: #17)
+- [ ] Zadanie 2.8: Automatyczny tytuł tematu generowany przez LLM po pierwszej wymianie (tylko gdy user nie nadał nazwy ręcznie) (wymaga: 2.5) (tech: typescript) (pr: #18)
   - AC: wejście — zapis pierwszej odpowiedzi asystenta w temacie z tytułem domyślnym
   - Specky: (req: 01M4TPSBMNDK44C94VSYQGXZSZ v1.0 @fa3165a)
   - Specky kryteria: (crit: 01M4TPSBN0GQJGEGSSKYGGKXAP) (crit: 01M4TPSBN0DRTYPHEH2TNZAC6A)
-- [ ] Test: 2.8 — tytuł nadany raz, nie nadpisuje nazwy nadanej ręcznie
+- [ ] Test: 2.8 — tytuł nadany raz, nie nadpisuje nazwy nadanej ręcznie (pr: #18)
 - [ ] Zadanie 2.9: Prompt systemowy — domyślny po polsku (zwięzłe odpowiedzi do odczytu), edycja globalna w Ustawieniach i nadpisanie per temat (wymaga: 2.4, 2.6) (tech: react-native, typescript)
   - AC: prompt tematu ma pierwszeństwo przed globalnym; pusty → globalny
   - Specky: (req: 01M4TPSBXRAA4FKEE3X2EG9P27 v1.0 @61d158e)
