@@ -34,13 +34,13 @@ describe('App', () => {
     );
 
     await render(<App />);
-    expect(screen.queryByRole('header', { name: 'MobiVoice' })).toBeNull();
+    expect(screen.queryByTestId('topic-list-screen')).toBeNull();
     expect(screen.getByLabelText('Ładowanie danych')).toBeTruthy();
 
     await prepareDatabase(db);
     resolveOpen(db);
 
-    expect(await screen.findByRole('header', { name: 'MobiVoice' })).toBeTruthy();
+    expect(await screen.findByTestId('topic-list-screen')).toBeTruthy();
     expect(await db.getAllAsync('SELECT version FROM schema_migrations')).toEqual([{ version: 1 }]);
   });
 
@@ -50,7 +50,7 @@ describe('App', () => {
     await render(<App />);
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Błąd zapisu danych na urządzeniu');
-    expect(screen.queryByRole('header', { name: 'MobiVoice' })).toBeNull();
+    expect(screen.queryByTestId('topic-list-screen')).toBeNull();
   });
 
   describe('engine mode from the e2e build flag', () => {
@@ -77,7 +77,7 @@ describe('App', () => {
 
       await render(<App />);
 
-      expect(await screen.findByRole('header', { name: 'MobiVoice' })).toBeTruthy();
+      expect(await screen.findByTestId('topic-list-screen')).toBeTruthy();
       expect(screen.queryByTestId('engine-mode-test')).toBeNull();
     });
   });

@@ -1,34 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DatabaseProvider } from './db/DatabaseProvider';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
+import { pl } from './i18n/pl';
+import { RootNavigator } from './navigation/RootNavigator';
 
 function TestModeBadge() {
   const engines = useEngines();
   if (engines.mode !== 'test') return null;
-  return <Text testID="engine-mode-test">Tryb testowy</Text>;
+  return (
+    <Text testID="engine-mode-test" style={styles.badge}>
+      {pl.common.testMode}
+    </Text>
+  );
 }
 
 export default function App() {
   return (
-    <EngineProvider>
-      <DatabaseProvider open={openAppDatabase}>
-        <View style={styles.container}>
-          <Text accessibilityRole="header">MobiVoice</Text>
+    <SafeAreaProvider>
+      <EngineProvider>
+        <DatabaseProvider open={openAppDatabase}>
+          <RootNavigator />
           <TestModeBadge />
           <StatusBar style="auto" />
-        </View>
-      </DatabaseProvider>
-    </EngineProvider>
+        </DatabaseProvider>
+      </EngineProvider>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  badge: { position: 'absolute', bottom: 4, alignSelf: 'center', fontSize: 10, opacity: 0.6 },
 });

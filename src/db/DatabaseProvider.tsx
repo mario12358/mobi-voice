@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { DomainError, isDomainError } from '../core/errors';
+import { pl } from '../i18n/pl';
 import type { SqlDatabase } from './SqlDatabase';
 
 const DatabaseContext = createContext<SqlDatabase | null>(null);
@@ -35,7 +36,7 @@ export function DatabaseProvider({ open, children }: Props) {
   if (state.status === 'loading') {
     return (
       <View style={styles.center}>
-        <ActivityIndicator accessibilityLabel="Ładowanie danych" />
+        <ActivityIndicator accessibilityLabel={pl.common.loadingData} />
       </View>
     );
   }
