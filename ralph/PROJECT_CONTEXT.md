@@ -5,7 +5,8 @@ Ten plik przechowuje kontekst projektu który przetrwa `/compact`.
 ## Stack technologiczny
 
 - Język: TypeScript (strict, noUncheckedIndexedAccess, noImplicitReturns)
-- Framework: React Native + Expo (prebuild, dev client) — wchodzi w 1.2
+- Framework: React Native 0.86 + Expo SDK 57 (prebuild/CNG, expo-dev-client); punkt wejścia `index.ts` → `src/App.tsx`
+- Lint: ESLint (eslint-config-expo/flat + prettier), Prettier; `npm run lint`
 - Baza danych: SQLite (expo-sqlite), wersjonowane migracje (1.3)
 - Testy: Jest (ts-jest do 1.2, potem preset Expo) + jest-junit → `reports/junit.xml`; e2e Detox
 - Silniki natywne: llama.rn (LLM), whisper.rn (STT), sherpa-onnx (VAD, Piper TTS, KWS)
@@ -54,7 +55,10 @@ Konwencje:
 | 2026-10-13 | 📌 Warstwy UI → hooki/stan → serwisy → repozytoria/silniki/sieć → core; core bez React/RN | testowalność serwisów bez natywnych modułów, atrapy silników w e2e |
 | 2026-10-13 | 📌 Wszystkie żądania wychodzące przez `assertAllowedOutboundUrl`; lista hostów = BEZPIECZENSTWO.md → Wyjścia | MV-PLAT-2 / MV-SEC-2: treść rozmów tylko do wybranego dostawcy |
 | 2026-10-13 | 📌 Błędy domenowe jako `DomainError` z kodem z unii i komunikatem PL | jeden format dla UI i dla mapowania błędów dostawców (6.1) |
-| 2026-10-13 | Jest + ts-jest w 1.1, w 1.2 przejście na preset Expo z zachowaniem jest-junit i `testMatch` | CI i raport JUnit od pierwszego PR-a |
+| 2026-10-13 | Jest preset `jest-expo` + RNTL 14 (`await render`) + jest-junit (`{filepath}` / `{title}`) | dopasowanie testów kryteriów przez Specky |
+| 2026-10-13 | 📌 Expo SDK 57 (RN 0.86), CNG: `ios/` i `android/` generowane `npm run prebuild`, nie w repo; natywna konfiguracja tylko przez app.json/config plugins | odtwarzalny build z jednej bazy kodu |
+| 2026-10-13 | 📌 Minimalnie iOS 16.4 (wymóg SDK 57), Android API 29, tylko arm64-v8a — propozycja decyzji w Specky 01M4TTARHWPFRM2N8PZPGMZDNV | MV-PLAT-1 mówi iOS 16+; czeka na akceptację człowieka |
+| 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
 ## Znane problemy i rozwiązania
 
@@ -82,6 +86,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.1 (PR otwarty — patrz PLAN.md)
-- Następne zadanie: 1.2 Inicjalizacja projektu Expo
-- Blokery: brak
+- Ostatnie ukończone zadanie: 1.1 (zmergowane, PR #1); 1.2 w PR
+- Następne zadanie: 1.3 Baza SQLite + migracje
+- Blokery: lokalnie brak platformy iOS 26.5 w Xcode (build iOS tylko w CI); brak emulatora Android 10 i symulatora iOS 16

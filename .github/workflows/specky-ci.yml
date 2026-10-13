@@ -21,11 +21,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: '22'
           cache: npm
 
       - run: npm ci
       - run: npx tsc --noEmit
+      - run: npm run lint
       # jest-junit (jest.config.js) zapisuje raport do reports/junit.xml
       - run: npm run test:ci
 
