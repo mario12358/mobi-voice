@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 wydana jako v0.1.0; 20 pozycji planu zmergowanych (Faza 1, 2.1, 2.2, 2.6 z testami); 2.3 + Test 2.3 w PR #14; 2.4 + Test 2.4 w PR #15 (łańcuch na 2.3)
+- **Postęp**: Faza 1 wydana jako v0.1.0; 22 pozycje planu zmergowane (Faza 1, 2.1–2.3, 2.6 z testami); 2.4 w PR #15, 2.5 w PR #16 (łańcuch na 2.4)
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -38,11 +38,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 134 |
-| Pass | 134 |
+| Łącznie testów | 141 |
+| Pass | 141 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.4-kontekst; main 9d16d57: 121/121) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.5-serwis-rozmowy) |
 
 ## Historia realizacji
 
@@ -60,8 +60,9 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 2.1 Katalog modeli + Test 2.1 | ✅ zmergowane (PR #11) | 96/96 | 1 | 9cf016c | 2026-10-13 |
 | 2.2 ModelDownloadService + Test 2.2 | ✅ zmergowane (PR #12) | 115/115 | 1 | f074ceb | 2026-10-13 |
 | 2.6 Ekran listy tematów + Test 2.6 | ✅ zmergowane (PR #13) | 121/121 na main | 3 | 9d16d57 | 2026-10-13 |
-| 2.3 LocalLlmEngine (llama.rn) + Test 2.3 | PR #14 otwarty | 127/127 | 1 | — | 2026-10-13 |
-| 2.4 ContextBuilder + Test 2.4 | PR #15 otwarty (łańcuchowy, baza: gałąź 2.3) | 134/134 | 1 | — | 2026-10-13 |
+| 2.3 LocalLlmEngine (llama.rn) + Test 2.3 | ✅ zmergowane (PR #14) | 127/127 | 1 | 4a8ccd3 | 2026-10-13 |
+| 2.4 ContextBuilder + Test 2.4 | PR #15 otwarty (przepięty na main) | 134/134 | 1 | — | 2026-10-13 |
+| 2.5 ConversationService + Test 2.5 | PR #16 otwarty (łańcuchowy, baza: gałąź 2.4) | 141/141 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -137,3 +138,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 2.3: llama.rn 0.12.9 (najnowsze stabilne; `latest` wskazuje rc 0.13). Jeden model w pamięci (`LlamaContextSlot`), Metal na iOS (99 warstw), CPU na Androidzie. Zmiana testu `EngineRegistry.test.ts` — produkcyjne `llm()` zwraca teraz `LocalLlmEngine` zamiast `engine_unavailable` (zmiana zachowania z planu 1.6/2.3); nadal sprawdza, że to nie atrapa. llama.rn i react-native-blob-util mockowane globalnie w `jest-setup.ts`. Mutacja zwalniania modelu → test czerwony.
 - [2026-10-13] Zadanie 2.3: ostrzeżenie zaleznosci/skrypty-instalacyjne (llama.rn: postinstall, odcisk 5a921a28fbcf) — skrypt pobiera prebudowane biblioteki llama.cpp i sprawdza je SHA-256 z manifestu paczki; zostaje.
 - [2026-10-13] Zadanie 2.4: PR łańcuchowy na gałęzi 2.3 (plan: wymaga 2.3, brak zadań niezależnych) — po merge #14 przepiąć #15 na main (17.5). Tokeny szacowane 3 znaki/token (bez tokenizera modelu w JS, z zapasem dla polskiego); streszczenie kroczące w nowej tabeli `context_summaries` (migracja 002), odświeżane tylko dla niepokrytych wiadomości. Testy migracji oparte na liście `MIGRATIONS` zamiast stałej 1 (dodanie migracji to zmiana zachowania, nie dopasowanie). Mutacja budżetu → 4 testy czerwone.
+- [2026-10-13] Zadanie 2.5: PR łańcuchowy na 2.4 (#15). Pusta odpowiedź (stop przed pierwszym tokenem) nie zapisuje wiadomości asystenta; błąd modelu zostawia pytanie w historii. Mutacja flagi interrupted → test czerwony. Wejścia (ekran Rozmowa, potok głosowy) w 2.7/3.6.
