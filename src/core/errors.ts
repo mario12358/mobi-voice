@@ -11,7 +11,10 @@ export type DomainErrorCode =
   | 'storage_error'
   | 'empty_title'
   | 'topic_not_found'
-  | 'engine_unavailable';
+  | 'engine_unavailable'
+  | 'cellular_consent_required'
+  | 'download_cancelled'
+  | 'unknown_model';
 
 const USER_MESSAGES: Record<DomainErrorCode, string> = {
   invalid_api_key: 'Nieprawidłowy klucz API',
@@ -27,6 +30,9 @@ const USER_MESSAGES: Record<DomainErrorCode, string> = {
   empty_title: 'Nazwa tematu nie może być pusta',
   topic_not_found: 'Temat nie istnieje',
   engine_unavailable: 'Ta funkcja nie jest jeszcze dostępna na tym urządzeniu',
+  cellular_consent_required: 'Pobieranie przez sieć komórkową wymaga Twojej zgody',
+  download_cancelled: 'Pobieranie zostało przerwane — możesz je wznowić',
+  unknown_model: 'Nieznany model',
 };
 
 export class DomainError extends Error {

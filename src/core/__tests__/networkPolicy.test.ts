@@ -10,6 +10,7 @@ describe('networkPolicy', () => {
     'https://api.llama.com/v1/chat/completions',
     'https://huggingface.co/Qwen/model.gguf',
     'https://cdn-lfs.huggingface.co/repos/abc',
+    'https://us.aws.cdn.hf.co/xet-bridge-us/abc',
     'https://o123.ingest.sentry.io/api/1/envelope/',
   ])('allows declared outbound host %s', (url) => {
     expect(isAllowedOutboundUrl(url)).toBe(true);

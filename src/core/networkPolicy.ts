@@ -16,6 +16,8 @@ export const ALLOWED_HOSTS: readonly AllowedHost[] = [
   { domain: 'api.llama.com', purpose: 'llm_provider', includeSubdomains: false },
   // Hugging Face serves large files through CDN subdomains after a redirect.
   { domain: 'huggingface.co', purpose: 'model_download', includeSubdomains: true },
+  // ...and redirects downloads to its CDN (e.g. us.aws.cdn.hf.co).
+  { domain: 'hf.co', purpose: 'model_download', includeSubdomains: true },
   { domain: 'sentry.io', purpose: 'crash_reports', includeSubdomains: true },
 ];
 
