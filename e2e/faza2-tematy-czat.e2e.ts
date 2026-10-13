@@ -77,6 +77,10 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await element(by.label('Zmień nazwę tematu Nowa rozmowa')).tap();
     await element(by.id('topic-list.rename-input')).replaceText('Remont kuchni');
     await element(by.id('topic-list.rename-save')).tap();
+    // iOS will not present another modal until the previous one has finished dismissing.
+    await waitFor(element(by.id('topic-list.rename-input')))
+      .not.toExist()
+      .withTimeout(TIMEOUT);
     await waitFor(element(by.text('Remont kuchni')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -86,6 +90,9 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await element(by.id('topic-list.search')).replaceText('');
 
     await element(by.label('Usuń temat Remont kuchni')).tap();
+    await waitFor(element(by.id('topic-list.delete-dialog.confirm')))
+      .toBeVisible()
+      .withTimeout(TIMEOUT);
     await element(by.id('topic-list.delete-dialog.confirm')).tap();
     await waitFor(element(by.text('Remont kuchni')))
       .not.toExist()
