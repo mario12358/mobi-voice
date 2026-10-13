@@ -1,7 +1,7 @@
 import { listSourceFiles, readSource } from '../../core/__tests__/sourceScan';
 
-// Text placed directly between JSX tags, e.g. <Text>Zapisz</Text>.
-const JSX_TEXT = />\s*([^<>{}\s][^<>{}]*?)\s*</g;
+// Text placed directly between JSX tags on one line, e.g. <Text>Zapisz</Text>; code fragments (; = ? ( ) are not text.
+const JSX_TEXT = />[ \t]*([^<>{}\s;=?()][^<>{}\n;=?()]*?)[ \t]*</g;
 // String literals passed to props that end up visible or announced to the user.
 const TEXT_PROP = /\b(title|label|placeholder|accessibilityLabel|accessibilityHint)=["']([^"']+)["']/g;
 
@@ -15,7 +15,8 @@ function hardcodedTexts(source: string): string[] {
 
 describe('translations', () => {
   it('detects hardcoded UI text in a component', () => {
-    const sample = '<Text>Zapisz zmiany</Text><TextButton label="Usuń" /><Text>{pl.common.back}</Text>';
+    const sample =
+      '<Text>Zapisz zmiany</Text><TextButton label="Usuń" /><Text>{pl.common.back}</Text>\nconst x = n > 0 ? a : b;\nreturn (<View>';
     expect(hardcodedTexts(sample)).toEqual(['Zapisz zmiany', 'Usuń']);
   });
 

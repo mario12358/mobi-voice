@@ -97,14 +97,14 @@
   - AC: przerwana odpowiedź zostaje w historii z flagą interrupted i jest częścią kolejnego kontekstu
   - AC: wejście — wysłanie tekstu z ekranu Rozmowa (2.7) i zakończona wypowiedź z potoku głosowego (3.6)
 - [ ] Test: 2.5 — pełny cykl z atrapą LLM, przerwanie w trakcie
-- [ ] Zadanie 2.6: Ekran Lista tematów — FlatList po ostatniej aktywności, wyszukiwanie po tytule, „Nowy temat", zmiana nazwy, usunięcie z potwierdzeniem (wymaga: 1.4, 1.7) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 2.6: Ekran Lista tematów — FlatList po ostatniej aktywności, wyszukiwanie po tytule, „Nowy temat", zmiana nazwy, usunięcie z potwierdzeniem (wymaga: 1.4, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #13)
   - AC: można utworzyć nowy temat i wejść do dowolnego istniejącego, by kontynuować rozmowę
   - AC: usunięcie wymaga potwierdzenia
   - Specky: (req: 01M4TPSBA2GXAHZ7W4734NBAEC v1.0 @6f3590a)
   - Specky kryteria: (crit: 01M4TPSBAVP0JTTN6KFJ401ECW) (crit: 01M4TPSBAVEH57XMG9P1Z3BJ8B)
   - Specky: (req: 01M4TPSBGVNJP0KXVH4T0EJH2C v1.0 @e538957)
   - Specky kryteria: (crit: 01M4TPSBHTWE0PKKEXKEDAYGTK) (crit: 01M4TPSBHTKV9C661RVDKGZJZP) (crit: 01M4TPSBHTZD1GCPMPGTCWKPPG) (crit: 01M4TPSBHTQ3Y0DS0QSMZQJAXM)
-- [ ] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie
+- [ ] Test: 2.6 — render listy, wyszukiwanie, tworzenie, zmiana nazwy, usuwanie (pr: #13)
 - [ ] Zadanie 2.7: Ekran Rozmowa (tekstowy) — dymki czatu, strumieniowany tekst odpowiedzi, pole tekstowe, przycisk STOP przerywający generowanie, CTA pobrania modelu, gdy brak modelu lokalnego (wymaga: 2.2, 2.5, 2.6) (spec: spec.md) (tech: react-native, typescript)
   - AC: odpowiedź pojawia się na bieżąco w dymku; STOP przerywa generowanie
   - AC: odpowiedź przerwana ma oznaczenie „przerwano"

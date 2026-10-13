@@ -8,7 +8,22 @@ export const pl = {
   topicList: {
     title: 'Tematy',
     empty: 'Nie masz jeszcze żadnych tematów.',
+    noMatches: 'Żaden temat nie pasuje do wyszukiwania.',
     openSettings: 'Ustawienia',
+    newTopic: 'Nowy temat',
+    defaultTitle: 'Nowa rozmowa',
+    searchPlaceholder: 'Szukaj tematu',
+    rename: 'Zmień nazwę',
+    renameLabel: (title: string) => `Zmień nazwę tematu ${title}`,
+    delete: 'Usuń',
+    deleteLabel: (title: string) => `Usuń temat ${title}`,
+    deleteConfirmTitle: 'Usunąć temat?',
+    deleteConfirmMessage: (title: string) =>
+      `Temat «${title}» zostanie usunięty razem z całą rozmową i podsumowaniami.`,
+    cancel: 'Anuluj',
+    renameDialogTitle: 'Nowa nazwa tematu',
+    save: 'Zapisz',
+    lastActivity: (date: string) => `Ostatnio: ${date}`,
   },
   conversation: {
     title: 'Rozmowa',
