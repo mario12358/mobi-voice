@@ -1,7 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
-import { Alert, type AlertButton } from 'react-native';
 
 import { TestProviders } from '../../../__tests__/support/TestProviders';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
@@ -42,11 +41,6 @@ function titlesOnList(): string[] {
     .map((row) => String(within(row).getAllByText(/.+/)[0]?.props.children));
 }
 
-function alertButtons(): AlertButton[] {
-  const call = jest.mocked(Alert.alert).mock.calls.at(-1);
-  return (call?.[2] ?? []) as AlertButton[];
-}
-
 describe('TopicListScreen', () => {
   let db: SqlDatabase;
   let topics: TopicRepository;
@@ -59,7 +53,6 @@ describe('TopicListScreen', () => {
     const clock = () => (now += 1_000);
     topics = new TopicRepository(db, clock);
     messages = new MessageRepository(db, clock);
-    jest.spyOn(Alert, 'alert').mockImplementation(() => undefined);
   });
 
   afterEach(async () => {
@@ -118,17 +111,15 @@ describe('TopicListScreen', () => {
     await fireEvent.press(
       await screen.findByRole('button', { name: pl.topicList.deleteLabel('Do usunięcia') }),
     );
-    expect(jest.mocked(Alert.alert).mock.calls[0]?.[1]).toContain('Do usunięcia');
+    expect(await screen.findByTestId('topic-list.delete-dialog')).toHaveTextContent(/Do usunięcia/);
     expect(await topics.getById(doomed.id)).not.toBeNull();
 
-    alertButtons()
-      .find((button) => button.style === 'cancel')
-      ?.onPress?.();
+    await fireEvent.press(screen.getByTestId('topic-list.delete-dialog.cancel'));
+    expect(screen.queryByTestId('topic-list.delete-dialog')).toBeNull();
     expect(await topics.getById(doomed.id)).not.toBeNull();
 
-    alertButtons()
-      .find((button) => button.style === 'destructive')
-      ?.onPress?.();
+    await fireEvent.press(screen.getByRole('button', { name: pl.topicList.deleteLabel('Do usunięcia') }));
+    await fireEvent.press(await screen.findByTestId('topic-list.delete-dialog.confirm'));
     await waitFor(() => expect(screen.queryByText('Do usunięcia')).toBeNull());
     expect(await topics.getById(doomed.id)).toBeNull();
     expect(titlesOnList()).toEqual(['Zostaje']);

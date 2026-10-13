@@ -31,12 +31,3 @@ export async function goBack(): Promise<void> {
     .atIndex(0)
     .tap();
 }
-
-// Buttons of native alerts: iOS UIAlertController actions, Android Material buttons (rendered upper-case).
-export async function tapAlertButton(label: string): Promise<void> {
-  if (device.getPlatform() === 'ios') {
-    await element(by.label(label).and(by.type('_UIAlertControllerActionView'))).tap();
-    return;
-  }
-  await element(by.text(label.toLocaleUpperCase('pl'))).tap();
-}

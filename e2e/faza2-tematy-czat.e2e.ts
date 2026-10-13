@@ -1,7 +1,7 @@
 import { by, device, element, expect, waitFor } from 'detox';
 
 import { E2E_TOPIC_TITLE } from '../src/engines/fakes/FakeLlmEngine';
-import { goBack, tapAlertButton } from './helpers/device';
+import { goBack } from './helpers/device';
 
 const TIMEOUT = 15000;
 
@@ -86,7 +86,7 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await element(by.id('topic-list.search')).replaceText('');
 
     await element(by.label('Usuń temat Remont kuchni')).tap();
-    await tapAlertButton('Usuń');
+    await element(by.id('topic-list.delete-dialog.confirm')).tap();
     await waitFor(element(by.text('Remont kuchni')))
       .not.toExist()
       .withTimeout(TIMEOUT);
