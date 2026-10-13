@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 wydana jako v0.1.0; 16 pozycji planu zmergowanych (do 2.1); 2.2 + Test 2.2 w PR #12
+- **Postęp**: Faza 1 wydana jako v0.1.0; 20 pozycji planu zmergowanych (Faza 1, 2.1, 2.2, 2.6 z testami); 2.3 + Test 2.3 w PR #14
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -38,11 +38,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 115 |
-| Pass | 115 |
+| Łącznie testów | 127 |
+| Pass | 127 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.2-pobieranie-modeli) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.3-silnik-llama; main 9d16d57: 121/121) |
 
 ## Historia realizacji
 
@@ -58,7 +58,9 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 1.8 Test e2e fazy 1 (Detox) | ✅ zmergowane (PR #8) | 84/84 + e2e 3/3 Android i iOS | 4 | 1237d1a | 2026-10-13 |
 | Wydanie v0.1.0 (scenariusze testerów, PR #10) | ✅ tag v0.1.0, migawka Specky | — | 1 | 9abf426 | 2026-10-13 |
 | 2.1 Katalog modeli + Test 2.1 | ✅ zmergowane (PR #11) | 96/96 | 1 | 9cf016c | 2026-10-13 |
-| 2.2 ModelDownloadService + Test 2.2 | PR #12 otwarty | 115/115 | 1 | — | 2026-10-13 |
+| 2.2 ModelDownloadService + Test 2.2 | ✅ zmergowane (PR #12) | 115/115 | 1 | f074ceb | 2026-10-13 |
+| 2.6 Ekran listy tematów + Test 2.6 | ✅ zmergowane (PR #13) | 121/121 na main | 3 | 9d16d57 | 2026-10-13 |
+| 2.3 LocalLlmEngine (llama.rn) + Test 2.3 | PR #14 otwarty | 127/127 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -130,3 +132,6 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 2.1: głosy Piper w sherpa-onnx (csukuangfj/vits-piper-pl_PL-*) wymagają danych eSpeak NG; katalog zawiera tylko polski podzbiór (6 plików, 724 KB: phontab, phonindex, phondata, intonations, pl_dict, lang/zlw/pl) jako wspólny składnik obu głosów — założenie do potwierdzenia w 3.4 na prawdziwym silniku. SHA256 plików spoza LFS policzone z pobranych plików.
 - [2026-10-13] Zadanie 2.1: eSpeak NG (dane i biblioteka w sherpa-onnx) jest na licencji GPL-3.0-or-later — do rozważenia przez człowieka przed dystrybucją poza wewnętrzną (ekran licencji 5.4).
 - [2026-10-13] Zadanie 2.2: SHA256 plików do 2 GB liczy natywnie react-native-blob-util (`fs.hash`); wznawianie przez HTTP Range do bocznego pliku `.chunk`, dopisywanego do `.part` także po przerwaniu. Hugging Face przekierowuje duże pliki na `*.hf.co` (zakresy działają, 206) — host dodany do polityki sieci i mapy. Mutacja wznawiania → test czerwony. Wejście (przycisk „Pobierz") powstanie w 2.7.
+- [2026-10-13] Zadanie 2.6: zrobione równolegle z PR #12 (2.3 czekało na merge 2.2). Zmiana testu `translations.test.ts` — regex strażnika łapał fragmenty kodu (`> 0 ? …`, `=> setTitle(…)`) jako tekst JSX; zawężony do jednej linii bez znaków kodu, przykład wykrywania rozszerzony o przypadek fałszywy (spec: MV-UI-1 — teksty UI, nie kod). RNTL 14: `fireEvent` jest asynchroniczny — bez `await` zmiana pola nie zdążyła przed „Zapisz"; wszystkie `fireEvent` w testach mają `await`. Mutacja usuwania bez potwierdzenia → test czerwony.
+- [2026-10-13] Zadanie 2.3: llama.rn 0.12.9 (najnowsze stabilne; `latest` wskazuje rc 0.13). Jeden model w pamięci (`LlamaContextSlot`), Metal na iOS (99 warstw), CPU na Androidzie. Zmiana testu `EngineRegistry.test.ts` — produkcyjne `llm()` zwraca teraz `LocalLlmEngine` zamiast `engine_unavailable` (zmiana zachowania z planu 1.6/2.3); nadal sprawdza, że to nie atrapa. llama.rn i react-native-blob-util mockowane globalnie w `jest-setup.ts`. Mutacja zwalniania modelu → test czerwony.
+- [2026-10-13] Zadanie 2.3: ostrzeżenie zaleznosci/skrypty-instalacyjne (llama.rn: postinstall, odcisk 5a921a28fbcf) — skrypt pobiera prebudowane biblioteki llama.cpp i sprawdza je SHA-256 z manifestu paczki; zostaje.

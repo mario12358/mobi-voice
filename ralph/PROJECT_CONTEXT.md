@@ -69,6 +69,7 @@ Konwencje:
 | 2026-10-13 | 📌 e2e: Detox, release z EXPO_PUBLIC_E2E=1 (`npm run e2e:build:android` / `e2e:test:android`, iOS analogicznie), testy w `e2e/*.e2e.ts`, selektory tylko testID, motyw widoczny przez `theme-<scheme>` w trybie testowym; CI `e2e.yml` (Android API 34 x86_64, iOS macos-latest) | 1.8 |
 | 2026-10-13 | 📌 Katalog modeli `src/models/catalog.ts` (zamknięta lista, `validateCatalog`): pliki z huggingface.co `resolve/main` z rozmiarem i SHA256, `requires` dla wspólnych składników (eSpeak NG pl dla głosów), w `displayName` tylko nazwy własne (etykiety z pl.ts); LLM: GGUF Q4_K_M, kontekst 4096, minRamGb 4/6 | MV-MOD-1, MV-UI-1 |
 | 2026-10-13 | 📌 Pobieranie: `ModelDownloadService` (`src/models/download`) — pliki w `<DocumentDir>/models/<id>/<path>`, w trakcie `.part`, SHA256 sprawdzane przed przeniesieniem, zależności (`requires`) najpierw, usuwanie tylko katalogu modelu; bramka Wi-Fi z `allowCellular`; adapter `blobUtilFileSystem` (Range + `.chunk`), sieć `expoNetworkInfo` | MV-MOD-2 |
+| 2026-10-13 | 📌 LLM lokalny: `LocalLlmEngine` (llama.rn 0.12.9) przez `LlamaContextSlot` — jeden model w pamięci, zmiana modelu zwalnia poprzedni; model z `defaultModelId` (domyślnie qwen2.5-1.5b), ścieżka z `ModelDownloadService`; brak pliku → `model_missing` | 2.3, MV-MOD-1 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -90,6 +91,7 @@ Konwencje:
 | Tytuł ekranu native-stack nie jest `<Text>` w testach | odczyt `RNSScreenStackHeaderConfig.props.title` widocznego `RNSScreen` z `screen.toJSON()` |
 | `assembleAndroidTest` w całym projekcie pada na modułach bibliotek Expo | buduj `:app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release` |
 | npm „deduped", a pakietu brak w node_modules | usuń `node_modules/.package-lock.json` i `npm install` |
+| RNTL 14: `fireEvent` zwraca Promise — bez `await` stan pola nie zdąży przed kolejnym zdarzeniem | zawsze `await fireEvent.…` |
 | Błędy better-sqlite3 przy równoległych workerach Jest z innego realmu — `rejects.toThrow` ich nie widzi | adapter `nodeSqlDatabase` przepakowuje je w `Error` (`sameRealm`) |
 
 ## Zależności między komponentami
@@ -104,6 +106,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1 zmergowane; 2.2 w PR #12
-- Następne zadanie: 2.3 LocalLlmEngine (llama.rn)
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3 w PR #14
+- Następne zadanie: 2.4 ContextBuilder
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)

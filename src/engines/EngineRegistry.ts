@@ -5,6 +5,7 @@ import { FakeLlmEngine } from './fakes/FakeLlmEngine';
 import { FakeSttEngine } from './fakes/FakeSttEngine';
 import { FakeTtsEngine } from './fakes/FakeTtsEngine';
 import { WavAudioSource } from './fakes/WavAudioSource';
+import { createLocalLlmEngine } from './llm/createLocalLlmEngine';
 import type { AudioSource, KeywordSpotter, LlmEngine, SttEngine, TtsEngine, VadEngine } from './types';
 
 export type EngineMode = 'production' | 'test';
@@ -41,9 +42,9 @@ function unavailable(name: EngineName): never {
   throw new DomainError('engine_unavailable', `Native ${name} engine is not wired yet`);
 }
 
-// Native adapters replace these entries as they land (llama.rn 2.3, sherpa-onnx 3.2/3.4/4.3, whisper.rn 3.3, audio 3.1).
+// Native adapters replace these entries as they land (sherpa-onnx 3.2/3.4/4.3, whisper.rn 3.3, audio 3.1).
 export const PRODUCTION_FACTORIES: EngineFactories = {
-  llm: () => unavailable('llm'),
+  llm: createLocalLlmEngine,
   stt: () => unavailable('stt'),
   tts: () => unavailable('tts'),
   vad: () => unavailable('vad'),
