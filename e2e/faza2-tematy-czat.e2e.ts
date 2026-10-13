@@ -102,8 +102,9 @@ describe('Faza 2: tematy i czat tekstowy', () => {
   it('reopens the last active topic with its history after a restart', async () => {
     await device.launchApp({ newInstance: true });
 
+    // The whole-screen container fails Detox's 75% visibility heuristic on iOS; its content is what matters.
     await waitFor(element(by.id('conversation-screen')))
-      .toBeVisible()
+      .toExist()
       .withTimeout(30000);
     await waitFor(element(by.text('Gdzie jechać nad jezioro?')))
       .toBeVisible()
