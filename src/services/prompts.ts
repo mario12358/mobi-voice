@@ -26,3 +26,10 @@ export function withContextSummary(systemPrompt: string | null, summary: string)
   const block = `${CONTEXT_SUMMARY_HEADER}\n${summary}`;
   return systemPrompt === null ? block : `${systemPrompt}\n\n${block}`;
 }
+
+export const TITLE_SYSTEM_PROMPT =
+  'Nadajesz tytuły rozmowom. Odpowiedz wyłącznie tytułem: 2–5 słów po polsku, bez cudzysłowów i kropki na końcu.';
+
+export function titleUserPrompt(question: string, answer: string): string {
+  return `Użytkownik: ${question}\nAsystent: ${answer}\n\nTytuł tej rozmowy:`;
+}

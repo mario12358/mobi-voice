@@ -32,6 +32,7 @@ describe('TopicRepository', () => {
     expect(topic).toEqual({
       id: topic.id,
       title: 'Wakacje 2026',
+      titleSource: 'manual',
       createdAt: 2_000,
       lastActivityAt: 2_000,
       systemPrompt: null,

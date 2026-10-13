@@ -34,7 +34,7 @@ export function useTopics(): TopicsState {
     }, [reload]),
   );
 
-  const create = useCallback(() => repository.create(pl.topicList.defaultTitle), [repository]);
+  const create = useCallback(() => repository.create(pl.topicList.defaultTitle, 'default'), [repository]);
   const rename = useCallback(
     async (id: number, title: string) => {
       await repository.rename(id, title);

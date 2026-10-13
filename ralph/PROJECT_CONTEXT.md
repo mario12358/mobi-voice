@@ -73,6 +73,7 @@ Konwencje:
 | 2026-10-13 | 📌 Kontekst LLM: `ContextBuilder` (`src/services`) — budżet = contextTokens − maxOutputTokens, tokeny z `services/tokens.ts` (3 znaki/token); mieści się → cała historia, inaczej najnowsze wiadomości + streszczenie starszej części (`context_summaries`, `LlmSummarizer`, ~25% budżetu); ostatnia wiadomość zawsze, w razie potrzeby obcięta od początku; prompty dla modelu w `services/prompts.ts` | S1, MV-CHAT-2 |
 | 2026-10-13 | 📌 `ConversationService.send(topicId, text, {onToken, signal})`: zapis pytania → ContextBuilder → `llm().generate` → zapis odpowiedzi (przerwana z `interrupted`, pusta pomijana); zależności wstrzykiwane (budżet i prompt per temat) | 2.5 |
 | 2026-10-13 | 📌 `ServicesProvider`/`useServices()` (pod DatabaseProvider i EngineProvider): repozytoria, `conversation`, `downloads`, `modelForTopic`, `isModelReady`; testy ekranów przez `src/__tests__/support/TestProviders.tsx` | 2.7 |
+| 2026-10-13 | 📌 Tytuły tematów: `title_source` default/auto/manual; „Nowy temat" tworzy `default`, zmiana nazwy → `manual`, `TopicTitler` po pierwszej wymianie → `auto` tylko przez `applyAutoTitle` (warunek w SQL) | MV-TOP-3 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -95,6 +96,7 @@ Konwencje:
 | `assembleAndroidTest` w całym projekcie pada na modułach bibliotek Expo | buduj `:app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release` |
 | npm „deduped", a pakietu brak w node_modules | usuń `node_modules/.package-lock.json` i `npm install` |
 | RNTL 14: `fireEvent` zwraca Promise — bez `await` stan pola nie zdąży przed kolejnym zdarzeniem | zawsze `await fireEvent.…` |
+| Typograficzne cudzysłowy („ ” « ») w kodzie blokuje kontrola lint-typy — narzędzie Edit zamienia `\\u201E` na znak | wpisuj ucieczki `\\u…` przez skrypt, nie Edit → strażnik: lint-typy/cudzyslow-typograficzny |
 | Błędy better-sqlite3 przy równoległych workerach Jest z innego realmu — `rejects.toThrow` ich nie widzi | adapter `nodeSqlDatabase` przepakowuje je w `Error` (`sameRealm`) |
 
 ## Zależności między komponentami
@@ -109,6 +111,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.5 zmergowane; 2.7 w PR #17
-- Następne zadanie: 2.8 Automatyczny tytuł tematu
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1, 2.2, 2.6 zmergowane; 2.3–2.7 zmergowane; 2.8 w PR #18
+- Następne zadanie: 2.9 Prompt systemowy
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
