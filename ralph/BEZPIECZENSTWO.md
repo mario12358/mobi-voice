@@ -40,4 +40,5 @@
 | host | generativelanguage.googleapis.com | adapter Google Gemini (6.4) — klucz usera |
 | host | api.llama.com | adapter Meta Llama API (6.5) — klucz usera |
 | host | huggingface.co | pobieranie modeli GGUF, whisper i głosów Piper (2.2) |
+| host | *.hf.co | CDN Hugging Face — cel przekierowania przy pobieraniu dużych plików (2.2) |
 | host | sentry.io | raporty awarii opt-in, bez treści rozmów i kluczy (9.1) |

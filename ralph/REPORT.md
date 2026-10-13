@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 ukończona i wydana jako v0.1.0; 14 pozycji planu zmergowanych; 2.1 + Test 2.1 w PR #11
+- **Postęp**: Faza 1 wydana jako v0.1.0; 16 pozycji planu zmergowanych (do 2.1); 2.2 + Test 2.2 w PR #12
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -38,11 +38,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 96 |
-| Pass | 96 |
+| Łącznie testów | 115 |
+| Pass | 115 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.1-katalog-modeli) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.2-pobieranie-modeli) |
 
 ## Historia realizacji
 
@@ -57,7 +57,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 1.7 Nawigacja, teksty PL, motyw + Test 1.7 | ✅ zmergowane (PR #7) | 84/84 | 2 | e39fa63 | 2026-10-13 |
 | 1.8 Test e2e fazy 1 (Detox) | ✅ zmergowane (PR #8) | 84/84 + e2e 3/3 Android i iOS | 4 | 1237d1a | 2026-10-13 |
 | Wydanie v0.1.0 (scenariusze testerów, PR #10) | ✅ tag v0.1.0, migawka Specky | — | 1 | 9abf426 | 2026-10-13 |
-| 2.1 Katalog modeli + Test 2.1 | PR #11 otwarty | 96/96 | 1 | — | 2026-10-13 |
+| 2.1 Katalog modeli + Test 2.1 | ✅ zmergowane (PR #11) | 96/96 | 1 | 9cf016c | 2026-10-13 |
+| 2.2 ModelDownloadService + Test 2.2 | PR #12 otwarty | 115/115 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -128,3 +129,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] [check] PR #8 — e2e ios: Detox wymaga applesimutils, a nowy Homebrew odmawia formuł z niezaufanego tapu (`brew trust wix/brew`); wybór symulatora z listy dostępnych urządzeń zamiast typów. e2e Android w CI zielony za pierwszym razem.
 - [2026-10-13] Zadanie 2.1: głosy Piper w sherpa-onnx (csukuangfj/vits-piper-pl_PL-*) wymagają danych eSpeak NG; katalog zawiera tylko polski podzbiór (6 plików, 724 KB: phontab, phonindex, phondata, intonations, pl_dict, lang/zlw/pl) jako wspólny składnik obu głosów — założenie do potwierdzenia w 3.4 na prawdziwym silniku. SHA256 plików spoza LFS policzone z pobranych plików.
 - [2026-10-13] Zadanie 2.1: eSpeak NG (dane i biblioteka w sherpa-onnx) jest na licencji GPL-3.0-or-later — do rozważenia przez człowieka przed dystrybucją poza wewnętrzną (ekran licencji 5.4).
+- [2026-10-13] Zadanie 2.2: SHA256 plików do 2 GB liczy natywnie react-native-blob-util (`fs.hash`); wznawianie przez HTTP Range do bocznego pliku `.chunk`, dopisywanego do `.part` także po przerwaniu. Hugging Face przekierowuje duże pliki na `*.hf.co` (zakresy działają, 206) — host dodany do polityki sieci i mapy. Mutacja wznawiania → test czerwony. Wejście (przycisk „Pobierz") powstanie w 2.7.
