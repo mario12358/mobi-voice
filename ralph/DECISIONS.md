@@ -19,3 +19,9 @@ Plik jest WRITE-ONLY — Ralph go nie czyta w żadnym innym procesie.
 To changelog dla człowieka, żeby pamiętać "co i dlaczego ustaliliśmy w trakcie".
 -->
 
+
+## 2026-10-13 18:32 — Wydanie wersji v0.1.0
+**Rodzaj**: operacje
+**Pytanie/kontekst**: User zatwierdził propozycję wydania po Fazie 1 i polecił kontynuować pracę.
+**Ustalenie**: Utworzono wersję v0.1.0 (commit 9abf426) — fundament aplikacji: start na iOS 16.4+/Android 10, lokalna baza, ekrany-szkielety, polski UI, motyw za systemem. Scenariusze testerów w docs/test-scenarios/v0.1.0.md, migawka Specky 01M4V1NPKW6SJPW042NE9J52SG, tag wypchnięty do origin.
+**Wpływ**: Faza 1; dalej zadanie 2.1.
