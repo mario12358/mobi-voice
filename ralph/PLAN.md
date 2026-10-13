@@ -70,12 +70,12 @@
 
 ### Faza 2: Tematy i czat tekstowy z modelem lokalnym
 
-- [ ] Zadanie 2.1: Katalog modeli w pliku konfiguracyjnym — LLM GGUF Q4_K_M: Qwen 2.5 1.5B/3B, Llama 3.2 1B/3B, Gemma 2 2B; whisper ggml-small i base; głosy Piper pl_PL-darkman-medium i pl_PL-gosia-medium; URL, rozmiar, SHA256, licencja, min. RAM (wymaga: 1.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 2.1: Katalog modeli w pliku konfiguracyjnym — LLM GGUF Q4_K_M: Qwen 2.5 1.5B/3B, Llama 3.2 1B/3B, Gemma 2 2B; whisper ggml-small i base; głosy Piper pl_PL-darkman-medium i pl_PL-gosia-medium; URL, rozmiar, SHA256, licencja, min. RAM (wymaga: 1.1) (spec: spec.md) (tech: typescript) (pr: #11)
   - AC: katalog zawiera dokładnie 5 wariantów LLM ze spec i 2 głosy (darkman, gosia)
   - AC: źródła Llama 3.2 bez bramki licencyjnej HF (nie wymagają tokena)
   - Specky: (req: 01M4TPSCN9WC02W8F3WJEFP4FF v1.0 @8cd370f)
   - Specky kryteria: (crit: 01M4TPSCNMTHEHN090MN55X0HD)
-- [ ] Test: 2.1 — walidacja schematu katalogu (unikalne id, poprawny SHA256, URL https)
+- [ ] Test: 2.1 — walidacja schematu katalogu (unikalne id, poprawny SHA256, URL https) (pr: #11)
 - [ ] Zadanie 2.2: ModelDownloadService — pobieranie do katalogu dokumentów aplikacji z postępem, wznawianiem, weryfikacją SHA256, flagą „tylko Wi-Fi"; usuwanie pliku modelu (wymaga: 2.1) (tech: react-native, typescript)
   - AC: przerwane pobieranie wznawia się od miejsca przerwania; zła suma SHA256 → plik usunięty, błąd
   - AC: wejście — akcja „Pobierz" (CTA w Rozmowie, potem Menedżer modeli 5.2)

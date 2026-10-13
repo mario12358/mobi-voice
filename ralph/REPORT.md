@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Faza 1 ukończona — 14/57 pozycji planu zmergowanych (1.1–1.8 z testami); następna: 2.1
+- **Postęp**: Faza 1 ukończona i wydana jako v0.1.0; 14 pozycji planu zmergowanych; 2.1 + Test 2.1 w PR #11
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -38,11 +38,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 84 |
-| Pass | 84 |
+| Łącznie testów | 96 |
+| Pass | 96 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (main 1237d1a; e2e Android + iOS 3/3 w CI) |
+| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-2.1-katalog-modeli) |
 
 ## Historia realizacji
 
@@ -56,6 +56,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 1.6 Interfejsy silników, atrapy, EngineRegistry + Test 1.6 | ✅ zmergowane (PR #6) | 76/76 | 1 | 95973c2 | 2026-10-13 |
 | 1.7 Nawigacja, teksty PL, motyw + Test 1.7 | ✅ zmergowane (PR #7) | 84/84 | 2 | e39fa63 | 2026-10-13 |
 | 1.8 Test e2e fazy 1 (Detox) | ✅ zmergowane (PR #8) | 84/84 + e2e 3/3 Android i iOS | 4 | 1237d1a | 2026-10-13 |
+| Wydanie v0.1.0 (scenariusze testerów, PR #10) | ✅ tag v0.1.0, migawka Specky | — | 1 | 9abf426 | 2026-10-13 |
+| 2.1 Katalog modeli + Test 2.1 | PR #11 otwarty | 96/96 | 1 | — | 2026-10-13 |
 
 ## Historia zmian
 
@@ -124,3 +126,5 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 1.8: iOS e2e lokalnie niemożliwe (Xcode bez platformy iOS 26.5) — tylko workflow `e2e.yml` (macos-latest); Android lokalnie na emulatorze API 36, w CI API 34 x86_64 z `-PreactNativeArchitectures=x86_64` tylko dla buildu e2e.
 - [2026-10-13] Zadanie 1.8: ostrzeżenie zaleznosci/skrypty-instalacyjne (detox: postinstall, odcisk 13b0e02a7844) — skrypt Detoxa przygotowuje framework iOS przy instalacji; zależność tylko deweloperska, zostaje.
 - [2026-10-13] [check] PR #8 — e2e ios: Detox wymaga applesimutils, a nowy Homebrew odmawia formuł z niezaufanego tapu (`brew trust wix/brew`); wybór symulatora z listy dostępnych urządzeń zamiast typów. e2e Android w CI zielony za pierwszym razem.
+- [2026-10-13] Zadanie 2.1: głosy Piper w sherpa-onnx (csukuangfj/vits-piper-pl_PL-*) wymagają danych eSpeak NG; katalog zawiera tylko polski podzbiór (6 plików, 724 KB: phontab, phonindex, phondata, intonations, pl_dict, lang/zlw/pl) jako wspólny składnik obu głosów — założenie do potwierdzenia w 3.4 na prawdziwym silniku. SHA256 plików spoza LFS policzone z pobranych plików.
+- [2026-10-13] Zadanie 2.1: eSpeak NG (dane i biblioteka w sherpa-onnx) jest na licencji GPL-3.0-or-later — do rozważenia przez człowieka przed dystrybucją poza wewnętrzną (ekran licencji 5.4).

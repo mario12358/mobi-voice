@@ -67,6 +67,7 @@ Konwencje:
 | 2026-10-13 | 📌 Teksty UI tylko z `src/i18n/pl.ts` (strażnik: `src/i18n/__tests__/translations.test.ts`); kolory z `usePalette()` (`src/theme/theme.ts`, za systemem); wspólne `Screen`/`BodyText`/`TextButton` w `src/components` | MV-UI-1 |
 | 2026-10-13 | 📌 Nawigacja: native-stack `RootStackParamList` (TopicList, Conversation{topicId}, Summary{topicId}, Settings, Models); start = ostatnio aktywny temat nad listą (`resolveStartState`) | MV-TOP-1 |
 | 2026-10-13 | 📌 e2e: Detox, release z EXPO_PUBLIC_E2E=1 (`npm run e2e:build:android` / `e2e:test:android`, iOS analogicznie), testy w `e2e/*.e2e.ts`, selektory tylko testID, motyw widoczny przez `theme-<scheme>` w trybie testowym; CI `e2e.yml` (Android API 34 x86_64, iOS macos-latest) | 1.8 |
+| 2026-10-13 | 📌 Katalog modeli `src/models/catalog.ts` (zamknięta lista, `validateCatalog`): pliki z huggingface.co `resolve/main` z rozmiarem i SHA256, `requires` dla wspólnych składników (eSpeak NG pl dla głosów), w `displayName` tylko nazwy własne (etykiety z pl.ts); LLM: GGUF Q4_K_M, kontekst 4096, minRamGb 4/6 | MV-MOD-1, MV-UI-1 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
@@ -102,6 +103,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, tag `ralph/faza-1` (main 1237d1a)
-- Następne zadanie: 2.1 Katalog modeli (dane zebrane: GGUF Q4_K_M z HF bez bramek — Qwen, bartowski/Llama-3.2, bartowski/gemma-2; whisper ggerganov/whisper.cpp; głosy sherpa-onnx csukuangfj/vits-piper-pl_PL-* wymagają też espeak-ng-data, 120 plików, GPL)
-- Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV) i propozycja wydania v0.1.0. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, wydana jako v0.1.0 (tag 9abf426); 2.1 w PR #11
+- Następne zadanie: 2.2 ModelDownloadService
+- Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
