@@ -58,6 +58,10 @@ Konwencje:
 | 2026-10-13 | Jest preset `jest-expo` + RNTL 14 (`await render`) + jest-junit (`{filepath}` / `{title}`) | dopasowanie testów kryteriów przez Specky |
 | 2026-10-13 | 📌 Expo SDK 57 (RN 0.86), CNG: `ios/` i `android/` generowane `npm run prebuild`, nie w repo; natywna konfiguracja tylko przez app.json/config plugins | odtwarzalny build z jednej bazy kodu |
 | 2026-10-13 | 📌 Minimalnie iOS 16.4 (wymóg SDK 57), Android API 29, tylko arm64-v8a — propozycja decyzji w Specky 01M4TTARHWPFRM2N8PZPGMZDNV | MV-PLAT-1 mówi iOS 16+; czeka na akceptację człowieka |
+| 2026-10-13 | 📌 Dostęp do bazy przez interfejs `SqlDatabase` (src/db); w aplikacji adapter expo-sqlite, w Jest better-sqlite3 (`src/db/__tests__/support/nodeSqlDatabase.ts`) | repozytoria testowalne na prawdziwym SQLite bez modułu natywnego |
+| 2026-10-13 | 📌 Migracje: `src/db/migrations/NNN_nazwa.ts` z `up`/`down`, wersje kolejne od 1, każda w transakcji, rejestr w `schema_migrations`; nigdy nie edytuj zastosowanej migracji | MV-DATA-1, idempotencja |
+| 2026-10-13 | Znaczniki czasu w SQLite jako INTEGER (ms epoki); `PRAGMA foreign_keys = ON` w `prepareDatabase` przy każdym otwarciu | sortowanie po last_activity_at, kaskady FK |
+| 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 
 ## Znane problemy i rozwiązania
@@ -73,6 +77,7 @@ Konwencje:
 | Problem | Rozwiązanie |
 |---------|-------------|
 | Pomocnik testów w `__tests__/` traktowany przez Jest jako pusty suite | `testMatch` tylko `*.test.ts(x)` w jest.config.js |
+| Błędy better-sqlite3 przy równoległych workerach Jest z innego realmu — `rejects.toThrow` ich nie widzi | adapter `nodeSqlDatabase` przepakowuje je w `Error` (`sameRealm`) |
 
 ## Zależności między komponentami
 
@@ -86,6 +91,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.1 (zmergowane, PR #1); 1.2 w PR
-- Następne zadanie: 1.3 Baza SQLite + migracje
+- Ostatnie ukończone zadanie: 1.2 (zmergowane, PR #2); 1.3 w PR #3
+- Następne zadanie: 1.4 Repozytoria TopicRepository i MessageRepository
 - Blokery: lokalnie brak platformy iOS 26.5 w Xcode (build iOS tylko w CI); brak emulatora Android 10 i symulatora iOS 16
