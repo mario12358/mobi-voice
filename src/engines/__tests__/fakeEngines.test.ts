@@ -5,8 +5,7 @@ import { FakeSttEngine } from '../fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../fakes/FakeTtsEngine';
 import { WavAudioSource } from '../fakes/WavAudioSource';
 import type { AudioChunk, LlmRequest, VadEvent } from '../types';
-import { encodeWav } from '../wav';
-import { synthesize } from './support/audio';
+import { encodeWav, synthesize } from './support/audio';
 
 const REQUEST: LlmRequest = {
   systemPrompt: 'Odpowiadaj krótko',

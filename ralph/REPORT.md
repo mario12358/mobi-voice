@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: 13/57 zadań zmergowanych (1.1–1.7 z testami); 1.8 (e2e fazy 1) w PR #8
+- **Postęp**: Faza 1 ukończona — 14/57 pozycji planu zmergowanych (1.1–1.8 z testami); następna: 2.1
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -34,13 +34,15 @@ jest traktowany jako ciąg dalszy przebiegu powyżej. Bez daty blok zostaje w pl
 na zawsze i rośnie w prompcie każdej sesji.
 -->
 
+**Regresja po Fazie 1 (2026-10-13) — ZIELONA:** main `1237d1a`: `npx tsc --noEmit`, `npm run lint`, `npm test` 84/84 (18 zestawów); e2e Detox 3/3 na Androidzie (lokalnie API 36, CI API 34) i iOS (CI). Kontrole fazowe bez blokad: 5 ostrzeżeń audytu zależności (braces, node-forge, sprintf-js bez poprawek; stream-json dev; uuid 7.0.3 medium) i 6 `martwe-wejscie` — wejścia podepną zadania Fazy 2 (networkPolicy → 2.2/6.1, MessageRepository → 2.5, useSettingsStore → 2.9/3.x, rollbackTo zostaje jako `down` migracji), `encodeWav` przeniesiony do pomocników testów. Tag `ralph/faza-1`.
+
 | Metryka | Wartość |
 |---------|---------|
 | Łącznie testów | 84 |
 | Pass | 84 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (gałąź zadanie-1.8-e2e-fundament; e2e Android 3/3) |
+| Ostatnie uruchomienie | 2026-10-13 (main 1237d1a; e2e Android + iOS 3/3 w CI) |
 
 ## Historia realizacji
 
@@ -53,7 +55,7 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 1.5 Ustawienia (Zustand) i SecretStore + Test 1.5 | ✅ zmergowane (PR #5) | 55/55 | 1 | 53368a9 | 2026-10-13 |
 | 1.6 Interfejsy silników, atrapy, EngineRegistry + Test 1.6 | ✅ zmergowane (PR #6) | 76/76 | 1 | 95973c2 | 2026-10-13 |
 | 1.7 Nawigacja, teksty PL, motyw + Test 1.7 | ✅ zmergowane (PR #7) | 84/84 | 2 | e39fa63 | 2026-10-13 |
-| 1.8 Test e2e fazy 1 (Detox) | PR #8 otwarty | 84/84 + e2e Android 3/3 | 3 | — | 2026-10-13 |
+| 1.8 Test e2e fazy 1 (Detox) | ✅ zmergowane (PR #8) | 84/84 + e2e 3/3 Android i iOS | 4 | 1237d1a | 2026-10-13 |
 
 ## Historia zmian
 
@@ -121,3 +123,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] Zadanie 1.8: `assembleAndroidTest` dla wszystkich modułów padał na `:expo-dev-client:mergeExtDexDebugAndroidTest` — build ograniczony do `:app:`. Brakujące zależności e2e: tslib (nieaktualny `node_modules/.package-lock.json` udawał instalację — usunięty, reinstalacja) i babel-preset-expo jako jawna devDependency.
 - [2026-10-13] Zadanie 1.8: iOS e2e lokalnie niemożliwe (Xcode bez platformy iOS 26.5) — tylko workflow `e2e.yml` (macos-latest); Android lokalnie na emulatorze API 36, w CI API 34 x86_64 z `-PreactNativeArchitectures=x86_64` tylko dla buildu e2e.
 - [2026-10-13] Zadanie 1.8: ostrzeżenie zaleznosci/skrypty-instalacyjne (detox: postinstall, odcisk 13b0e02a7844) — skrypt Detoxa przygotowuje framework iOS przy instalacji; zależność tylko deweloperska, zostaje.
+- [2026-10-13] [check] PR #8 — e2e ios: Detox wymaga applesimutils, a nowy Homebrew odmawia formuł z niezaufanego tapu (`brew trust wix/brew`); wybór symulatora z listy dostępnych urządzeń zamiast typów. e2e Android w CI zielony za pierwszym razem.

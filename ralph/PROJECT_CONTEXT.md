@@ -102,6 +102,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 1.7 (zmergowane, PR #7); 1.8 w PR #8
-- Następne zadanie: po merge 1.8 — regresja Fazy 1 na main, potem 2.1 Katalog modeli
-- Blokery: lokalnie brak platformy iOS 26.5 w Xcode (build iOS tylko w CI); brak emulatora Android 10 i symulatora iOS 16
+- Ostatnie ukończone zadanie: 1.8 — Faza 1 ukończona, tag `ralph/faza-1` (main 1237d1a)
+- Następne zadanie: 2.1 Katalog modeli (dane zebrane: GGUF Q4_K_M z HF bez bramek — Qwen, bartowski/Llama-3.2, bartowski/gemma-2; whisper ggerganov/whisper.cpp; głosy sherpa-onnx csukuangfj/vits-piper-pl_PL-* wymagają też espeak-ng-data, 120 plików, GPL)
+- Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV) i propozycja wydania v0.1.0. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
