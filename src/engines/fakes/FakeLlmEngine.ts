@@ -17,7 +17,7 @@ export const E2E_SCRIPT: LlmScript = (request) => {
   if (request.systemPrompt === TITLE_SYSTEM_PROMPT) return E2E_TOPIC_TITLE;
   const lastUser = [...request.messages].reverse().find((message) => message.role === 'user');
   if (lastUser?.content.includes(E2E_LONG_ANSWER_TRIGGER)) {
-    return Array.from({ length: 60 }, (_, index) => `Zdanie numer ${index + 1}.`).join(' ');
+    return Array.from({ length: 300 }, (_, index) => `Zdanie numer ${index + 1}.`).join(' ');
   }
   return ECHO_SCRIPT(request);
 };
