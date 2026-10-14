@@ -15,7 +15,8 @@ async function scrollTo(id: string, scroll: string) {
   await waitFor(element(by.id(id)))
     .toBeVisible()
     .whileElement(by.id(scroll))
-    .scroll(250, 'down');
+    // From the middle: a swipe starting at the bottom edge is Android's "go home" gesture.
+    .scroll(250, 'down', NaN, 0.5);
 }
 
 describe('Faza 5: modele i ustawienia', () => {
