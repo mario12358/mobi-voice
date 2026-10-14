@@ -208,13 +208,13 @@
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRZQ1S7977M866Q4DY)
 - [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM (pr: #32)
-- [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #33)
   - AC: user pobiera wybrany model lokalny na urządzenie i może go usunąć
   - Specky: (req: 01M4TPSCQHCPGKAQAJ8E6QGB2M v1.0 @aeb1edd)
   - Specky kryteria: (crit: 01M4TPSCQVTNAKJ3XXG6PS1DZF)
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRQYNMQH707Z7NFVT5)
-- [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową
+- [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową (pr: #33)
 - [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript)
   - AC: wejście — pierwsze uruchomienie aplikacji bez pobranych modeli
   - Specky: (req: 01M4TPSCT6VW2MN48Y3MP3WBXC v1.0 @aab204b)

@@ -28,6 +28,7 @@ export interface AppServices {
   downloads: ModelDownloadService;
   audio: AudioSessionService;
   voice: VoiceSessionController;
+  deviceMemoryBytes(): number | null;
   modelForTopic(topic: Topic | null): LlmEntry;
   isModelReady(model: LlmEntry): Promise<boolean>;
 }
@@ -36,6 +37,8 @@ export interface DevicePorts {
   fileSystem: ModelFileSystem;
   network: NetworkInfo;
   audio: AudioPorts;
+  // Total RAM of the phone in bytes, or null when unknown (MV-MOD-4).
+  memoryBytes: () => number | null;
 }
 
 export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DevicePorts): AppServices {
@@ -84,6 +87,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     downloads,
     audio,
     voice,
+    deviceMemoryBytes: ports.memoryBytes,
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.
     isModelReady: async (model) =>
