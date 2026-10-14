@@ -49,6 +49,7 @@ export function OnboardingScreen({ navigation }: RootScreenProps<'Onboarding'>) 
   const views = needed.map((entry) => manager.models.find((model) => model.entry.id === entry.id));
   const missing = views.filter((model) => model !== undefined && model.status !== 'downloaded');
   const downloading = views.some((model) => model?.progress !== null && model?.progress !== undefined);
+  const canSkip = missing.length > 0 && !downloading;
   const missingBytes = missing.reduce((total, model) => total + downloadSizeBytes(model?.entry.id ?? ''), 0);
 
   async function downloadAll() {
@@ -83,7 +84,7 @@ export function OnboardingScreen({ navigation }: RootScreenProps<'Onboarding'>) 
         </View>
         <Step title={STEP_TITLES[2] ?? ''} model={views[2]} />
         {manager.error !== null && <BodyText testID="onboarding.error">{manager.error.userMessage}</BodyText>}
-        {missing.length > 0 && !downloading && <BodyText>{pl.onboarding.skipHint}</BodyText>}
+        {canSkip && <BodyText>{pl.onboarding.skipHint}</BodyText>}
       </ScrollView>
       {/* The actions stay in view on small phones, below the scrolled steps. */}
       <View style={styles.footer}>
@@ -96,9 +97,7 @@ export function OnboardingScreen({ navigation }: RootScreenProps<'Onboarding'>) 
         ) : (
           <TextButton testID="onboarding.done" label={pl.onboarding.done} onPress={finish} />
         )}
-        {missing.length > 0 && !downloading && (
-          <TextButton testID="onboarding.skip" label={pl.onboarding.skip} onPress={finish} />
-        )}
+        {canSkip && <TextButton testID="onboarding.skip" label={pl.onboarding.skip} onPress={finish} />}
       </View>
       {questions.dialog}
     </Screen>
