@@ -10,6 +10,7 @@ export type DomainErrorCode =
   | 'host_not_allowed'
   | 'storage_error'
   | 'empty_title'
+  | 'empty_instruction'
   | 'topic_not_found'
   | 'engine_unavailable'
   | 'cellular_consent_required'
@@ -28,6 +29,7 @@ const USER_MESSAGES: Record<DomainErrorCode, string> = {
   host_not_allowed: 'Połączenie z tym adresem jest zablokowane',
   storage_error: 'Błąd zapisu danych na urządzeniu',
   empty_title: 'Nazwa tematu nie może być pusta',
+  empty_instruction: 'Instrukcja podsumowania nie może być pusta',
   topic_not_found: 'Temat nie istnieje',
   engine_unavailable: 'Ta funkcja nie jest jeszcze dostępna na tym urządzeniu',
   cellular_consent_required: 'Pobieranie przez sieć komórkową wymaga Twojej zgody',
