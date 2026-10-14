@@ -74,6 +74,7 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 3.2 VadEngine (Silero, sherpa-onnx) + Test 3.2 | ✅ zmergowane (PR #24) | 211/211 | 4 | 73c2a69 | 2026-10-14 |
 | 3.3 WhisperSttEngine + Test 3.3 | ✅ zmergowane (PR #25) | 216/216 | 2 | 6c8351b | 2026-10-14 |
 | 3.4 PiperTtsEngine + Test 3.4 | ✅ zmergowane (PR #26) | 222/222 | 1 | 38fb5a7 | 2026-10-14 |
+| 3.6–3.9 Sesja głosowa, ekran, metryki, e2e | ✅ zmergowane (PR #28) | 238/238 + e2e 9/9 Android i iOS | 4 | c9eeba8 | 2026-10-14 |
 
 ## Historia zmian
 
@@ -181,3 +182,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-14] Zadanie 4.3+4.4 — ostrzeżenia kontroli: `EngineRegistry.test.ts` mniej asercji (17→15), bo zniknął ostatni silnik `engine_unavailable` — dwie asercje rzucania zastąpione sprawdzeniem typu KWS i braku atrapy VAD (zmiana zachowania z planu); `VoiceSessionController.test.ts` — nowa zależność `keywordSpotter` w konstrukcji i atrapa modelu reagująca na AbortSignal (potrzebne do testów przerwania), dotychczasowe asercje bez zmian.
 - [2026-10-14] Zadanie 4.2: tryb przerywany w `VoiceSessionController` — segmenty po ciszy są rozpoznawane i doklejane do bufora bez limitu czasu (podgląd „Ty: …" przez `onHeard`), wysyłka dopiero gdy rozpoznany segment kończy się „odbiór" (`matchEndWord` z 4.1, słowo wycięte — nie trafia do historii ani modelu); nasłuch „stop" startuje dopiero przy odpowiedzi, nie przy rozpoznawaniu części. Gałąź na 4.3–4.4 z plikami 4.1 (PR #29 jeszcze niezmergowany — te same zmiany, scalą się bez konfliktu). W testach dźwięk z WAV przychodzi naraz, więc kolejne części wypowiedzi podawane po powrocie do nasłuchu (w aplikacji mikrofon płynie w czasie rzeczywistym). Mutacja „wysyłaj bez odbiór" → 3 testy czerwone.
 - [2026-10-14] Zadanie 4.5: e2e fazy 4 (Detox) — haki testowe: części wypowiedzi ze scenariuszem transkrypcji (`injectUtterance(engines, transcript)` dokłada tekst do atrapy STT), długie pytanie („długo" → 300 zdań atrapy LLM) i „stop" z atrapy KWS. Lokalnie Android 3/3 za pierwszym razem. Ręczny scenariusz ⛔ 4.4 (skuteczność „odbiór"/„STOP" przez głośnik i słuchawki) zostaje dla człowieka.
+- [2026-10-14] [check] PR #28 — e2e android (CI, API 34): przycisk haka `e2e.deny-mic` widoczny w mniej niż 75% na mniejszym ekranie emulatora (panel głosowy na dole) — haki testowe przeniesione pod górny pasek ekranu Rozmowa (tylko build e2e), a ich rząd się zawija — drugi przycisk wychodził poza prawą krawędź wąskiego ekranu (x=178 px + 213 px). iOS e2e zielony.
