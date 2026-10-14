@@ -39,6 +39,8 @@ export interface LlmRequest {
   systemPrompt: string | null;
   messages: ChatMessage[];
   maxTokens?: number;
+  // Catalog id of the model chosen for the topic; absent means the global choice (MV-MOD-5).
+  model?: string;
 }
 
 export interface LlmResult {
