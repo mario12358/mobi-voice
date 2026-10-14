@@ -203,11 +203,11 @@
 
 ### Faza 5: Menedżer modeli i ustawienia
 
-- [ ] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript)
+- [ ] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript) (pr: #32)
   - AC: model niezalecany nadal można pobrać po potwierdzeniu
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRZQ1S7977M866Q4DY)
-- [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM
+- [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM (pr: #32)
 - [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript)
   - AC: user pobiera wybrany model lokalny na urządzenie i może go usunąć
   - Specky: (req: 01M4TPSCQHCPGKAQAJ8E6QGB2M v1.0 @aeb1edd)
