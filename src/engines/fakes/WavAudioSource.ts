@@ -13,7 +13,11 @@ export class WavAudioSource implements AudioSource {
   }
 
   enqueueWav(buffer: ArrayBuffer): void {
-    this.queue.push(parseWav(buffer));
+    this.enqueueAudio(parseWav(buffer));
+  }
+
+  enqueueAudio(audio: AudioChunk): void {
+    this.queue.push(audio);
     this.flush();
   }
 

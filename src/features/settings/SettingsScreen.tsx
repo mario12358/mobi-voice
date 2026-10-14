@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 import { BodyText } from '../../components/BodyText';
 import { PromptEditor } from '../../components/PromptEditor';
@@ -44,6 +44,26 @@ function VoicePicker() {
   );
 }
 
+function DiagnosticsSwitch() {
+  const palette = usePalette();
+  const enabled = useSettingsStore((state) => state.diagnosticsEnabled);
+  const update = useSettingsStore((state) => state.update);
+  return (
+    <View style={styles.section}>
+      <View style={styles.switchRow}>
+        <Text style={[styles.heading, { color: palette.textPrimary }]}>{pl.settings.diagnostics}</Text>
+        <Switch
+          testID="settings.diagnostics"
+          accessibilityLabel={pl.settings.diagnostics}
+          value={enabled}
+          onValueChange={(value) => update({ diagnosticsEnabled: value })}
+        />
+      </View>
+      <BodyText>{pl.settings.diagnosticsHint}</BodyText>
+    </View>
+  );
+}
+
 export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
   const globalPrompt = useSettingsStore((state) => state.globalSystemPrompt);
   const update = useSettingsStore((state) => state.update);
@@ -58,6 +78,7 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
           onPress={() => navigation.navigate('Models')}
         />
         <VoicePicker />
+        <DiagnosticsSwitch />
         <PromptEditor
           key={shownPrompt}
           testID="settings.system-prompt"
@@ -77,4 +98,5 @@ const styles = StyleSheet.create({
   section: { gap: SPACING.sm },
   heading: { fontSize: 17, fontWeight: '600' },
   choices: { flexDirection: 'row', gap: SPACING.sm },
+  switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
 });

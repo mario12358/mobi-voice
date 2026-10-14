@@ -48,7 +48,7 @@ export class PiperTtsEngine implements TtsEngine {
     this.answerVoice = null;
   }
 
-  speak(text: string): Promise<void> {
+  speak(text: string, onStart?: () => void): Promise<void> {
     const generation = this.generation;
     this.answerVoice ??= this.voices.currentVoice();
     const voice = this.answerVoice;
@@ -60,6 +60,7 @@ export class PiperTtsEngine implements TtsEngine {
     const played = this.playback.then(async () => {
       const speech = await audio;
       if (speech === null || generation !== this.generation) return;
+      onStart?.();
       await this.native.play(speech.data, speech.sampleRate);
     });
     this.playback = played.catch(() => undefined);
