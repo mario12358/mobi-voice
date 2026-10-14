@@ -1,5 +1,6 @@
 import type { Message, MessageRepository } from '../db/repositories/MessageRepository';
 import type { Summary, SummaryRepository } from '../db/repositories/SummaryRepository';
+import type { SummaryTemplateRepository } from '../db/repositories/SummaryTemplateRepository';
 import type { Topic, TopicRepository } from '../db/repositories/TopicRepository';
 import { DomainError } from '../core/errors';
 import type { LlmEngine } from '../engines/types';
@@ -32,6 +33,7 @@ interface Deps {
   topics: TopicRepository;
   messages: MessageRepository;
   summaries: SummaryRepository;
+  templates: SummaryTemplateRepository;
   llm: () => LlmEngine;
   budget: (topic: Topic) => ModelBudget;
   model: (topic: Topic) => string;
@@ -75,6 +77,16 @@ export class SummaryService {
 
   lastUsedTemplateId(): Promise<number | null> {
     return this.deps.summaries.lastUsedTemplateId();
+  }
+
+  // "Podsumuj rozmowę" by voice: the form used last, or the first built-in one (MV-SUM-1).
+  async generateInLastForm(topicId: number, signal?: AbortSignal): Promise<Summary> {
+    const lastUsed = await this.deps.summaries.lastUsedTemplateId();
+    const template =
+      (lastUsed === null ? null : await this.deps.templates.getById(lastUsed)) ??
+      (await this.deps.templates.list())[0];
+    if (template === undefined) throw new DomainError('empty_instruction');
+    return this.generate(topicId, { instruction: template.instruction, templateId: template.id }, signal);
   }
 
   // Shrinks the text until it fits one request: each pass turns parts into notes. A model that

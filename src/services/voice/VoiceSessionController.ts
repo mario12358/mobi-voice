@@ -13,7 +13,8 @@ import type { Topic } from '../../db/repositories/TopicRepository';
 import type { ConversationMode } from '../../state/settings';
 import { matchEndWord } from '../speech/KeywordMatcher';
 import { SentenceSplitter } from '../speech/SpeechText';
-import type { TopicCommands } from './TopicCommands';
+import { SummaryCancelledError } from '../SummaryService';
+import type { CommandOutcome, TopicCommands } from './TopicCommands';
 
 export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking';
 
@@ -148,7 +149,7 @@ export class VoiceSessionController {
       if (text === null || text.length === 0) return;
       void this.deps.keywordSpotter().start(() => void this.interrupt());
       // Every finished utterance passes the command grammar before it may reach the model.
-      if (await this.runCommand(text, turn)) return;
+      if (await this.runCommand(topicId, text, turn)) return;
       await this.answer(topicId, text, turn, endedAt, sttMs);
     } catch (error) {
       this.listener.onError?.(error);
@@ -157,9 +158,23 @@ export class VoiceSessionController {
     }
   }
 
-  private async runCommand(text: string, turn: number): Promise<boolean> {
-    const outcome = await this.deps.commands?.handle(text, this.candidates);
-    if (outcome === null || outcome === undefined || !this.isCurrent(turn)) return false;
+  private async runCommand(topicId: number, text: string, turn: number): Promise<boolean> {
+    // A command may take a while (a summary of the whole topic): "stop" cuts it short too.
+    this.abort = new AbortController();
+    let outcome: CommandOutcome | null | undefined;
+    try {
+      outcome = await this.deps.commands?.handle(text, {
+        topicId,
+        candidates: this.candidates,
+        signal: this.abort.signal,
+      });
+    } catch (error) {
+      if (error instanceof SummaryCancelledError) return true;
+      throw error;
+    } finally {
+      this.abort = null;
+    }
+    if (outcome === null || outcome === undefined || !this.isCurrent(turn)) return outcome != null;
     this.candidates = outcome.candidates ?? [];
     if (outcome.topic !== undefined) {
       this.topicId = outcome.topic.id;
@@ -169,7 +184,14 @@ export class VoiceSessionController {
     const tts = this.deps.tts();
     tts.beginAnswer();
     this.setState('speaking');
-    await tts.speak(outcome.reply);
+    if (outcome.modelText !== true) {
+      await tts.speak(outcome.reply);
+      return true;
+    }
+    // Model text is Markdown: cleaned and read sentence by sentence, like an answer.
+    const splitter = new SentenceSplitter();
+    const sentences = [...splitter.push(outcome.reply), ...splitter.flush()];
+    await Promise.all(sentences.map((sentence) => tts.speak(sentence)));
     return true;
   }
 

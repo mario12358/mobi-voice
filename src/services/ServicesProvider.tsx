@@ -88,10 +88,12 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     titler: new TopicTitler(() => engines.llm()),
   });
   // Summaries go to the topic's own model, local or cloud (MV-SUM-1).
+  const summaryTemplates = new SummaryTemplateRepository(db);
   const summaries = new SummaryService({
     topics,
     messages,
     summaries: new SummaryRepository(db),
+    templates: summaryTemplates,
     llm: () => llm,
     budget: modelForTopic,
     model: (topic) => modelForTopic(topic).id,
@@ -110,7 +112,9 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     conversation,
     silenceThresholdMs: () => useSettingsStore.getState().silenceThresholdMs,
     mode: () => useSettingsStore.getState().conversationMode,
-    commands: new TopicCommands(topics),
+    commands: new TopicCommands(topics, (topicId, signal) =>
+      summaries.generateInLastForm(topicId, signal).then((summary) => summary.content),
+    ),
     recordLatency: (sample) => useLatencyStore.getState().record(sample),
   });
   return {
@@ -118,7 +122,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     messages,
     conversation,
     summaries,
-    summaryTemplates: new SummaryTemplateRepository(db),
+    summaryTemplates,
     exporter: new TopicExporter(topics, messages, ports.apiKeys),
     downloads,
     audio,
