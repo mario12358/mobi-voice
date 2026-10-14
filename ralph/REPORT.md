@@ -74,6 +74,7 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 3.2 VadEngine (Silero, sherpa-onnx) + Test 3.2 | ✅ zmergowane (PR #24) | 211/211 | 4 | 73c2a69 | 2026-10-14 |
 | 3.3 WhisperSttEngine + Test 3.3 | ✅ zmergowane (PR #25) | 216/216 | 2 | 6c8351b | 2026-10-14 |
 | 3.4 PiperTtsEngine + Test 3.4 | ✅ zmergowane (PR #26) | 222/222 | 1 | 38fb5a7 | 2026-10-14 |
+| 3.6–3.9 Sesja głosowa, ekran, metryki, e2e | ✅ zmergowane (PR #28) | 238/238 + e2e 9/9 Android i iOS | 4 | c9eeba8 | 2026-10-14 |
 
 ## Historia zmian
 
@@ -183,3 +184,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-14] Zadanie 4.5: e2e fazy 4 (Detox) — haki testowe: części wypowiedzi ze scenariuszem transkrypcji (`injectUtterance(engines, transcript)` dokłada tekst do atrapy STT), długie pytanie („długo" → 300 zdań atrapy LLM) i „stop" z atrapy KWS. Lokalnie Android 3/3 za pierwszym razem. Ręczny scenariusz ⛔ 4.4 (skuteczność „odbiór"/„STOP" przez głośnik i słuchawki) zostaje dla człowieka.
 - [2026-10-14] PR #29 (4.1) zamknięty bez merge — ten sam kod jest w PR #31 (4.2 od niego zależy); osobny merge do main znów rozjechałby łańcuch PR-ów (konflikty w ralph/*, ponowne CI natywne ~15 min). PLAN: 4.1 → (pr: #31).
 - [2026-10-14] Zadanie 5.1: `isNotRecommended` (src/models/deviceCapabilities) — tylko modele LLM, próg z `minRamGb` katalogu (3B: 6 GB, 1–2B: 4 GB) z zapasem 15% na pamięć zarezerwowaną przez system (telefon „4 GB" raportuje ~3,7 GB i nie dostaje ostrzeżenia dla modelu 1,5B); nieznany RAM → bez ostrzeżenia. RAM z `expo-device` (`totalMemory`). Oznaczenie i potwierdzenie pobrania (kryteria MV-MOD-4) pojawią się na ekranie Menedżera modeli w 5.2. Gałąź na końcu łańcucha (4.2).
+- [2026-10-14] [check] PR #28 — e2e android (CI, API 34): przycisk haka `e2e.deny-mic` widoczny w mniej niż 75% na mniejszym ekranie emulatora (panel głosowy na dole) — haki testowe przeniesione pod górny pasek ekranu Rozmowa (tylko build e2e), a ich rząd się zawija — drugi przycisk wychodził poza prawą krawędź wąskiego ekranu (x=178 px + 213 px). iOS e2e zielony.
