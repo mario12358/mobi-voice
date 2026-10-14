@@ -20,6 +20,8 @@ export interface Settings {
   diagnosticsEnabled: boolean;
   wifiOnlyDownloads: boolean;
   crashReportsConsent: boolean;
+  // The first-run wizard (MV-MOD-3) was finished or skipped.
+  onboardingDone: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   diagnosticsEnabled: false,
   wifiOnlyDownloads: true,
   crashReportsConsent: false,
+  onboardingDone: false,
 };
 
 interface SettingsActions {
@@ -64,6 +67,7 @@ function pickSettings(state: SettingsState): Settings {
     diagnosticsEnabled: state.diagnosticsEnabled,
     wifiOnlyDownloads: state.wifiOnlyDownloads,
     crashReportsConsent: state.crashReportsConsent,
+    onboardingDone: state.onboardingDone,
   };
 }
 
@@ -82,3 +86,14 @@ export const useSettingsStore = create<SettingsState>()(
     },
   ),
 );
+
+// Settings live in AsyncStorage and load asynchronously: decisions taken at start-up wait for them.
+export function settingsLoaded(): Promise<void> {
+  if (useSettingsStore.persist.hasHydrated()) return Promise.resolve();
+  return new Promise((resolve) => {
+    const unsubscribe = useSettingsStore.persist.onFinishHydration(() => {
+      unsubscribe();
+      resolve();
+    });
+  });
+}

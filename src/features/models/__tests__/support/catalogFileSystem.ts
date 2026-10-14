@@ -62,6 +62,13 @@ export class CatalogFileSystem implements ModelFileSystem {
     }
   }
 
+  // Puts a catalog entry on the "disk" as if downloaded earlier.
+  async preload(id: string): Promise<void> {
+    const entry = MODEL_CATALOG.find((candidate) => candidate.id === id);
+    if (entry === undefined) throw new Error(`unknown ${id}`);
+    for (const file of entry.files) this.sizes.set(`${this.modelsRoot}/${id}/${file.path}`, file.sizeBytes);
+  }
+
   release(): void {
     const pending = this.pending;
     this.pending = [];
