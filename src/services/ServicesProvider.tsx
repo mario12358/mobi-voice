@@ -86,6 +86,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     systemPrompt: (topic) =>
       resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),
+    toolsAllowed: (topic) => isCloudModel(modelForTopic(topic)),
   });
   // Summaries go to the topic's own model, local or cloud (MV-SUM-1).
   const summaryTemplates = new SummaryTemplateRepository(db);

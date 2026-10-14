@@ -1,7 +1,7 @@
 import { DomainError, isDomainError } from '../core/errors';
 import type { Message, MessageRepository } from '../db/repositories/MessageRepository';
 import type { Topic, TopicRepository } from '../db/repositories/TopicRepository';
-import type { LlmEngine } from '../engines/types';
+import type { LlmEngine, ToolCall, ToolDefinition } from '../engines/types';
 import type { ContextBuilder, ModelBudget } from './ContextBuilder';
 import type { TopicTitler } from './TopicTitler';
 
@@ -15,11 +15,15 @@ export interface ConversationDependencies {
   model?: (topic: Topic) => string;
   systemPrompt: (topic: Topic) => string | null;
   titler?: TopicTitler;
+  // Whether the topic's model may be offered tools: cloud models only (MV-CMD-1).
+  toolsAllowed?: (topic: Topic) => boolean;
 }
 
 export interface SendOptions {
   onToken?: (token: string) => void;
   signal?: AbortSignal;
+  // Functions the model may call instead of answering, if its kind allows tools.
+  tools?: ToolDefinition[];
 }
 
 export interface Exchange {
@@ -31,6 +35,8 @@ export interface Exchange {
   newTitle: string | null;
   // Titling is cosmetic: its failure keeps the placeholder and is reported here, not thrown.
   titleError: DomainError | null;
+  // The model called a tool: the question was a command, so it is not kept in the history.
+  toolCall?: ToolCall;
 }
 
 // One user turn: store the question, build the context, stream the answer, store what was answered.
@@ -50,13 +56,29 @@ export class ConversationService {
     );
     const signal = options.signal ?? new AbortController().signal;
     const model = this.deps.model?.(topic);
+    const tools =
+      options.tools !== undefined && options.tools.length > 0 && this.deps.toolsAllowed?.(topic) === true
+        ? options.tools
+        : undefined;
     const result = await this.deps
       .llm()
       .generate(
-        model === undefined ? request : { ...request, model },
+        { ...request, ...(model === undefined ? {} : { model }), ...(tools === undefined ? {} : { tools }) },
         (token) => options.onToken?.(token),
         signal,
       );
+
+    if (result.toolCall !== undefined && !result.aborted) {
+      await this.deps.messages.delete(userMessage.id);
+      return {
+        userMessage,
+        assistantMessage: null,
+        interrupted: false,
+        newTitle: null,
+        titleError: null,
+        toolCall: result.toolCall,
+      };
+    }
 
     const answer = result.text.trim();
     if (answer.length === 0) {

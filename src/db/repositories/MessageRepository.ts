@@ -72,4 +72,9 @@ export class MessageRepository {
     );
     return rows.map(toMessage);
   }
+
+  // A spoken command the model recognized is not part of the conversation (MV-CMD-1).
+  async delete(id: number): Promise<void> {
+    await this.db.runAsync('DELETE FROM messages WHERE id = ?', [id]);
+  }
 }

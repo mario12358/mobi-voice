@@ -1,5 +1,6 @@
 import { ANTHROPIC_DEFAULT_MODEL, ANTHROPIC_FALLBACK_MODELS, AnthropicEngine } from '../AnthropicEngine';
 import { CloudHttpClient } from '../CloudHttpClient';
+import { TOPIC_TOOLS } from '../../services/voice/topicTools';
 import { recordedServer, type Recording } from './support/recordedServer';
 
 const KEY = 'test-anthropic-key';
@@ -65,6 +66,63 @@ describe('Anthropic adapter', () => {
         stream: true,
       },
     });
+  });
+
+  it('offers the tools and returns the tool_use block, its input streamed as JSON pieces', async () => {
+    const event = (name: string, data: object) => `event: ${name}\ndata: ${JSON.stringify(data)}\n\n`;
+    const { engine, calls } = setup({
+      status: 200,
+      chunks: [
+        event('message_start', { type: 'message_start', message: { id: 'msg_1' } }),
+        event('content_block_start', {
+          type: 'content_block_start',
+          index: 0,
+          content_block: { type: 'text', text: '' },
+        }),
+        event('content_block_delta', {
+          type: 'content_block_delta',
+          index: 0,
+          delta: { type: 'text_delta', text: 'Już.' },
+        }),
+        event('content_block_stop', { type: 'content_block_stop', index: 0 }),
+        event('content_block_start', {
+          type: 'content_block_start',
+          index: 1,
+          content_block: { type: 'tool_use', id: 'toolu_1', name: 'create_topic', input: {} },
+        }),
+        event('content_block_delta', {
+          type: 'content_block_delta',
+          index: 1,
+          delta: { type: 'input_json_delta', partial_json: '{"name": "remont' },
+        }),
+        event('content_block_delta', {
+          type: 'content_block_delta',
+          index: 1,
+          delta: { type: 'input_json_delta', partial_json: ' łazienki"}' },
+        }),
+        event('content_block_stop', { type: 'content_block_stop', index: 1 }),
+        event('message_stop', { type: 'message_stop' }),
+      ],
+    });
+
+    const result = await engine.generate(
+      { ...REQUEST, tools: TOPIC_TOOLS },
+      () => {},
+      new AbortController().signal,
+    );
+
+    expect(result).toEqual({
+      text: 'Już.',
+      aborted: false,
+      toolCall: { name: 'create_topic', arguments: { name: 'remont łazienki' } },
+    });
+    expect((calls[0]!.body as { tools: unknown[] }).tools).toEqual(
+      TOPIC_TOOLS.map(({ name, description, parameters }) => ({
+        name,
+        description,
+        input_schema: parameters,
+      })),
+    );
   });
 
   it('keeps what arrived when the answer is stopped mid-stream', async () => {

@@ -1,5 +1,6 @@
 import { CloudHttpClient } from '../CloudHttpClient';
 import { GEMINI_DEFAULT_MODEL, GEMINI_FALLBACK_MODELS, GeminiEngine } from '../GeminiEngine';
+import { TOPIC_TOOLS } from '../../services/voice/topicTools';
 import { recordedServer, sse, type Recording } from './support/recordedServer';
 
 const KEY = 'test-gemini-key';
@@ -66,6 +67,34 @@ describe('Gemini adapter', () => {
     );
 
     expect(result).toEqual({ text: 'Mazury są ', aborted: true });
+  });
+
+  it('offers the tools as function declarations and returns the function call', async () => {
+    const { engine, calls } = setup({
+      status: 200,
+      chunks: sse({
+        candidates: [
+          { content: { role: 'model', parts: [{ functionCall: { name: 'list_topics', args: {} } }] } },
+        ],
+      }),
+    });
+
+    const result = await engine.generate(
+      { ...REQUEST, tools: TOPIC_TOOLS },
+      () => {},
+      new AbortController().signal,
+    );
+
+    expect(result).toEqual({ text: '', aborted: false, toolCall: { name: 'list_topics', arguments: {} } });
+    expect((calls[0]!.body as { tools: unknown[] }).tools).toEqual([{ functionDeclarations: TOPIC_TOOLS }]);
+  });
+
+  it('sends no tools when the request has none', async () => {
+    const { engine, calls } = setup({ status: 200, chunks: sse(part('Tak.')) });
+
+    await engine.generate(REQUEST, () => {}, new AbortController().signal);
+
+    expect(calls[0]!.body).not.toHaveProperty('tools');
   });
 
   it('lists Gemini chat models from the API with the built-in list as a fallback', async () => {

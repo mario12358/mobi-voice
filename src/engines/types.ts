@@ -35,17 +35,45 @@ export interface ChatMessage {
   content: string;
 }
 
+// A function the model may call instead of answering (cloud models only, MV-CMD-1).
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  // JSON Schema of the arguments object.
+  parameters: { type: 'object'; properties: Record<string, unknown>; required?: string[] };
+}
+
+export interface ToolCall {
+  name: string;
+  arguments: Record<string, unknown>;
+}
+
 export interface LlmRequest {
   systemPrompt: string | null;
   messages: ChatMessage[];
   maxTokens?: number;
   // Catalog id of the model chosen for the topic; absent means the global choice (MV-MOD-5).
   model?: string;
+  tools?: ToolDefinition[];
 }
 
 export interface LlmResult {
   text: string;
   aborted: boolean;
+  // The first tool the model called, when it called one.
+  toolCall?: ToolCall;
+}
+
+// Tool arguments arrive as JSON text; a malformed or non-object payload counts as no arguments.
+export function parseToolArguments(json: string): Record<string, unknown> {
+  try {
+    const parsed: unknown = JSON.parse(json === '' ? '{}' : json);
+    return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>)
+      : {};
+  } catch {
+    return {};
+  }
 }
 
 export interface LlmEngine {

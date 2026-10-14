@@ -1,5 +1,5 @@
 import { DomainError, isDomainError } from '../core/errors';
-import type { LlmRequest, LlmResult } from '../engines/types';
+import type { LlmRequest, LlmResult, ToolCall } from '../engines/types';
 import type { CloudHttpClient } from './CloudHttpClient';
 import type { ApiKeySource, CloudLlmEngine } from './types';
 
@@ -9,7 +9,11 @@ export const GEMINI_DEFAULT_MODEL = 'gemini-2.5-flash';
 export const GEMINI_FALLBACK_MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro'];
 
 interface StreamChunk {
-  candidates?: { content?: { parts?: { text?: string }[] } }[];
+  candidates?: {
+    content?: {
+      parts?: { text?: string; functionCall?: { name?: string; args?: Record<string, unknown> } }[];
+    };
+  }[];
 }
 
 interface ListedModel {
@@ -42,6 +46,8 @@ export class GeminiEngine implements CloudLlmEngine {
     const key = await this.requireKey();
     const model = request.model ?? GEMINI_DEFAULT_MODEL;
     let text = '';
+    // Gemini sends a function call whole, in one part.
+    let toolCall: ToolCall | undefined;
     try {
       const response = await this.client.request({
         url: `${BASE_URL}/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`,
@@ -57,6 +63,9 @@ export class GeminiEngine implements CloudLlmEngine {
           ...(request.maxTokens === undefined
             ? {}
             : { generationConfig: { maxOutputTokens: request.maxTokens } }),
+          ...(request.tools === undefined || request.tools.length === 0
+            ? {}
+            : { tools: [{ functionDeclarations: request.tools }] }),
         },
         signal,
       });
@@ -64,12 +73,15 @@ export class GeminiEngine implements CloudLlmEngine {
         if (signal.aborted) return;
         const parts = parseChunk(event.data)?.candidates?.[0]?.content?.parts ?? [];
         for (const part of parts) {
+          if (part.functionCall?.name !== undefined && toolCall === undefined) {
+            toolCall = { name: part.functionCall.name, arguments: part.functionCall.args ?? {} };
+          }
           if (typeof part.text !== 'string' || part.text.length === 0) continue;
           text += part.text;
           onToken(part.text);
         }
       });
-      return { text, aborted: signal.aborted };
+      return { text, aborted: signal.aborted, ...(toolCall === undefined ? {} : { toolCall }) };
     } catch (error) {
       if (signal.aborted) return { text, aborted: true };
       throw error;

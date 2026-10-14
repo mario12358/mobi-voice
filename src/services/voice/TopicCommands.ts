@@ -1,4 +1,5 @@
 import type { Topic, TopicRepository } from '../../db/repositories/TopicRepository';
+import type { ToolCall } from '../../engines/types';
 import { matchTopic, parseVoiceCommand, type VoiceCommand } from '../speech/VoiceCommandParser';
 
 // Spoken replies to topic commands (MV-CMD-1); the assistant's voice, not UI text.
@@ -53,6 +54,21 @@ export class TopicCommands {
     }
     const command = parseVoiceCommand(transcript);
     return command === null ? null : this.run(command, context);
+  }
+
+  // A topic tool a cloud model called when the grammar did not recognize the command (MV-CMD-1).
+  async runTool(call: ToolCall, context: CommandContext): Promise<CommandOutcome | null> {
+    const name = typeof call.arguments.name === 'string' ? call.arguments.name.trim() : '';
+    switch (call.name) {
+      case 'switch_topic':
+        return name.length === 0 ? null : this.run({ type: 'switch', name }, context);
+      case 'create_topic':
+        return name.length === 0 ? null : this.run({ type: 'create', name }, context);
+      case 'list_topics':
+        return this.run({ type: 'list' }, context);
+      default:
+        return null;
+    }
   }
 
   private async run(command: VoiceCommand, context: CommandContext): Promise<CommandOutcome | null> {
