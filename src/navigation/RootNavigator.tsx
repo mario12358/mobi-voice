@@ -10,6 +10,7 @@ import { ConversationScreen } from '../features/conversation/ConversationScreen'
 import { ModelsScreen } from '../features/models/ModelsScreen';
 import { needsOnboarding } from '../features/onboarding/onboarding';
 import { OnboardingScreen } from '../features/onboarding/OnboardingScreen';
+import { LicensesScreen } from '../features/settings/LicensesScreen';
 import { SettingsScreen } from '../features/settings/SettingsScreen';
 import { SummaryScreen } from '../features/summary/SummaryScreen';
 import { TopicListScreen } from '../features/topics/TopicListScreen';
@@ -74,6 +75,7 @@ export function RootNavigator() {
         <Stack.Screen name="Summary" component={SummaryScreen} options={{ title: pl.summary.title }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: pl.settings.title }} />
         <Stack.Screen name="Models" component={ModelsScreen} options={{ title: pl.models.title }} />
+        <Stack.Screen name="Licenses" component={LicensesScreen} options={{ title: pl.licenses.title }} />
         <Stack.Screen
           name="Onboarding"
           component={OnboardingScreen}

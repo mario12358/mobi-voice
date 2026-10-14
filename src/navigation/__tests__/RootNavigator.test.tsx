@@ -62,6 +62,15 @@ describe('RootNavigator', () => {
     expect(screen.getByText(pl.models.sectionLlm)).toBeTruthy();
   });
 
+  it('goes from the settings to the licenses', async () => {
+    await renderNavigator(db);
+
+    await fireEvent.press(await screen.findByRole('button', { name: pl.topicList.openSettings }));
+    await fireEvent.press(await screen.findByTestId('settings.open-licenses'));
+
+    expect(await screen.findByTestId('licenses-screen')).toBeTruthy();
+  });
+
   it('opens the summary of the current topic from the conversation', async () => {
     const topic = await new TopicRepository(db).create('Zakupy');
     await renderNavigator(db);

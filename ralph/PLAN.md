@@ -220,7 +220,7 @@
   - Specky: (req: 01M4TPSCT6VW2MN48Y3MP3WBXC v1.0 @aab204b)
   - Specky kryteria: (crit: 01M4TPSCTRFJVN1RZX3P717BYQ) (crit: 01M4TPSCTRC2WYRFBHHV417XND)
 - [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie (pr: #34)
-- [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #35)
   - AC: zmiana głosu, trybu i progu działa od następnej wypowiedzi
   - AC: ekran licencji wymienia Llama 3.2 Community License, Gemma Terms of Use, Apache 2.0 (Qwen), licencje głosów Piper
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
@@ -229,7 +229,7 @@
   - Specky kryteria: (crit: 01M4TPSDJ62M6TE9A5F0JVH4E3)
   - Specky: (req: 01M4TPSDPBEDTZZQQMS63N2YES v1.0 @5f3694f)
   - Specky kryteria: (crit: 01M4TPSDPP4W0NEMR8EHA2PQQP)
-- [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja
+- [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja (pr: #35)
 - [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript)
   - AC: temat z nadpisanym modelem używa go; bez nadpisania — modelu globalnego
   - Specky: (req: 01M4TPSCZHV54NDW1AVW7EMMWZ v1.0 @b9ecbc6)
