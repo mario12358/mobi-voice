@@ -9,6 +9,8 @@ import type { AudioPorts } from '../audio/types';
 import { useDatabase } from '../db/DatabaseProvider';
 import { ContextSummaryRepository } from '../db/repositories/ContextSummaryRepository';
 import { MessageRepository } from '../db/repositories/MessageRepository';
+import { SummaryRepository } from '../db/repositories/SummaryRepository';
+import { SummaryTemplateRepository } from '../db/repositories/SummaryTemplateRepository';
 import { TopicRepository, type Topic } from '../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../db/SqlDatabase';
 import { useEngines } from '../engines/EngineProvider';
@@ -22,6 +24,7 @@ import { useSettingsStore } from '../state/settings';
 import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
 import { resolveSystemPrompt } from './prompts';
+import { SummaryService } from './SummaryService';
 import { TopicTitler } from './TopicTitler';
 import { TopicCommands } from './voice/TopicCommands';
 import { VoiceSessionController } from './voice/VoiceSessionController';
@@ -30,6 +33,8 @@ export interface AppServices {
   topics: TopicRepository;
   messages: MessageRepository;
   conversation: ConversationService;
+  summaries: SummaryService;
+  summaryTemplates: SummaryTemplateRepository;
   downloads: ModelDownloadService;
   audio: AudioSessionService;
   voice: VoiceSessionController;
@@ -77,6 +82,15 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
       resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),
   });
+  // Summaries go to the topic's own model, local or cloud (MV-SUM-1).
+  const summaries = new SummaryService({
+    topics,
+    messages,
+    summaries: new SummaryRepository(db),
+    llm: () => llm,
+    budget: modelForTopic,
+    model: (topic) => modelForTopic(topic).id,
+  });
   const audio = new AudioSessionService({
     ...ports.audio,
     source: () => engines.audioSource(),
@@ -98,6 +112,8 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     topics,
     messages,
     conversation,
+    summaries,
+    summaryTemplates: new SummaryTemplateRepository(db),
     downloads,
     audio,
     voice,
