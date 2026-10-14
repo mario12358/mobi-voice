@@ -9,6 +9,7 @@ export const pl = {
     e2eClosing: 'Test: koniec z „odbiór”',
     e2eSayStop: 'Test: „stop”',
     e2eLong: 'Test: długie pytanie',
+    e2eSayText: 'Test: powiedz',
     back: 'Wstecz',
   },
   topicList: {
