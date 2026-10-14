@@ -11,6 +11,7 @@ import type { RootScreenProps } from '../../navigation/types';
 import { SPACING, usePalette } from '../../theme/theme';
 import { RenameTopicDialog } from './RenameTopicDialog';
 import { TopicRow } from './TopicRow';
+import { useTopicExport } from './useTopicExport';
 import { useTopics } from './useTopics';
 
 export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
@@ -18,6 +19,8 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
   const topics = useTopics();
   const [renaming, setRenaming] = useState<Topic | null>(null);
   const [deleting, setDeleting] = useState<Topic | null>(null);
+  const exportTopic = useTopicExport();
+  const exportRow = useCallback((topic: Topic) => void exportTopic(topic.id), [exportTopic]);
 
   const openTopic = useCallback(
     (topic: Topic) => navigation.navigate('Conversation', { topicId: topic.id }),
@@ -70,7 +73,13 @@ export function TopicListScreen({ navigation }: RootScreenProps<'TopicList'>) {
         // A tap on a row button must act even while the keyboard (search/message field) is open.
         keyboardShouldPersistTaps="handled"
         renderItem={({ item }) => (
-          <TopicRow topic={item} onOpen={openTopic} onRename={setRenaming} onDelete={setDeleting} />
+          <TopicRow
+            topic={item}
+            onOpen={openTopic}
+            onRename={setRenaming}
+            onDelete={setDeleting}
+            onExport={exportRow}
+          />
         )}
         ItemSeparatorComponent={Separator}
         ListEmptyComponent={topics.loaded ? <BodyText>{emptyText}</BodyText> : null}
