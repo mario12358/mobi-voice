@@ -69,7 +69,7 @@ function setup(reply = ['Stolicą ', 'Polski ', 'jest ', 'Warszawa.']) {
   const downloaded = new Set(['qwen2.5-1.5b', 'llama3.2-1b']);
   const engine = new LocalLlmEngine(
     {
-      currentModel: () => current,
+      currentModel: (requested?: string) => (requested === undefined ? current : model(requested)),
       modelPath: async (entry) => (downloaded.has(entry.id) ? `/docs/models/${entry.id}/model.gguf` : null),
     },
     new LlamaContextSlot(initLlama, 99),
@@ -78,6 +78,24 @@ function setup(reply = ['Stolicą ', 'Polski ', 'jest ', 'Warszawa.']) {
 }
 
 describe('LocalLlmEngine', () => {
+  it("loads the topic's own model when the request names one, the global choice otherwise", async () => {
+    const { engine, initLlama } = setup();
+
+    await engine.generate(
+      { ...REQUEST, model: 'llama3.2-1b' },
+      () => undefined,
+      new AbortController().signal,
+    );
+    expect(initLlama).toHaveBeenLastCalledWith(
+      expect.objectContaining({ model: '/docs/models/llama3.2-1b/model.gguf' }),
+    );
+
+    await engine.generate(REQUEST, () => undefined, new AbortController().signal);
+    expect(initLlama).toHaveBeenLastCalledWith(
+      expect.objectContaining({ model: '/docs/models/qwen2.5-1.5b/model.gguf' }),
+    );
+  });
+
   // specky: crit 01M4TPSCNMGEE6WVQX15T9B7CV
   it('chats with the downloaded model from the device file, without any network request', async () => {
     const fetchSpy = jest.spyOn(globalThis, 'fetch');

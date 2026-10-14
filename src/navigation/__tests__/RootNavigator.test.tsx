@@ -59,7 +59,16 @@ describe('RootNavigator', () => {
     expect(await screen.findByTestId('settings-screen')).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: pl.settings.openModels }));
     expect(await screen.findByTestId('models-screen')).toBeTruthy();
-    expect(screen.getByText(pl.models.placeholder)).toBeTruthy();
+    expect(screen.getByText(pl.models.sectionLlm)).toBeTruthy();
+  });
+
+  it('goes from the settings to the licenses', async () => {
+    await renderNavigator(db);
+
+    await fireEvent.press(await screen.findByRole('button', { name: pl.topicList.openSettings }));
+    await fireEvent.press(await screen.findByTestId('settings.open-licenses'));
+
+    expect(await screen.findByTestId('licenses-screen')).toBeTruthy();
   });
 
   it('opens the summary of the current topic from the conversation', async () => {

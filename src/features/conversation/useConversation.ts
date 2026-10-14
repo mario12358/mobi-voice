@@ -14,6 +14,8 @@ export interface ConversationState {
   send(text: string): Promise<void>;
   stop(): void;
   setTopicPrompt(prompt: string): Promise<void>;
+  // The topic's own language model, or null to follow the settings.
+  setTopicModel(modelId: string | null): Promise<void>;
   // Re-reads the topic history, e.g. after a voice exchange stored new messages.
   reload(): Promise<void>;
 }
@@ -86,5 +88,12 @@ export function useConversation(topicId: number): ConversationState {
     [services, topicId],
   );
 
-  return { topic, messages, streaming, error, send, stop, setTopicPrompt, reload };
+  const setTopicModel = useCallback(
+    async (modelId: string | null) => {
+      setTopic(await services.topics.setModelOverride(topicId, modelId));
+    },
+    [services, topicId],
+  );
+
+  return { topic, messages, streaming, error, send, stop, setTopicPrompt, setTopicModel, reload };
 }

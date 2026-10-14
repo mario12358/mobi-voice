@@ -8,10 +8,12 @@ import { TopicRepository } from '../../../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../../../db/SqlDatabase';
 import { encodeWav, synthesize, type AudioPart } from '../../../engines/__tests__/support/audio';
 import { EnergyVadEngine } from '../../../engines/fakes/EnergyVadEngine';
+import { FakeKeywordSpotter } from '../../../engines/fakes/FakeKeywordSpotter';
 import { FakeSttEngine } from '../../../engines/fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../../../engines/fakes/FakeTtsEngine';
 import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
 import type { LlmEngine, LlmRequest, LlmResult } from '../../../engines/types';
+import type { ConversationMode } from '../../../state/settings';
 import { ContextBuilder } from '../../ContextBuilder';
 import { ConversationService } from '../../ConversationService';
 import { until } from './support/until';
@@ -27,10 +29,14 @@ class SteppedLlm implements LlmEngine {
     this.tokens = text.match(/\S+\s*/g) ?? [];
   }
 
-  generate(request: LlmRequest, onToken: (token: string) => void): Promise<LlmResult> {
+  generate(request: LlmRequest, onToken: (token: string) => void, signal: AbortSignal): Promise<LlmResult> {
     this.requests.push(request);
     let text = '';
     return new Promise((resolve) => {
+      signal.addEventListener('abort', () => {
+        this.step = null;
+        resolve({ text, aborted: true });
+      });
       this.step = () => {
         const token = this.tokens.shift();
         if (token === undefined) {
@@ -65,7 +71,9 @@ describe('VoiceSessionController (continuous mode)', () => {
   let source: WavAudioSource;
   let stt: FakeSttEngine;
   let tts: FakeTtsEngine;
+  let spotter: FakeKeywordSpotter;
   let thresholdMs: number;
+  let mode: ConversationMode;
   let controller: VoiceSessionController;
   let states: VoiceState[];
 
@@ -79,7 +87,9 @@ describe('VoiceSessionController (continuous mode)', () => {
     source = new WavAudioSource();
     stt = new FakeSttEngine();
     tts = new FakeTtsEngine(0);
+    spotter = new FakeKeywordSpotter();
     thresholdMs = 1_500;
+    mode = 'continuous';
     const vad = new EnergyVadEngine();
     const conversation = new ConversationService({
       topics,
@@ -95,8 +105,10 @@ describe('VoiceSessionController (continuous mode)', () => {
       vad: () => vad,
       stt: () => stt,
       tts: () => tts,
+      keywordSpotter: () => spotter,
       conversation,
       silenceThresholdMs: () => thresholdMs,
+      mode: () => mode,
     });
     states = [];
     await controller.start(topicId, { onState: (state) => states.push(state) });
@@ -237,5 +249,209 @@ describe('VoiceSessionController (continuous mode)', () => {
     expect(controller.current).toBe('idle');
     expect(tts.isSpeaking).toBe(false);
     expect(source.isRunning).toBe(false);
+  });
+  describe('interrupted mode', () => {
+    let heard: string[];
+
+    beforeEach(async () => {
+      mode = 'interrupted';
+      heard = [];
+      await controller.stop();
+      states = [];
+      await controller.start(topicId, {
+        onState: (state) => states.push(state),
+        onHeard: (text) => heard.push(text),
+      });
+    });
+
+    // One part of the utterance followed by a pause; waits until it is recognized and the mic listens again.
+    async function speakPart(silenceMs = 2_000): Promise<void> {
+      const segments = stt.segments.length;
+      say([{ tone: 500 }, { silence: silenceMs }]);
+      await until(
+        () => stt.segments.length === segments + 1 && (controller.current === 'listening' || llm.generating),
+      );
+    }
+
+    // specky: crit 01M4TPSC2XBWSY7997NWZGCE5K
+    it('does not send on pauses, however long, while "odbiór" has not been said', async () => {
+      stt.enqueue('Planuję wyjazd', 'na Mazury w lipcu', 'z dziećmi');
+
+      await speakPart();
+      await speakPart();
+      await speakPart(6_000);
+
+      expect(llm.requests).toHaveLength(0);
+      expect(heard).toEqual([
+        'Planuję wyjazd',
+        'Planuję wyjazd na Mazury w lipcu',
+        'Planuję wyjazd na Mazury w lipcu z dziećmi',
+      ]);
+    });
+
+    // specky: crit 01M4TPSC2XMDVW605VXF879XN8
+    it('sends everything said so far once the utterance ends with "odbiór", without the word', async () => {
+      stt.enqueue('Planuję wyjazd na Mazury.', 'Co polecasz? Odbiór.');
+      llm.answerWith('Polecam Mikołajki.');
+
+      await speakPart();
+      expect(llm.requests).toHaveLength(0);
+      await speakPart();
+      await until(() => llm.requests.length === 1);
+
+      expect(llm.requests[0]?.messages.at(-1)).toEqual({
+        role: 'user',
+        content: 'Planuję wyjazd na Mazury. Co polecasz?',
+      });
+      llm.finish();
+      await until(() => controller.current === 'listening' && tts.spoken.length === 1);
+      const history = await messages.listByTopic(topicId);
+      expect(history.map((message) => message.content)).toEqual([
+        'Planuję wyjazd na Mazury. Co polecasz?',
+        'Polecam Mikołajki.',
+      ]);
+    });
+
+    it('treats "odbiór" in the middle of a sentence as an ordinary word', async () => {
+      stt.enqueue('Odbiór paczki jutro', 'i co dalej? Odbiór');
+      llm.answerWith('Dobrze.');
+
+      await speakPart();
+      expect(heard).toEqual(['Odbiór paczki jutro']);
+      expect(llm.requests).toHaveLength(0);
+
+      await speakPart();
+      await until(() => llm.requests.length === 1);
+      expect(llm.requests[0]?.messages.at(-1)?.content).toBe('Odbiór paczki jutro i co dalej?');
+      llm.finish();
+    });
+  });
+});
+
+describe('VoiceSessionController — "stop"', () => {
+  let db: SqlDatabase;
+  let messages: MessageRepository;
+  let topicId: number;
+  let llm: SteppedLlm;
+  let source: WavAudioSource;
+  let stt: FakeSttEngine;
+  let tts: FakeTtsEngine;
+  let spotter: FakeKeywordSpotter;
+  let controller: VoiceSessionController;
+
+  beforeEach(async () => {
+    db = openNodeSqlDatabase();
+    await prepareDatabase(db);
+    const topics = new TopicRepository(db);
+    messages = new MessageRepository(db);
+    topicId = (await topics.create('Mazury')).id;
+    llm = new SteppedLlm();
+    source = new WavAudioSource();
+    stt = new FakeSttEngine();
+    tts = new FakeTtsEngine(60_000);
+    spotter = new FakeKeywordSpotter();
+    const vad = new EnergyVadEngine();
+    controller = new VoiceSessionController({
+      audio: new AudioSessionService({ ...new FakeAudioPorts(), source: () => source, tts: () => tts }),
+      vad: () => vad,
+      stt: () => stt,
+      tts: () => tts,
+      keywordSpotter: () => spotter,
+      conversation: new ConversationService({
+        topics,
+        messages,
+        context: new ContextBuilder(messages, new ContextSummaryRepository(db), {
+          summarize: async () => '',
+        }),
+        llm: () => llm,
+        budget: () => ({ contextTokens: 4_096, maxOutputTokens: 512 }),
+        systemPrompt: () => 'Odpowiadaj krótko.',
+      }),
+      silenceThresholdMs: () => 1_500,
+      mode: () => 'continuous',
+    });
+    await controller.start(topicId);
+  });
+
+  afterEach(async () => {
+    await controller.stop();
+    await db.closeAsync();
+  });
+
+  function ask(question: string, answer: string): void {
+    stt.enqueue(question);
+    llm.answerWith(answer);
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+  }
+
+  it('listens for "stop" only while the answer is prepared or read', async () => {
+    expect(spotter.isListening).toBe(false);
+
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    expect(spotter.isListening).toBe(true);
+
+    llm.finish();
+    await until(() => tts.spoken.length === 2);
+    expect(controller.current).toBe('speaking');
+    expect(spotter.isListening).toBe(true);
+
+    await tts.stop();
+    await until(() => controller.current === 'listening');
+    expect(spotter.isListening).toBe(false);
+  });
+
+  // specky: crit 01M4TPSC5K3QATGJG1DNDG5JWZ
+  it('"stop" while the answer is read silences it and listens at once', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    llm.finish();
+    await until(() => tts.isSpeaking);
+
+    spotter.trigger('stop');
+
+    await until(() => controller.current === 'listening');
+    expect(tts.isSpeaking).toBe(false);
+    // The rest of the answer is not read after "stop".
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(tts.spoken).toEqual(['Mazury to kraina jezior.']);
+  });
+
+  // specky: crit 01M4TPSC5K6T07CB28MAEV4VWZ
+  it('"stop" while the answer is generated ends the generation and nothing more is read', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące. Warto tam pojechać.');
+    await until(() => llm.generating);
+    llm.next(5);
+
+    spotter.trigger('stop');
+
+    await until(() => !llm.generating && controller.current === 'listening');
+    llm.next(10);
+    expect(tts.spoken).toEqual(['Mazury to kraina jezior.']);
+  });
+
+  // specky: crit 01M4TPSC5KA9NT3SHJ61SKQA26
+  it('keeps the interrupted answer in the history, marked, and in the context of the next question', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    llm.next(5);
+    spotter.trigger('stop');
+    await until(() => controller.current === 'listening' && !llm.generating);
+
+    let last: Awaited<ReturnType<MessageRepository['listByTopic']>>[number] | undefined;
+    await until(() => {
+      void messages.listByTopic(topicId).then((history) => (last = history.at(-1)));
+      return last?.role === 'assistant';
+    });
+    expect(last).toMatchObject({ content: 'Mazury to kraina jezior. Jest', interrupted: true });
+
+    ask('A które jest największe?', 'Śniardwy.');
+    await until(() => llm.requests.length === 2);
+    expect(llm.requests[1]?.messages).toEqual([
+      { role: 'user', content: 'Opowiedz o Mazurach.' },
+      { role: 'assistant', content: 'Mazury to kraina jezior. Jest' },
+      { role: 'user', content: 'A które jest największe?' },
+    ]);
+    llm.finish();
   });
 });
