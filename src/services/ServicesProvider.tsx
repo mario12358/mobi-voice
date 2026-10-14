@@ -74,6 +74,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     keywordSpotter: () => engines.keywordSpotter(),
     conversation,
     silenceThresholdMs: () => useSettingsStore.getState().silenceThresholdMs,
+    mode: () => useSettingsStore.getState().conversationMode,
     recordLatency: (sample) => useLatencyStore.getState().record(sample),
   });
   return {

@@ -41,6 +41,7 @@ export function useVoiceSession(topicId: number, onExchange: () => Promise<void>
     setError(null);
     const result = await voice.start(topicId, {
       onState: setState,
+      onHeard: setTranscript,
       onTranscript: (text) => {
         setTranscript(text);
         setStreaming('');

@@ -5,6 +5,10 @@ export const pl = {
     testMode: 'Tryb testowy',
     e2eSpeak: 'Test: wypowiedź',
     e2eDenyMic: 'Test: odmowa mikrofonu',
+    e2ePart: 'Test: część wypowiedzi',
+    e2eClosing: 'Test: koniec z „odbiór”',
+    e2eSayStop: 'Test: „stop”',
+    e2eLong: 'Test: długie pytanie',
     back: 'Wstecz',
   },
   topicList: {

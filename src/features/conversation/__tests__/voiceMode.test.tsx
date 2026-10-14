@@ -168,6 +168,24 @@ describe('ConversationScreen voice mode', () => {
     );
   });
 
+  it('in interrupted mode shows what was said so far and sends only after "odbiór"', async () => {
+    useSettingsStore.getState().update({ conversationMode: 'interrupted' });
+    stt = new FakeSttEngine(['Jadę nad morze', 'gdzie nocować? Odbiór.']);
+    await renderConversation();
+    await fireEvent.press(screen.getByTestId('conversation.mic'));
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    expect(await screen.findByText(pl.conversation.youSaid('Jadę nad morze'))).toBeTruthy();
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+    expect(llm.waiting).toBe(false);
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    expect(await screen.findByText(pl.conversation.youSaid('Jadę nad morze gdzie nocować?'))).toBeTruthy();
+    await waitFor(() => expect(llm.waiting).toBe(true));
+    llm.answer();
+  });
+
   it('explains a denied microphone when voice is started and keeps typing', async () => {
     await renderConversation(new FakeAudioPorts('undetermined', 'denied'));
 
