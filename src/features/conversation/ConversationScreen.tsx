@@ -107,6 +107,9 @@ function VoicePanel({ voice }: { voice: VoiceSessionView }) {
       {voice.transcript !== null && (
         <BodyText testID="conversation.transcript">{pl.conversation.youSaid(voice.transcript)}</BodyText>
       )}
+      {(voice.state === 'processing' || voice.state === 'speaking') && (
+        <TextButton testID="conversation.voice-stop" label={pl.conversation.stop} onPress={voice.interrupt} />
+      )}
       <Pressable
         testID="conversation.mic"
         accessibilityRole="button"

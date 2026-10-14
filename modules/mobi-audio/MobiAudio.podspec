@@ -2,6 +2,8 @@
 # development pods do not run prepare_command.
 system('bash', File.join(__dir__, 'scripts', 'fetch-sherpa.sh'), 'ios', File.join(__dir__, 'vendor', 'ios')) ||
   raise('MobiAudio: downloading sherpa-onnx failed')
+system('bash', File.join(__dir__, 'scripts', 'fetch-sherpa.sh'), 'kws', File.join(__dir__, 'vendor', 'kws')) ||
+  raise('MobiAudio: downloading the keyword model failed')
 
 Pod::Spec.new do |s|
   s.name           = 'MobiAudio'
@@ -20,7 +22,7 @@ Pod::Spec.new do |s|
 
   # Swift only: a broader glob would pull the vendored C++ headers into the module's umbrella header.
   s.source_files = 'ios/*.swift'
-  s.resources = 'assets/*.onnx'
+  s.resources = 'assets/*.{onnx,txt}', 'vendor/kws/*'
   s.vendored_frameworks = 'vendor/ios/SherpaOnnxC.xcframework', 'vendor/ios/onnxruntime.xcframework'
   s.libraries = 'c++'
   s.pod_target_xcconfig = {

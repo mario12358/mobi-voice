@@ -8,6 +8,7 @@ import { TopicRepository } from '../../../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../../../db/SqlDatabase';
 import { encodeWav, synthesize, type AudioPart } from '../../../engines/__tests__/support/audio';
 import { EnergyVadEngine } from '../../../engines/fakes/EnergyVadEngine';
+import { FakeKeywordSpotter } from '../../../engines/fakes/FakeKeywordSpotter';
 import { FakeSttEngine } from '../../../engines/fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../../../engines/fakes/FakeTtsEngine';
 import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
@@ -27,10 +28,14 @@ class SteppedLlm implements LlmEngine {
     this.tokens = text.match(/\S+\s*/g) ?? [];
   }
 
-  generate(request: LlmRequest, onToken: (token: string) => void): Promise<LlmResult> {
+  generate(request: LlmRequest, onToken: (token: string) => void, signal: AbortSignal): Promise<LlmResult> {
     this.requests.push(request);
     let text = '';
     return new Promise((resolve) => {
+      signal.addEventListener('abort', () => {
+        this.step = null;
+        resolve({ text, aborted: true });
+      });
       this.step = () => {
         const token = this.tokens.shift();
         if (token === undefined) {
@@ -65,6 +70,7 @@ describe('VoiceSessionController (continuous mode)', () => {
   let source: WavAudioSource;
   let stt: FakeSttEngine;
   let tts: FakeTtsEngine;
+  let spotter: FakeKeywordSpotter;
   let thresholdMs: number;
   let controller: VoiceSessionController;
   let states: VoiceState[];
@@ -79,6 +85,7 @@ describe('VoiceSessionController (continuous mode)', () => {
     source = new WavAudioSource();
     stt = new FakeSttEngine();
     tts = new FakeTtsEngine(0);
+    spotter = new FakeKeywordSpotter();
     thresholdMs = 1_500;
     const vad = new EnergyVadEngine();
     const conversation = new ConversationService({
@@ -95,6 +102,7 @@ describe('VoiceSessionController (continuous mode)', () => {
       vad: () => vad,
       stt: () => stt,
       tts: () => tts,
+      keywordSpotter: () => spotter,
       conversation,
       silenceThresholdMs: () => thresholdMs,
     });
@@ -237,5 +245,132 @@ describe('VoiceSessionController (continuous mode)', () => {
     expect(controller.current).toBe('idle');
     expect(tts.isSpeaking).toBe(false);
     expect(source.isRunning).toBe(false);
+  });
+});
+
+describe('VoiceSessionController — "stop"', () => {
+  let db: SqlDatabase;
+  let messages: MessageRepository;
+  let topicId: number;
+  let llm: SteppedLlm;
+  let source: WavAudioSource;
+  let stt: FakeSttEngine;
+  let tts: FakeTtsEngine;
+  let spotter: FakeKeywordSpotter;
+  let controller: VoiceSessionController;
+
+  beforeEach(async () => {
+    db = openNodeSqlDatabase();
+    await prepareDatabase(db);
+    const topics = new TopicRepository(db);
+    messages = new MessageRepository(db);
+    topicId = (await topics.create('Mazury')).id;
+    llm = new SteppedLlm();
+    source = new WavAudioSource();
+    stt = new FakeSttEngine();
+    tts = new FakeTtsEngine(60_000);
+    spotter = new FakeKeywordSpotter();
+    const vad = new EnergyVadEngine();
+    controller = new VoiceSessionController({
+      audio: new AudioSessionService({ ...new FakeAudioPorts(), source: () => source, tts: () => tts }),
+      vad: () => vad,
+      stt: () => stt,
+      tts: () => tts,
+      keywordSpotter: () => spotter,
+      conversation: new ConversationService({
+        topics,
+        messages,
+        context: new ContextBuilder(messages, new ContextSummaryRepository(db), {
+          summarize: async () => '',
+        }),
+        llm: () => llm,
+        budget: () => ({ contextTokens: 4_096, maxOutputTokens: 512 }),
+        systemPrompt: () => 'Odpowiadaj krótko.',
+      }),
+      silenceThresholdMs: () => 1_500,
+    });
+    await controller.start(topicId);
+  });
+
+  afterEach(async () => {
+    await controller.stop();
+    await db.closeAsync();
+  });
+
+  function ask(question: string, answer: string): void {
+    stt.enqueue(question);
+    llm.answerWith(answer);
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+  }
+
+  it('listens for "stop" only while the answer is prepared or read', async () => {
+    expect(spotter.isListening).toBe(false);
+
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    expect(spotter.isListening).toBe(true);
+
+    llm.finish();
+    await until(() => tts.spoken.length === 2);
+    expect(controller.current).toBe('speaking');
+    expect(spotter.isListening).toBe(true);
+
+    await tts.stop();
+    await until(() => controller.current === 'listening');
+    expect(spotter.isListening).toBe(false);
+  });
+
+  // specky: crit 01M4TPSC5K3QATGJG1DNDG5JWZ
+  it('"stop" while the answer is read silences it and listens at once', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    llm.finish();
+    await until(() => tts.isSpeaking);
+
+    spotter.trigger('stop');
+
+    await until(() => controller.current === 'listening');
+    expect(tts.isSpeaking).toBe(false);
+    // The rest of the answer is not read after "stop".
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(tts.spoken).toEqual(['Mazury to kraina jezior.']);
+  });
+
+  // specky: crit 01M4TPSC5K6T07CB28MAEV4VWZ
+  it('"stop" while the answer is generated ends the generation and nothing more is read', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące. Warto tam pojechać.');
+    await until(() => llm.generating);
+    llm.next(5);
+
+    spotter.trigger('stop');
+
+    await until(() => !llm.generating && controller.current === 'listening');
+    llm.next(10);
+    expect(tts.spoken).toEqual(['Mazury to kraina jezior.']);
+  });
+
+  // specky: crit 01M4TPSC5KA9NT3SHJ61SKQA26
+  it('keeps the interrupted answer in the history, marked, and in the context of the next question', async () => {
+    ask('Opowiedz o Mazurach.', 'Mazury to kraina jezior. Jest ich ponad dwa tysiące.');
+    await until(() => llm.generating);
+    llm.next(5);
+    spotter.trigger('stop');
+    await until(() => controller.current === 'listening' && !llm.generating);
+
+    let last: Awaited<ReturnType<MessageRepository['listByTopic']>>[number] | undefined;
+    await until(() => {
+      void messages.listByTopic(topicId).then((history) => (last = history.at(-1)));
+      return last?.role === 'assistant';
+    });
+    expect(last).toMatchObject({ content: 'Mazury to kraina jezior. Jest', interrupted: true });
+
+    ask('A które jest największe?', 'Śniardwy.');
+    await until(() => llm.requests.length === 2);
+    expect(llm.requests[1]?.messages).toEqual([
+      { role: 'user', content: 'Opowiedz o Mazurach.' },
+      { role: 'assistant', content: 'Mazury to kraina jezior. Jest' },
+      { role: 'user', content: 'A które jest największe?' },
+    ]);
+    llm.finish();
   });
 });
