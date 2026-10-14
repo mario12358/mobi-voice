@@ -30,3 +30,6 @@ ralph/KONTROLE.jsonl
 
 # Local native modules build output
 modules/*/android/build/
+
+# sherpa-onnx binaries fetched at build time (modules/mobi-audio/scripts/fetch-sherpa.sh)
+modules/mobi-audio/ios/Frameworks/

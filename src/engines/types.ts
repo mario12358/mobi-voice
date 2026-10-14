@@ -52,6 +52,7 @@ export type VadEvent =
   { type: 'speech_start'; atMs: number } | { type: 'speech_end'; segment: SpeechSegment };
 
 export interface VadEngine {
+  load(): Promise<void>;
   setSilenceThresholdMs(milliseconds: number): void;
   process(chunk: AudioChunk): VadEvent[];
   reset(): void;

@@ -6,10 +6,28 @@ plugins {
 group = 'app.mobivoice'
 version = '0.1.0'
 
+// Official sherpa-onnx AAR (k2-fsa), downloaded and checksum-verified by the shared script.
+def sherpaDir = new File(buildDir, 'sherpa-onnx')
+if (!new File(sherpaDir, 'classes.jar').exists()) {
+  def result = ['bash', file('../scripts/fetch-sherpa.sh').absolutePath, 'android', sherpaDir.absolutePath].execute()
+  result.waitForProcessOutput(System.out, System.err)
+  if (result.exitValue() != 0) throw new GradleException('MobiAudio: downloading sherpa-onnx failed')
+}
+
 android {
   namespace "app.mobivoice.audio"
   defaultConfig {
     versionCode 1
     versionName "0.1.0"
   }
+  sourceSets {
+    main {
+      assets.srcDirs += ['../assets']
+      jniLibs.srcDirs += [new File(sherpaDir, 'jni')]
+    }
+  }
+}
+
+dependencies {
+  implementation files(new File(sherpaDir, 'classes.jar'))
 }

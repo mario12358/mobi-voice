@@ -135,11 +135,11 @@
   - Specky: (req: 01M4TPSBVARMFASRVTYM6ERQB3 v1.0 @9adb713)
   - Specky kryteria: (crit: 01M4TPSBVH4RAMAQ7GSXN6R8NK)
 - [ ] Test: 3.1 — reakcje na przerwania i odmowę uprawnień (atrapy modułów natywnych) (pr: #22)
-- [ ] Zadanie 3.2: VadEngine na sherpa-onnx (Silero VAD) — segmentacja mowy, koniec wypowiedzi po progu ciszy z ustawień (1,5–6 s, domyślnie 3 s) (wymaga: 3.1) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 3.2: VadEngine na sherpa-onnx (Silero VAD) — segmentacja mowy, koniec wypowiedzi po progu ciszy z ustawień (1,5–6 s, domyślnie 3 s) (wymaga: 3.1) (spec: spec.md) (tech: react-native, typescript) (pr: #23)
   - AC: po ciszy równej progowi emitowane jest zdarzenie końca wypowiedzi
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)
   - Specky kryteria: (crit: 01M4TPSC0BNXA9C4VKYN7C7HRN)
-- [ ] Test: 3.2 — segmentacja nagranych plików WAV (mowa, cisza, szum)
+- [ ] Test: 3.2 — segmentacja nagranych plików WAV (mowa, cisza, szum) (pr: #23)
 - [ ] Zadanie 3.3: WhisperSttEngine na whisper.rn — język wymuszony `pl`, model small domyślnie, wariant base z ustawień, akceleracja Core ML/Metal na iOS (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript)
   - AC: segment audio zamieniany na tekst polski; wybór small/base z ustawień
   - Specky: (req: 01M4TPSC9XQS0B0N608Z41T867 v1.0 @efdc982)
