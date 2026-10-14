@@ -239,13 +239,13 @@
 
 ### Faza 6: Dostawcy chmurowi LLM
 
-- [ ] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #38)
   - AC: 401 → „Nieprawidłowy klucz API"; 429 → „Przekroczony limit"; brak automatycznego przełączenia na model lokalny
   - Specky: (req: 01M4TPSD5ZN6JEWY5Q25XPBFH1 v1.0 @dd8d9cc)
   - Specky kryteria: (crit: 01M4TPSD6AM5PRHDF9YP515MSQ) (crit: 01M4TPSD6AE4BW0DRNTTNKD58N) (crit: 01M4TPSD6AB72A3G4V786PZ9KZ)
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFMFSQRK8VYVJPNVEKR)
-- [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE
+- [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE (pr: #38)
 - [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
   - AC: implementuje LlmEngine (strumień, abort); lista modeli z /v1/models z fallbackiem na listę wbudowaną
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
