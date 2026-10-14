@@ -4,11 +4,12 @@ import { Alert } from 'react-native';
 import { isDomainError, type DomainError } from '../../core/errors';
 import type { Topic } from '../../db/repositories/TopicRepository';
 import { pl } from '../../i18n/pl';
-import { downloadSizeBytes, type LlmEntry } from '../../models/catalog';
+import { downloadSizeBytes } from '../../models/catalog';
+import { isCloudModel, type ChatModel } from '../../models/chatModel';
 import { useServices } from '../../services/ServicesProvider';
 
 export interface ModelReadiness {
-  model: LlmEntry;
+  model: ChatModel;
   ready: boolean | null;
   // 0–100 while downloading, null otherwise.
   progress: number | null;
@@ -55,6 +56,8 @@ export function useModelReadiness(topic: Topic | null): ModelReadiness {
   );
 
   const download = useCallback(async () => {
+    // Cloud models are not downloaded; they need an API key instead.
+    if (isCloudModel(model)) return;
     setError(null);
     setProgress(0);
     try {

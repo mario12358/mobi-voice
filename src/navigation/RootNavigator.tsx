@@ -6,6 +6,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useDatabase } from '../db/DatabaseProvider';
 import { useEngines } from '../engines/EngineProvider';
 import { TopicRepository } from '../db/repositories/TopicRepository';
+import { ApiKeysScreen } from '../features/apiKeys/ApiKeysScreen';
 import { ConversationScreen } from '../features/conversation/ConversationScreen';
 import { ModelsScreen } from '../features/models/ModelsScreen';
 import { needsOnboarding } from '../features/onboarding/onboarding';
@@ -76,6 +77,7 @@ export function RootNavigator() {
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: pl.settings.title }} />
         <Stack.Screen name="Models" component={ModelsScreen} options={{ title: pl.models.title }} />
         <Stack.Screen name="Licenses" component={LicensesScreen} options={{ title: pl.licenses.title }} />
+        <Stack.Screen name="ApiKeys" component={ApiKeysScreen} options={{ title: pl.apiKeys.title }} />
         <Stack.Screen
           name="Onboarding"
           component={OnboardingScreen}

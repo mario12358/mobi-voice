@@ -1,10 +1,12 @@
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
+import { PROVIDER_NAMES } from '../../cloud/createCloudEngines';
 import { BodyText } from '../../components/BodyText';
 import { PromptEditor } from '../../components/PromptEditor';
 import { Screen } from '../../components/Screen';
 import { TextButton } from '../../components/TextButton';
 import { pl } from '../../i18n/pl';
+import { useCloudModels } from '../apiKeys/useCloudModels';
 import type { RootScreenProps } from '../../navigation/types';
 import { DEFAULT_LOCAL_MODEL_ID } from '../../engines/llm/createLocalLlmEngine';
 import { llmEntries, ttsEntry } from '../../models/catalog';
@@ -72,7 +74,7 @@ const WHISPER_OPTIONS: { value: WhisperVariant; label: string }[] = [
   { value: 'small', label: pl.settings.whisperSmall },
   { value: 'base', label: pl.settings.whisperBase },
 ];
-const MODEL_OPTIONS = llmEntries().map((entry) => ({ value: entry.id, label: entry.displayName }));
+const LOCAL_MODEL_OPTIONS = llmEntries().map((entry) => ({ value: entry.id, label: entry.displayName }));
 
 function seconds(milliseconds: number): string {
   return (milliseconds / 1000).toFixed(1).replace('.', ',');
@@ -150,6 +152,14 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
   const mode = useSettingsStore((state) => state.conversationMode);
   const whisper = useSettingsStore((state) => state.whisperVariant);
   const update = useSettingsStore((state) => state.update);
+  const cloudModels = useCloudModels();
+  const modelOptions = [
+    ...LOCAL_MODEL_OPTIONS,
+    ...cloudModels.map((model) => ({
+      value: model.id,
+      label: `${PROVIDER_NAMES[model.provider]}: ${model.model}`,
+    })),
+  ];
   const shownPrompt = globalPrompt ?? DEFAULT_SYSTEM_PROMPT;
 
   return (
@@ -165,7 +175,7 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
           title={pl.settings.defaultModelTitle}
           hint={pl.settings.defaultModelHint}
           value={defaultModelId ?? DEFAULT_LOCAL_MODEL_ID}
-          options={MODEL_OPTIONS}
+          options={modelOptions}
           onChange={(value) => update({ defaultModelId: value })}
         />
         <Choice
@@ -203,6 +213,11 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
         />
         <DiagnosticsSwitch />
         <Privacy />
+        <TextButton
+          testID="settings.open-api-keys"
+          label={pl.settings.openApiKeys}
+          onPress={() => navigation.navigate('ApiKeys')}
+        />
         <TextButton
           testID="settings.open-licenses"
           label={pl.settings.openLicenses}

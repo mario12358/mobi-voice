@@ -239,55 +239,55 @@
 
 ### Faza 6: Dostawcy chmurowi LLM
 
-- [ ] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #38)
   - AC: 401 → „Nieprawidłowy klucz API"; 429 → „Przekroczony limit"; brak automatycznego przełączenia na model lokalny
   - Specky: (req: 01M4TPSD5ZN6JEWY5Q25XPBFH1 v1.0 @dd8d9cc)
   - Specky kryteria: (crit: 01M4TPSD6AM5PRHDF9YP515MSQ) (crit: 01M4TPSD6AE4BW0DRNTTNKD58N) (crit: 01M4TPSD6AB72A3G4V786PZ9KZ)
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFMFSQRK8VYVJPNVEKR)
-- [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE
-- [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE (pr: #38)
+- [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #39)
   - AC: implementuje LlmEngine (strumień, abort); lista modeli z /v1/models z fallbackiem na listę wbudowaną
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP (pr: #39)
+- [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; prompt systemowy przekazywany polem system
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.3 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.3 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [ ] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; mapowanie ról user/assistant na user/model
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.4 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.4 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [ ] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; „Facebook" ze spec = Meta Llama API
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript) (pr: #41)
   - AC: nieprawidłowy klucz nie zostaje zapisany i pokazuje komunikat
   - AC: modele chmurowe dostawcy z poprawnym kluczem pojawiają się w wyborze modelu (globalnym i per temat)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NM3BC0R81WPKKS9GV) (crit: 01M4TPSD3NCRZBYB6MHAVGWTCR)
-- [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli
-- [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript)
+- [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli (pr: #41)
+- [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript) (pr: #42)
   - AC: z modelem chmurowym rozmowa głosowa działa tak samo jak z lokalnym (oba tryby, STOP)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NTQ77B4DZMD45444S)
-- [ ] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP
+- [ ] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP (pr: #42)
 - [ ] Zadanie 6.8: Test e2e — dodanie klucza (atrapa serwera dostawcy), błędny klucz, wybór modelu chmurowego w temacie, rozmowa tekstowa i głosowa, błąd sieci z komunikatem (wymaga: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7) (spec: spec.md) (tech: detox, typescript)
 
 ### Faza 7: Polecenia głosowe tematów
 
-- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript) (pr: #44)
   - AC: „przełącz na temat wakacje" dopasowuje temat „Wakacje 2026"; brak dopasowania → przekazanie do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD985J6R5DR64N3QGXJD) (crit: 01M4TPSD981M9JE8DH1AAHE29F)
-- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań
-- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
+- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #45)
   - AC: „jakie mam tematy" odczytuje głosem i pokazuje listę ostatnich tematów
   - AC: wejście — każda zakończona wypowiedź usera przechodzi przez parser przed wysłaniem do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD984YDF8YSTV0EF3KY4) (crit: 01M4TPSD987TH60PDGRVVP5CGS) (crit: 01M4TPSD98AJYHCJKQ4XRCQ8YT)
-- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność
+- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność (pr: #45)
 - [ ] Zadanie 7.3: Fallback function calling dla modeli chmurowych — narzędzia switch_topic, create_topic, list_topics, gdy gramatyka nie rozpoznała polecenia (wymaga: 7.2, 6.7) (spec: spec.md) (tech: typescript)
   - AC: model chmurowy wywołujący switch_topic przełącza temat; modele lokalne nie dostają narzędzi
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
