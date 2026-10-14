@@ -43,6 +43,8 @@ export const pl = {
     assistant: 'Asystent',
     modelMissing: (model: string) => `Aby rozmawiać, pobierz model ${model} na urządzenie.`,
     downloadModel: (model: string, size: string) => `Pobierz ${model} (${size})`,
+    cloudKeyMissing: (provider: string) =>
+      `Ten temat rozmawia z modelem w chmurze ${provider}, ale nie ma zapisanego klucza API.`,
     downloading: (percent: number) => `Pobieranie… ${percent}%`,
     cellularTitle: 'Brak Wi-Fi',
     cellularMessage: (size: string) => `Pobrać ${size} przez sieć komórkową?`,

@@ -2,7 +2,9 @@ import { Modal, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { BodyText } from '../../components/BodyText';
 import { TextButton } from '../../components/TextButton';
+import { PROVIDER_NAMES } from '../../cloud/createCloudEngines';
 import { pl } from '../../i18n/pl';
+import { useCloudModels } from '../apiKeys/useCloudModels';
 import { llmEntries } from '../../models/catalog';
 import { SPACING, usePalette } from '../../theme/theme';
 
@@ -17,6 +19,7 @@ interface Props {
 // MV-MOD-5: a topic can use its own language model; the history stays.
 export function TopicModelDialog({ override, defaultModelName, onChoose, onClose }: Props) {
   const palette = usePalette();
+  const cloudModels = useCloudModels();
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -39,6 +42,15 @@ export function TopicModelDialog({ override, defaultModelName, onChoose, onClose
                 label={entry.displayName}
                 selected={override === entry.id}
                 onPress={() => onChoose(entry.id)}
+              />
+            ))}
+            {cloudModels.map((model) => (
+              <TextButton
+                key={model.id}
+                testID={`conversation.topic-model.${model.id}`}
+                label={`${PROVIDER_NAMES[model.provider]}: ${model.model}`}
+                selected={override === model.id}
+                onPress={() => onChoose(model.id)}
               />
             ))}
           </ScrollView>
