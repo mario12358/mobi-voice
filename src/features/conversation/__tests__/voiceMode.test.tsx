@@ -6,6 +6,7 @@ import { TestProviders } from '../../../__tests__/support/TestProviders';
 import { FakeAudioPorts } from '../../../audio/fakeAudioPorts';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../../../db/migrate';
+import { MessageRepository } from '../../../db/repositories/MessageRepository';
 import { TopicRepository } from '../../../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../../../db/SqlDatabase';
 import { encodeWav, synthesize } from '../../../engines/__tests__/support/audio';
@@ -184,6 +185,37 @@ describe('ConversationScreen voice mode', () => {
     expect(await screen.findByText(pl.conversation.youSaid('Jadę nad morze gdzie nocować?'))).toBeTruthy();
     await waitFor(() => expect(llm.waiting).toBe(true));
     llm.answer();
+  });
+
+  it('shows the listed topics and moves the running session to a topic opened by voice', async () => {
+    const topics = new TopicRepository(db);
+    await topics.create('Remont kuchni');
+    stt = new FakeSttEngine(['Jakie mam tematy?', 'Przełącz na temat remont', 'Ile kosztują płytki?']);
+    await renderConversation();
+    await fireEvent.press(screen.getByTestId('conversation.mic'));
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    expect(await screen.findByTestId('conversation.topic-list')).toHaveTextContent('Remont kuchni', {
+      exact: false,
+    });
+    await tts.stop();
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    await waitFor(() => expect(screen.queryByTestId('conversation.topic-list')).toBeNull());
+    await tts.stop();
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    await waitFor(() => expect(llm.waiting).toBe(true));
+    llm.answer();
+    const remont = (await topics.listByLastActivity()).find((topic) => topic.title === 'Remont kuchni');
+    await waitFor(async () =>
+      expect((await new MessageRepository(db).listByTopic(remont?.id ?? 0)).map((m) => m.content)).toContain(
+        'Ile kosztują płytki?',
+      ),
+    );
   });
 
   it('explains a denied microphone when voice is started and keeps typing', async () => {

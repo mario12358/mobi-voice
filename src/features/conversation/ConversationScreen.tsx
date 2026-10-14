@@ -1,5 +1,5 @@
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -18,6 +18,7 @@ import type { Message } from '../../db/repositories/MessageRepository';
 import { pl } from '../../i18n/pl';
 import { downloadSizeBytes } from '../../models/catalog';
 import type { RootScreenProps } from '../../navigation/types';
+import type { Topic } from '../../db/repositories/TopicRepository';
 import { E2EVoiceControls } from '../../e2e/E2EVoiceControls';
 import { useServices } from '../../services/ServicesProvider';
 import { useLatencyStore, type LatencySample } from '../../state/latency';
@@ -106,6 +107,13 @@ function VoicePanel({ voice }: { voice: VoiceSessionView }) {
         />
       </View>
       {diagnostics && lastLatency !== undefined && <LatencyLine sample={lastLatency} />}
+      {voice.listedTopics !== null && (
+        <View testID="conversation.topic-list" style={styles.listed}>
+          {voice.listedTopics.map((topic) => (
+            <BodyText key={topic.id}>{topic.title}</BodyText>
+          ))}
+        </View>
+      )}
       {voice.transcript !== null && (
         <BodyText testID="conversation.transcript">{pl.conversation.youSaid(voice.transcript)}</BodyText>
       )}
@@ -139,7 +147,9 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
   const conversation = useConversation(topicId);
   const readiness = useModelReadiness(conversation.topic);
   const microphone = useMicPermission();
-  const voice = useVoiceSession(topicId, conversation.reload);
+  // A voice command moves the running session to another topic: same screen, new topic, session goes on.
+  const showTopic = useCallback((topic: Topic) => navigation.setParams({ topicId: topic.id }), [navigation]);
+  const voice = useVoiceSession(topicId, conversation.reload, showTopic);
   const [draft, setDraft] = useState('');
   const [editingPrompt, setEditingPrompt] = useState(false);
   const [choosingModel, setChoosingModel] = useState(false);
@@ -290,6 +300,7 @@ const styles = StyleSheet.create({
   input: { flex: 1, borderWidth: 1, borderRadius: 8, padding: SPACING.sm, fontSize: 16, maxHeight: 120 },
   error: { fontSize: 14 },
   voice: { gap: SPACING.sm, paddingVertical: SPACING.sm },
+  listed: { gap: SPACING.xs },
   voiceRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: SPACING.sm },
   voiceState: { fontSize: 16, fontWeight: '600', flexShrink: 1 },
   mic: { borderWidth: 2, borderRadius: 32, paddingVertical: SPACING.md, alignItems: 'center' },
