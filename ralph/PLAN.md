@@ -250,18 +250,18 @@
   - AC: implementuje LlmEngine (strumień, abort); lista modeli z /v1/models z fallbackiem na listę wbudowaną
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
 - [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP (pr: #39)
-- [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; prompt systemowy przekazywany polem system
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.3 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.3 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [ ] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; mapowanie ról user/assistant na user/model
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.4 — adapter na nagranych odpowiedziach HTTP
-- [ ] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Test: 6.4 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [ ] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; „Facebook" ze spec = Meta Llama API
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP
+- [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP (pr: #40)
 - [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript)
   - AC: nieprawidłowy klucz nie zostaje zapisany i pokazuje komunikat
   - AC: modele chmurowe dostawcy z poprawnym kluczem pojawiają się w wyborze modelu (globalnym i per temat)

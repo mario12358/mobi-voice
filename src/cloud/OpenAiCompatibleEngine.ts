@@ -123,3 +123,17 @@ export const OPENAI_CONFIG: OpenAiCompatibleConfig = {
   fallbackModels: ['gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini'],
   isChatModel: isOpenAiChatModel,
 };
+
+// Meta's Llama API ("Facebook" in the spec) through its OpenAI-compatible endpoint.
+export const META_LLAMA_CONFIG: OpenAiCompatibleConfig = {
+  provider: 'meta',
+  baseUrl: 'https://api.llama.com/compat/v1',
+  defaultModel: 'Llama-4-Maverick-17B-128E-Instruct-FP8',
+  fallbackModels: [
+    'Llama-3.3-70B-Instruct',
+    'Llama-3.3-8B-Instruct',
+    'Llama-4-Maverick-17B-128E-Instruct-FP8',
+    'Llama-4-Scout-17B-16E-Instruct-FP8',
+  ],
+  isChatModel: (id) => /^(llama|Llama)/.test(id),
+};
