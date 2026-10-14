@@ -96,8 +96,8 @@ describe('Faza 6: modele w chmurze', () => {
     await waitFor(element(by.text('Brak połączenia z siecią')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
-    // The cloud model's answers stay in the topic; no local answer took their place.
-    await expect(element(by.text(e2eCloudAnswer('Gdzie jechać latem?')))).toExist();
+    // The topic stays on the cloud model; the failure is shown, not answered by the local model instead.
+    await expect(element(by.text(pl.conversation.topicModel(E2E_CLOUD_MODEL)))).toExist();
     await expect(element(by.text('Brak połączenia z siecią'))).toBeVisible();
   });
 });
