@@ -83,6 +83,10 @@ export function OnboardingScreen({ navigation }: RootScreenProps<'Onboarding'>) 
         </View>
         <Step title={STEP_TITLES[2] ?? ''} model={views[2]} />
         {manager.error !== null && <BodyText testID="onboarding.error">{manager.error.userMessage}</BodyText>}
+        {missing.length > 0 && !downloading && <BodyText>{pl.onboarding.skipHint}</BodyText>}
+      </ScrollView>
+      {/* The actions stay in view on small phones, below the scrolled steps. */}
+      <View style={styles.footer}>
         {missing.length > 0 ? (
           <TextButton
             testID="onboarding.download-all"
@@ -93,12 +97,9 @@ export function OnboardingScreen({ navigation }: RootScreenProps<'Onboarding'>) 
           <TextButton testID="onboarding.done" label={pl.onboarding.done} onPress={finish} />
         )}
         {missing.length > 0 && !downloading && (
-          <>
-            <TextButton testID="onboarding.skip" label={pl.onboarding.skip} onPress={finish} />
-            <BodyText>{pl.onboarding.skipHint}</BodyText>
-          </>
+          <TextButton testID="onboarding.skip" label={pl.onboarding.skip} onPress={finish} />
         )}
-      </ScrollView>
+      </View>
       {questions.dialog}
     </Screen>
   );
@@ -109,4 +110,5 @@ const styles = StyleSheet.create({
   step: { borderWidth: 1, borderRadius: 8, padding: SPACING.md, gap: SPACING.xs },
   title: { fontSize: 17, fontWeight: '600' },
   voices: { flexDirection: 'row', gap: SPACING.sm },
+  footer: { gap: SPACING.sm, paddingTop: SPACING.sm },
 });
