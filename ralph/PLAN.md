@@ -282,12 +282,12 @@
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD985J6R5DR64N3QGXJD) (crit: 01M4TPSD981M9JE8DH1AAHE29F)
 - [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
-- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #45)
   - AC: „jakie mam tematy" odczytuje głosem i pokazuje listę ostatnich tematów
   - AC: wejście — każda zakończona wypowiedź usera przechodzi przez parser przed wysłaniem do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD984YDF8YSTV0EF3KY4) (crit: 01M4TPSD987TH60PDGRVVP5CGS) (crit: 01M4TPSD98AJYHCJKQ4XRCQ8YT)
-- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność
+- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność (pr: #45)
 - [ ] Zadanie 7.3: Fallback function calling dla modeli chmurowych — narzędzia switch_topic, create_topic, list_topics, gdy gramatyka nie rozpoznała polecenia (wymaga: 7.2, 6.7) (spec: spec.md) (tech: typescript)
   - AC: model chmurowy wywołujący switch_topic przełącza temat; modele lokalne nie dostają narzędzi
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)

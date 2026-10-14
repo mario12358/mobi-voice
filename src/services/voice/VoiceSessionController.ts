@@ -9,9 +9,11 @@ import type {
 } from '../../engines/types';
 import type { ConversationService } from '../ConversationService';
 import type { LatencySample } from '../../state/latency';
+import type { Topic } from '../../db/repositories/TopicRepository';
 import type { ConversationMode } from '../../state/settings';
 import { matchEndWord } from '../speech/KeywordMatcher';
 import { SentenceSplitter } from '../speech/SpeechText';
+import type { TopicCommands } from './TopicCommands';
 
 export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking';
 
@@ -21,6 +23,10 @@ export interface VoiceListener {
   onTranscript?(text: string): void;
   // Interrupted mode: what has been said so far, still waiting for the closing "odbiór".
   onHeard?(text: string): void;
+  // A voice command moved the session to another topic (switched to or newly created).
+  onTopicChange?(topic: Topic): void;
+  // "What topics do I have": the recent topics to show while they are read out.
+  onTopicList?(topics: Topic[]): void;
   // Raw model tokens for the chat bubble (Markdown and emoji kept).
   onToken?(token: string): void;
   // The exchange is stored in the topic; the chat can reload its history.
@@ -39,6 +45,8 @@ interface Deps {
   conversation: ConversationService;
   silenceThresholdMs: () => number;
   mode: () => ConversationMode;
+  // Topic commands said instead of a question (MV-CMD-1); without it every utterance goes to the model.
+  commands?: TopicCommands;
   recordLatency?: (sample: LatencySample) => void;
   now?: () => number;
 }
@@ -56,6 +64,8 @@ export class VoiceSessionController {
   private turn = 0;
   // Interrupted mode: recognized parts of the utterance not sent yet.
   private heard: string[] = [];
+  // Topics offered after "which one?"; the next utterance picks one of them.
+  private candidates: Topic[] = [];
 
   constructor(private readonly deps: Deps) {}
 
@@ -137,12 +147,30 @@ export class VoiceSessionController {
       const text = this.utterance(recognized);
       if (text === null || text.length === 0) return;
       void this.deps.keywordSpotter().start(() => void this.interrupt());
+      // Every finished utterance passes the command grammar before it may reach the model.
+      if (await this.runCommand(text, turn)) return;
       await this.answer(topicId, text, turn, endedAt, sttMs);
     } catch (error) {
       this.listener.onError?.(error);
     } finally {
       if (this.isCurrent(turn)) this.listenAgain();
     }
+  }
+
+  private async runCommand(text: string, turn: number): Promise<boolean> {
+    const outcome = await this.deps.commands?.handle(text, this.candidates);
+    if (outcome === null || outcome === undefined || !this.isCurrent(turn)) return false;
+    this.candidates = outcome.candidates ?? [];
+    if (outcome.topic !== undefined) {
+      this.topicId = outcome.topic.id;
+      this.listener.onTopicChange?.(outcome.topic);
+    }
+    if (outcome.listed !== undefined) this.listener.onTopicList?.(outcome.listed);
+    const tts = this.deps.tts();
+    tts.beginAnswer();
+    this.setState('speaking');
+    await tts.speak(outcome.reply);
+    return true;
   }
 
   // The text to send now, or null while the interrupted-mode utterance goes on.
