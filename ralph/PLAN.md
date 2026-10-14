@@ -183,11 +183,11 @@
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XEXCWD5H24XGWKY9M) (crit: 01M4TPSC2X3N2VSTTSH6ZVT7FM)
 - [ ] Test: 4.1 — tabela przypadków dopasowania
-- [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript) (pr: #31)
   - AC: pauzy w trybie przerywanym nie wysyłają wypowiedzi; „odbiór" wysyła całość
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XBWSY7997NWZGCE5K) (crit: 01M4TPSC2XMDVW605VXF879XN8)
-- [ ] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego
+- [ ] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego (pr: #31)
 - [ ] Zadanie 4.3: KeywordSpotter „stop" na sherpa-onnx KWS — aktywny w trakcie generowania i odtwarzania TTS, przy włączonym AEC (wymaga: 3.1, 1.6) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
   - AC: wejście — VoiceSessionController włącza nasłuch KWS przy wejściu w stan „przetwarzam"/„mówię"
   - Specky: (req: 01M4TPSC52ZQ05FHN0CAWF2MYX v1.0 @4eb389f)

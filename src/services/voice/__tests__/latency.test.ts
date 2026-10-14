@@ -89,6 +89,7 @@ describe('voice latency metrics', () => {
         systemPrompt: () => null,
       }),
       silenceThresholdMs: () => 1_500,
+      mode: () => 'continuous',
       recordLatency: (sample) => recorded.push(sample),
       now: () => clock.now,
     });

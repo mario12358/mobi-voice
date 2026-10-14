@@ -9,6 +9,8 @@ import type {
 } from '../../engines/types';
 import type { ConversationService } from '../ConversationService';
 import type { LatencySample } from '../../state/latency';
+import type { ConversationMode } from '../../state/settings';
+import { matchEndWord } from '../speech/KeywordMatcher';
 import { SentenceSplitter } from '../speech/SpeechText';
 
 export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking';
@@ -17,6 +19,8 @@ export interface VoiceListener {
   onState?(state: VoiceState): void;
   // What the user said, as recognized, right before it is sent to the model.
   onTranscript?(text: string): void;
+  // Interrupted mode: what has been said so far, still waiting for the closing "odbiór".
+  onHeard?(text: string): void;
   // Raw model tokens for the chat bubble (Markdown and emoji kept).
   onToken?(token: string): void;
   // The exchange is stored in the topic; the chat can reload its history.
@@ -34,6 +38,7 @@ interface Deps {
   keywordSpotter: () => KeywordSpotter;
   conversation: ConversationService;
   silenceThresholdMs: () => number;
+  mode: () => ConversationMode;
   recordLatency?: (sample: LatencySample) => void;
   now?: () => number;
 }
@@ -41,6 +46,7 @@ interface Deps {
 // Continuous voice mode (MV-VOICE-1): listen → end of utterance after the silence threshold → STT →
 // model with the topic's context → answer in the chat and read aloud sentence by sentence → listen again.
 // "Stop" (MV-VOICE-3), said or tapped while the answer is prepared or read, ends it and listens at once.
+// Interrupted mode (MV-VOICE-2): pauses only add to the utterance; it is sent once it ends with "odbiór".
 export class VoiceSessionController {
   private state: VoiceState = 'idle';
   private topicId: number | null = null;
@@ -48,6 +54,8 @@ export class VoiceSessionController {
   private abort: AbortController | null = null;
   // Bumped by every new utterance and by an interruption: work of an older turn must not go on.
   private turn = 0;
+  // Interrupted mode: recognized parts of the utterance not sent yet.
+  private heard: string[] = [];
 
   constructor(private readonly deps: Deps) {}
 
@@ -59,6 +67,7 @@ export class VoiceSessionController {
     if (this.state !== 'idle') return 'listening';
     this.topicId = topicId;
     this.listener = listener;
+    this.heard = [];
     const vad = this.deps.vad();
     await vad.load();
     vad.reset();
@@ -120,17 +129,34 @@ export class VoiceSessionController {
     this.turn += 1;
     const turn = this.turn;
     this.setState('processing');
-    void this.deps.keywordSpotter().start(() => void this.interrupt());
     const endedAt = this.now();
     try {
-      const text = (await this.deps.stt().transcribe(segment)).trim();
+      const recognized = (await this.deps.stt().transcribe(segment)).trim();
       const sttMs = this.now() - endedAt;
-      if (text.length > 0 && this.isCurrent(turn)) await this.answer(topicId, text, turn, endedAt, sttMs);
+      if (!this.isCurrent(turn)) return;
+      const text = this.utterance(recognized);
+      if (text === null || text.length === 0) return;
+      void this.deps.keywordSpotter().start(() => void this.interrupt());
+      await this.answer(topicId, text, turn, endedAt, sttMs);
     } catch (error) {
       this.listener.onError?.(error);
     } finally {
       if (this.isCurrent(turn)) this.listenAgain();
     }
+  }
+
+  // The text to send now, or null while the interrupted-mode utterance goes on.
+  private utterance(recognized: string): string | null {
+    if (this.deps.mode() === 'continuous' && this.heard.length === 0) return recognized;
+    const end = matchEndWord(recognized);
+    if (end.text.length > 0) this.heard.push(end.text);
+    const whole = this.heard.join(' ');
+    if (this.deps.mode() === 'interrupted' && !end.ended) {
+      this.listener.onHeard?.(whole);
+      return null;
+    }
+    this.heard = [];
+    return whole;
   }
 
   private async answer(

@@ -13,6 +13,7 @@ import { FakeSttEngine } from '../../../engines/fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../../../engines/fakes/FakeTtsEngine';
 import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
 import type { LlmEngine, LlmRequest, LlmResult } from '../../../engines/types';
+import type { ConversationMode } from '../../../state/settings';
 import { ContextBuilder } from '../../ContextBuilder';
 import { ConversationService } from '../../ConversationService';
 import { until } from './support/until';
@@ -72,6 +73,7 @@ describe('VoiceSessionController (continuous mode)', () => {
   let tts: FakeTtsEngine;
   let spotter: FakeKeywordSpotter;
   let thresholdMs: number;
+  let mode: ConversationMode;
   let controller: VoiceSessionController;
   let states: VoiceState[];
 
@@ -87,6 +89,7 @@ describe('VoiceSessionController (continuous mode)', () => {
     tts = new FakeTtsEngine(0);
     spotter = new FakeKeywordSpotter();
     thresholdMs = 1_500;
+    mode = 'continuous';
     const vad = new EnergyVadEngine();
     const conversation = new ConversationService({
       topics,
@@ -105,6 +108,7 @@ describe('VoiceSessionController (continuous mode)', () => {
       keywordSpotter: () => spotter,
       conversation,
       silenceThresholdMs: () => thresholdMs,
+      mode: () => mode,
     });
     states = [];
     await controller.start(topicId, { onState: (state) => states.push(state) });
@@ -246,6 +250,82 @@ describe('VoiceSessionController (continuous mode)', () => {
     expect(tts.isSpeaking).toBe(false);
     expect(source.isRunning).toBe(false);
   });
+  describe('interrupted mode', () => {
+    let heard: string[];
+
+    beforeEach(async () => {
+      mode = 'interrupted';
+      heard = [];
+      await controller.stop();
+      states = [];
+      await controller.start(topicId, {
+        onState: (state) => states.push(state),
+        onHeard: (text) => heard.push(text),
+      });
+    });
+
+    // One part of the utterance followed by a pause; waits until it is recognized and the mic listens again.
+    async function speakPart(silenceMs = 2_000): Promise<void> {
+      const segments = stt.segments.length;
+      say([{ tone: 500 }, { silence: silenceMs }]);
+      await until(
+        () => stt.segments.length === segments + 1 && (controller.current === 'listening' || llm.generating),
+      );
+    }
+
+    // specky: crit 01M4TPSC2XBWSY7997NWZGCE5K
+    it('does not send on pauses, however long, while "odbiór" has not been said', async () => {
+      stt.enqueue('Planuję wyjazd', 'na Mazury w lipcu', 'z dziećmi');
+
+      await speakPart();
+      await speakPart();
+      await speakPart(6_000);
+
+      expect(llm.requests).toHaveLength(0);
+      expect(heard).toEqual([
+        'Planuję wyjazd',
+        'Planuję wyjazd na Mazury w lipcu',
+        'Planuję wyjazd na Mazury w lipcu z dziećmi',
+      ]);
+    });
+
+    // specky: crit 01M4TPSC2XMDVW605VXF879XN8
+    it('sends everything said so far once the utterance ends with "odbiór", without the word', async () => {
+      stt.enqueue('Planuję wyjazd na Mazury.', 'Co polecasz? Odbiór.');
+      llm.answerWith('Polecam Mikołajki.');
+
+      await speakPart();
+      expect(llm.requests).toHaveLength(0);
+      await speakPart();
+      await until(() => llm.requests.length === 1);
+
+      expect(llm.requests[0]?.messages.at(-1)).toEqual({
+        role: 'user',
+        content: 'Planuję wyjazd na Mazury. Co polecasz?',
+      });
+      llm.finish();
+      await until(() => controller.current === 'listening' && tts.spoken.length === 1);
+      const history = await messages.listByTopic(topicId);
+      expect(history.map((message) => message.content)).toEqual([
+        'Planuję wyjazd na Mazury. Co polecasz?',
+        'Polecam Mikołajki.',
+      ]);
+    });
+
+    it('treats "odbiór" in the middle of a sentence as an ordinary word', async () => {
+      stt.enqueue('Odbiór paczki jutro', 'i co dalej? Odbiór');
+      llm.answerWith('Dobrze.');
+
+      await speakPart();
+      expect(heard).toEqual(['Odbiór paczki jutro']);
+      expect(llm.requests).toHaveLength(0);
+
+      await speakPart();
+      await until(() => llm.requests.length === 1);
+      expect(llm.requests[0]?.messages.at(-1)?.content).toBe('Odbiór paczki jutro i co dalej?');
+      llm.finish();
+    });
+  });
 });
 
 describe('VoiceSessionController — "stop"', () => {
@@ -288,6 +368,7 @@ describe('VoiceSessionController — "stop"', () => {
         systemPrompt: () => 'Odpowiadaj krótko.',
       }),
       silenceThresholdMs: () => 1_500,
+      mode: () => 'continuous',
     });
     await controller.start(topicId);
   });
