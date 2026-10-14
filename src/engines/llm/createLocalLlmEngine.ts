@@ -29,7 +29,8 @@ export function createLocalLlmEngine(): LocalLlmEngine {
   const slot = new LlamaContextSlot(initLlama as unknown as InitLlama, GPU_LAYERS);
   return new LocalLlmEngine(
     {
-      currentModel: () => selectedLocalModel(useSettingsStore.getState().defaultModelId),
+      currentModel: (requested) =>
+        selectedLocalModel(requested ?? useSettingsStore.getState().defaultModelId),
       async modelPath(entry) {
         const file = entry.files[0];
         if (file === undefined || (await downloads.status(entry.id)) !== 'downloaded') return null;

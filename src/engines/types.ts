@@ -65,6 +65,9 @@ export interface VadEngine {
 export type Keyword = 'stop';
 
 export interface KeywordSpotter {
+  load(): Promise<void>;
   start(onKeyword: (keyword: Keyword) => void): Promise<void>;
+  // Microphone audio; heard only between start() and stop().
+  accept(chunk: AudioChunk): void;
   stop(): Promise<void>;
 }

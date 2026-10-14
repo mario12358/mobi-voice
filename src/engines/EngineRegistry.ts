@@ -1,11 +1,11 @@
-import { DomainError } from '../core/errors';
-import { CAPTURE_SAMPLE_RATE, NativeMicrophone } from './audio/NativeMicrophone';
+import { CAPTURE_SAMPLE_RATE, NativeMicrophone, nativeAudio } from './audio/NativeMicrophone';
 import { EnergyVadEngine } from './fakes/EnergyVadEngine';
 import { FakeKeywordSpotter } from './fakes/FakeKeywordSpotter';
 import { E2E_SCRIPT, FakeLlmEngine } from './fakes/FakeLlmEngine';
 import { E2E_TRANSCRIPT, FakeSttEngine } from './fakes/FakeSttEngine';
 import { FakeTtsEngine } from './fakes/FakeTtsEngine';
 import { WavAudioSource } from './fakes/WavAudioSource';
+import { SherpaKeywordSpotter } from './kws/SherpaKeywordSpotter';
 import { createLocalLlmEngine } from './llm/createLocalLlmEngine';
 import { createWhisperSttEngine } from './stt/createWhisperSttEngine';
 import { createPiperTtsEngine } from './tts/createPiperTtsEngine';
@@ -43,17 +43,12 @@ export function createTestFactories(): EngineFactories {
   };
 }
 
-function unavailable(name: EngineName): never {
-  throw new DomainError('engine_unavailable', `Native ${name} engine is not wired yet`);
-}
-
-// Native adapters replace these entries as they land (sherpa-onnx KWS 4.3).
 export const PRODUCTION_FACTORIES: EngineFactories = {
   llm: createLocalLlmEngine,
   stt: createWhisperSttEngine,
   tts: createPiperTtsEngine,
   vad: () => new EndpointingVad(new SileroSpeechDetector(CAPTURE_SAMPLE_RATE)),
-  keywordSpotter: () => unavailable('keywordSpotter'),
+  keywordSpotter: () => new SherpaKeywordSpotter(nativeAudio, CAPTURE_SAMPLE_RATE),
   audioSource: () => new NativeMicrophone(),
 };
 

@@ -155,25 +155,25 @@
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDA2ZHEJR7GGB3Z4DX)
 - [x] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki) (pr: #27)
-- [ ] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript) (pr: #28)
+- [x] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript) (pr: #28)
   - AC: po ciszy ≥ progu wypowiedź wysyłana z kontekstem tematu; odpowiedź pisemnie i głosowo
   - AC: wejście — przycisk mikrofonu na ekranie Rozmowa (3.7)
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)
   - Specky kryteria: (crit: 01M4TPSC0B8HYJGGA7VFMDNQMS) (crit: 01M4TPSC0B4E53VDY3GZ4AXK4A) (crit: 01M4TPSC0BAH62JP9VCR54D90J)
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDRJ1KPTAXYXJAQKVQ)
-- [ ] Test: 3.6 — przejścia stanów z atrapami silników (pr: #28)
-- [ ] Zadanie 3.7: Ekran Rozmowa — tryb głosowy: duży przycisk mikrofonu, wskaźnik stanu (słucham / przetwarzam / mówię), transkrypcja na żywo, przełącznik trybu ciągły/przerywany (wymaga: 2.7, 3.6) (spec: spec.md) (tech: react-native, typescript) (pr: #28)
+- [x] Test: 3.6 — przejścia stanów z atrapami silników (pr: #28)
+- [x] Zadanie 3.7: Ekran Rozmowa — tryb głosowy: duży przycisk mikrofonu, wskaźnik stanu (słucham / przetwarzam / mówię), transkrypcja na żywo, przełącznik trybu ciągły/przerywany (wymaga: 2.7, 3.6) (spec: spec.md) (tech: react-native, typescript) (pr: #28)
   - AC: wskaźnik pokazuje bieżący stan sesji; tryb przełączany jednym dotknięciem (ustawienie globalne)
   - Specky: (req: 01M4TPSC7RSRB8XX9FM7EHZSXS v1.0 @990c4e5)
   - Specky kryteria: (crit: 01M4TPSC85Q9KY04JF3KEEC2XM) (crit: 01M4TPSC85FNP5ZTJ00E05C140)
-- [ ] Test: 3.7 — render stanów i przełącznik trybu (pr: #28)
-- [ ] Zadanie 3.8: Metryki opóźnień — czas STT, czas do pierwszego tokenu, czas do pierwszego audio, zapisywane lokalnie i widoczne w trybie diagnostycznym (wymaga: 3.6) (tech: react-native, typescript) (pr: #28)
+- [x] Test: 3.7 — render stanów i przełącznik trybu (pr: #28)
+- [x] Zadanie 3.8: Metryki opóźnień — czas STT, czas do pierwszego tokenu, czas do pierwszego audio, zapisywane lokalnie i widoczne w trybie diagnostycznym (wymaga: 3.6) (tech: react-native, typescript) (pr: #28)
   - AC: wejście — przełącznik „Tryb diagnostyczny" w Ustawieniach
   - Specky: (req: 01M4TPSCJAAVY8EMNC2X7SAZ3Y v1.0 @32b1379)
   - Specky kryteria: (crit: 01M4TPSCJV5Y6488ZMZ28DRVZT)
-- [ ] Test: 3.8 — pomiar z atrapami o zadanych opóźnieniach (pr: #28)
-- [ ] Zadanie 3.9: Test e2e — tryb ciągły: wstrzyknięty WAV → transkrypcja → odpowiedź atrapy LLM tekstem i (atrapą) TTS → powrót do nasłuchu; odmowa mikrofonu → rozmowa tekstem (wymaga: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8) (spec: spec.md) (tech: detox, typescript) (pr: #28)
+- [x] Test: 3.8 — pomiar z atrapami o zadanych opóźnieniach (pr: #28)
+- [x] Zadanie 3.9: Test e2e — tryb ciągły: wstrzyknięty WAV → transkrypcja → odpowiedź atrapy LLM tekstem i (atrapą) TTS → powrót do nasłuchu; odmowa mikrofonu → rozmowa tekstem (wymaga: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8) (spec: spec.md) (tech: detox, typescript) (pr: #28)
 
 ### Faza 4: Tryb przerywany i przerwanie STOP
 
@@ -183,44 +183,44 @@
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XEXCWD5H24XGWKY9M) (crit: 01M4TPSC2X3N2VSTTSH6ZVT7FM)
 - [ ] Test: 4.1 — tabela przypadków dopasowania
-- [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript) (pr: #31)
   - AC: pauzy w trybie przerywanym nie wysyłają wypowiedzi; „odbiór" wysyła całość
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XBWSY7997NWZGCE5K) (crit: 01M4TPSC2XMDVW605VXF879XN8)
-- [ ] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego
-- [ ] Zadanie 4.3: KeywordSpotter „stop" na sherpa-onnx KWS — aktywny w trakcie generowania i odtwarzania TTS, przy włączonym AEC (wymaga: 3.1, 1.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego (pr: #31)
+- [ ] Zadanie 4.3: KeywordSpotter „stop" na sherpa-onnx KWS — aktywny w trakcie generowania i odtwarzania TTS, przy włączonym AEC (wymaga: 3.1, 1.6) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
   - AC: wejście — VoiceSessionController włącza nasłuch KWS przy wejściu w stan „przetwarzam"/„mówię"
   - Specky: (req: 01M4TPSC52ZQ05FHN0CAWF2MYX v1.0 @4eb389f)
-- [ ] Test: 4.3 — adapter KWS z atrapą, włączanie/wyłączanie wg stanu
-- [ ] Zadanie 4.4: Obsługa STOP (głosowego i przycisku) — przerwanie TTS i generowania, zapis odpowiedzi częściowej z oznaczeniem „przerwano", natychmiastowy powrót do nasłuchu (wymaga: 2.5, 4.3, 3.7) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 4.3 — adapter KWS z atrapą, włączanie/wyłączanie wg stanu (pr: #30)
+- [ ] Zadanie 4.4: Obsługa STOP (głosowego i przycisku) — przerwanie TTS i generowania, zapis odpowiedzi częściowej z oznaczeniem „przerwano", natychmiastowy powrót do nasłuchu (wymaga: 2.5, 4.3, 3.7) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
   - AC: „STOP" w trakcie mowy zatrzymuje TTS i przechodzi w nasłuch
   - AC: „STOP" w trakcie generowania przerywa generowanie; tekst częściowy w historii
   - Specky: (req: 01M4TPSC52ZQ05FHN0CAWF2MYX v1.0 @4eb389f)
   - Specky kryteria: (crit: 01M4TPSC5K3QATGJG1DNDG5JWZ) (crit: 01M4TPSC5K6T07CB28MAEV4VWZ) (crit: 01M4TPSC5KA9NT3SHJ61SKQA26) (crit: 01M4TPSC5KZ6SEVP3V2QJ1JE61)
-- [ ] Test: 4.4 — STOP w stanach „przetwarzam" i „mówię"
+- [ ] Test: 4.4 — STOP w stanach „przetwarzam" i „mówię" (pr: #30)
 - [ ] ⛔ Test: 4.4 — ręcznie na urządzeniach referencyjnych: skuteczność „odbiór"/„STOP" przez głośnik i słuchawki (scenariusz w ralph/TEST_SCENARIOS)
-- [ ] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript)
+- [ ] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript) (pr: #31)
 
 ### Faza 5: Menedżer modeli i ustawienia
 
-- [ ] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript)
+- [ ] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript) (pr: #32)
   - AC: model niezalecany nadal można pobrać po potwierdzeniu
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRZQ1S7977M866Q4DY)
-- [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM
-- [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM (pr: #32)
+- [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #33)
   - AC: user pobiera wybrany model lokalny na urządzenie i może go usunąć
   - Specky: (req: 01M4TPSCQHCPGKAQAJ8E6QGB2M v1.0 @aeb1edd)
   - Specky kryteria: (crit: 01M4TPSCQVTNAKJ3XXG6PS1DZF)
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRQYNMQH707Z7NFVT5)
-- [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową
-- [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową (pr: #33)
+- [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #34)
   - AC: wejście — pierwsze uruchomienie aplikacji bez pobranych modeli
   - Specky: (req: 01M4TPSCT6VW2MN48Y3MP3WBXC v1.0 @aab204b)
   - Specky kryteria: (crit: 01M4TPSCTRFJVN1RZX3P717BYQ) (crit: 01M4TPSCTRC2WYRFBHHV417XND)
-- [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie
-- [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie (pr: #34)
+- [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #35)
   - AC: zmiana głosu, trybu i progu działa od następnej wypowiedzi
   - AC: ekran licencji wymienia Llama 3.2 Community License, Gemma Terms of Use, Apache 2.0 (Qwen), licencje głosów Piper
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
@@ -229,12 +229,12 @@
   - Specky kryteria: (crit: 01M4TPSDJ62M6TE9A5F0JVH4E3)
   - Specky: (req: 01M4TPSDPBEDTZZQQMS63N2YES v1.0 @5f3694f)
   - Specky kryteria: (crit: 01M4TPSDPP4W0NEMR8EHA2PQQP)
-- [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja
-- [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja (pr: #35)
+- [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript) (pr: #36)
   - AC: temat z nadpisanym modelem używa go; bez nadpisania — modelu globalnego
   - Specky: (req: 01M4TPSCZHV54NDW1AVW7EMMWZ v1.0 @b9ecbc6)
   - Specky kryteria: (crit: 01M4TPSD05YJQ92GQ33KMKKNKM) (crit: 01M4TPSD05K5NH3VE5Q66NVXJM)
-- [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie
+- [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie (pr: #36)
 - [ ] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript)
 
 ### Faza 6: Dostawcy chmurowi LLM
