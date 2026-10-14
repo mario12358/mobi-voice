@@ -25,3 +25,9 @@ To changelog dla człowieka, żeby pamiętać "co i dlaczego ustaliliśmy w trak
 **Pytanie/kontekst**: User zatwierdził propozycję wydania po Fazie 1 i polecił kontynuować pracę.
 **Ustalenie**: Utworzono wersję v0.1.0 (commit 9abf426) — fundament aplikacji: start na iOS 16.4+/Android 10, lokalna baza, ekrany-szkielety, polski UI, motyw za systemem. Scenariusze testerów w docs/test-scenarios/v0.1.0.md, migawka Specky 01M4V1NPKW6SJPW042NE9J52SG, tag wypchnięty do origin.
 **Wpływ**: Faza 1; dalej zadanie 2.1.
+
+## 2026-10-14 09:20 — Wersja v0.2.0 odłożona, start Fazy 3
+**Rodzaj**: operacje
+**Pytanie/kontekst**: Po Fazie 2 zaproponowano wydanie v0.2.0 (czat tekstowy). User odpowiedział „nie wydawaj, realizuj kolejną fazę według propozycji".
+**Ustalenie**: Wersja v0.2.0 nie powstaje; propozycja wraca po następnej fazie. Faza 3 startuje od sprawdzenia bibliotek z propozycji — obie odpadły (brak AEC na Androidzie, VAD-zaślepka i brak KWS), więc zgodnie z intencją propozycji (systemowe AEC, sherpa-onnx) wybrano własny moduł natywny i oficjalne sherpa-onnx; decyzja czeka na akceptację w Specky.
+**Wpływ**: Faza 3, zadania 3.1–3.4; Faza 4 (KWS).

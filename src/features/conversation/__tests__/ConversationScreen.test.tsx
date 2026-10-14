@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import { Alert, type AlertButton } from 'react-native';
 
 import { TestProviders } from '../../../__tests__/support/TestProviders';
+import { FakeAudioPorts } from '../../../audio/fakeAudioPorts';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../../../db/migrate';
 import { MessageRepository } from '../../../db/repositories/MessageRepository';
@@ -60,12 +61,13 @@ async function renderConversation(
   engines: EngineRegistry,
   connection: ConnectionType = 'wifi',
   fileSystem = new MemoryModelFileSystem(new Map()),
+  audio = new FakeAudioPorts(),
 ) {
   await render(
     <TestProviders
       db={db}
       engines={engines}
-      ports={{ fileSystem, network: { connection: async () => connection } }}
+      ports={{ fileSystem, network: { connection: async () => connection }, audio }}
     >
       <NavigationContainer>
         <Stack.Navigator>
@@ -145,6 +147,44 @@ describe('ConversationScreen', () => {
     await waitFor(() => expect(screen.queryByTestId('conversation.streaming')).toBeNull());
     expect(screen.getByText('Proponuję Mazury. Są piękne.')).toBeTruthy();
     expect(screen.getByTestId('conversation.send')).toBeTruthy();
+  });
+
+  // specky: crit 01M4TPSCFBD729TD4DGRJNHKRW
+  it('explains a denied microphone, links to the system settings and keeps typing available', async () => {
+    const audio = new FakeAudioPorts('denied');
+    await renderConversation(db, topicId, registryWith(llm), 'wifi', undefined, audio);
+
+    expect(await screen.findByText(pl.conversation.micDenied)).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('conversation.open-system-settings'));
+    expect(audio.settingsOpened).toBe(1);
+    expect(screen.getByTestId('conversation.input')).toBeTruthy();
+    expect(screen.getByTestId('conversation.send')).toBeTruthy();
+  });
+
+  it('shows no microphone notice while the permission is granted or not yet asked', async () => {
+    await renderConversation(
+      db,
+      topicId,
+      registryWith(llm),
+      'wifi',
+      undefined,
+      new FakeAudioPorts('undetermined'),
+    );
+    await screen.findByTestId('conversation.input');
+
+    expect(screen.queryByTestId('conversation.mic-denied')).toBeNull();
+  });
+
+  // specky: crit 01M4TPSBVH4RAMAQ7GSXN6R8NK
+  it('chats by text without the microphone permission', async () => {
+    await renderConversation(db, topicId, registryWith(llm), 'wifi', undefined, new FakeAudioPorts('denied'));
+    await screen.findByTestId('conversation.mic-denied');
+
+    await type('Nad jezioro.');
+    await waitFor(() => expect(llm.requests).toHaveLength(1));
+    await finishAnswer();
+
+    expect(screen.getByText('Proponuję Mazury. Są piękne.')).toBeTruthy();
   });
 
   it('STOP ends the answer, which stays in the chat marked as interrupted', async () => {

@@ -13,6 +13,7 @@ import { SPACING, usePalette } from '../../theme/theme';
 import { MessageBubble } from './MessageBubble';
 import { TopicPromptDialog } from './TopicPromptDialog';
 import { useConversation } from './useConversation';
+import { useMicPermission } from './useMicPermission';
 import { formatSize, useModelReadiness, type ModelReadiness } from './useModelReadiness';
 
 function ModelMissing({ readiness }: { readiness: ModelReadiness }) {
@@ -33,12 +34,27 @@ function ModelMissing({ readiness }: { readiness: ModelReadiness }) {
   );
 }
 
+// Voice needs the microphone; typing keeps working without it (MV-VOICE-7, MV-CHAT-3).
+function MicDenied({ onOpenSettings }: { onOpenSettings: () => void }) {
+  return (
+    <View testID="conversation.mic-denied" style={styles.notice}>
+      <BodyText>{pl.conversation.micDenied}</BodyText>
+      <TextButton
+        testID="conversation.open-system-settings"
+        label={pl.conversation.openSystemSettings}
+        onPress={onOpenSettings}
+      />
+    </View>
+  );
+}
+
 export function ConversationScreen({ navigation, route }: RootScreenProps<'Conversation'>) {
   const { topicId } = route.params;
   const palette = usePalette();
   const headerHeight = useHeaderHeight();
   const conversation = useConversation(topicId);
   const readiness = useModelReadiness(conversation.topic);
+  const microphone = useMicPermission();
   const [draft, setDraft] = useState('');
   const [editingPrompt, setEditingPrompt] = useState(false);
   const list = useRef<FlatList<Message>>(null);
@@ -111,6 +127,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
             {error.userMessage}
           </Text>
         )}
+        {microphone.status === 'denied' && <MicDenied onOpenSettings={microphone.openSystemSettings} />}
         {readiness.ready === false ? (
           <ModelMissing readiness={readiness} />
         ) : (

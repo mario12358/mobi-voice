@@ -1,0 +1,9 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": {
+    "modules": ["MobiAudioModule"]
+  },
+  "android": {
+    "modules": ["app.mobivoice.audio.MobiAudioModule"]
+  }
+}

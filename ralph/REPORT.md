@@ -15,7 +15,7 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Fazy 1–2 ukończone (33 pozycje planu zmergowane); Faza 1 wydana jako v0.1.0; następna: 3.1
+- **Postęp**: Fazy 1–2 ukończone (33 pozycje planu zmergowane); Faza 1 wydana jako v0.1.0; v0.2.0 odłożona przez człowieka; w toku: 3.1
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
 - Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
 
@@ -156,3 +156,5 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-13] [check] PR #20 — e2e ios: okno potwierdzenia nie otwierało się, bo iOS nie prezentuje nowego Modala, dopóki poprzedni (zmiana nazwy) się chowa — test czeka na zniknięcie okna zmiany nazwy. Do rozważenia w UX: szybkie otwarcie drugiego okna zaraz po zamknięciu pierwszego na iOS zostanie zignorowane.
 - [2026-10-13] [check] PR #20 — e2e ios: przyczyną nieotwierającego się okna usuwania był błąd z 2.6/2.7 — FlatList z domyślnym keyboardShouldPersistTaps=never zużywał pierwsze dotknięcie na schowanie klawiatury (po wyszukiwaniu „Usuń" nie reagował); ustawione handled na liście tematów i wiadomości.
 - [2026-10-13] [check] PR #20 — e2e ios: po restarcie aplikacja poprawnie otwiera ostatni temat z historią (zrzut), ale kontener ekranu nie spełniał heurystyki widoczności Detox (75%) — test sprawdza istnienie ekranu i widoczność treści.
+- [2026-10-14] Zadanie 3.1: sprawdzone paczki odrzucone — @siteed/audio-studio nagrywa na Androidzie z AudioSource.MIC bez AcousticEchoCanceler; react-native-sherpa-onnx 0.4.4 ma VAD jako zaślepkę rzucającą błąd i nie ma KWS. Zamiast nich lokalny moduł Expo `modules/mobi-audio` (Swift: AVAudioEngine z voice processing; Kotlin: AudioRecord VOICE_COMMUNICATION + AcousticEchoCanceler, przerwania przez utratę audio focus) — decyzja techniczna zgłoszona w Specky (01M4WKFKSXWNW7ZJ71XBMQCR7V). AEC i przerwania sprawdzalne tylko na urządzeniu; build Androida lokalnie zielony, iOS w CI.
+- [2026-10-14] Zadanie 3.1: zmiana testu `EngineRegistry.test.ts` — produkcyjne `audioSource()` zwraca `NativeMicrophone` zamiast `engine_unavailable` (zmiana zachowania z planu); brak silnika sprawdzany na `stt()`. Pierwsza mutacja (przerwanie bez zatrzymania TTS) przeżyła, bo test czekał na koniec odczytu atrapy — test sprawdza teraz stan TTS przed jego końcem; mutant zabity. Ostrzeżenia `act(...)` w ConversationScreen.test istniały przed zadaniem (9 na main).

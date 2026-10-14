@@ -42,6 +42,8 @@ export const pl = {
     cellularMessage: (size: string) => `Pobrać ${size} przez sieć komórkową?`,
     cellularConfirm: 'Pobierz',
     cancel: 'Anuluj',
+    micDenied: 'Brak dostępu do mikrofonu, więc rozmowa głosowa jest wyłączona. Nadal możesz pisać.',
+    openSystemSettings: 'Otwórz ustawienia systemu',
   },
   summary: {
     title: 'Podsumowanie',

@@ -2,19 +2,24 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { deviceAudioPorts } from './audio/deviceAudio';
+import { FakeAudioPorts } from './audio/fakeAudioPorts';
 import { DatabaseProvider } from './db/DatabaseProvider';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
+import { resolveEngineMode } from './engines/EngineRegistry';
 import { pl } from './i18n/pl';
 import { blobUtilFileSystem } from './models/download/blobUtilFileSystem';
 import { expoNetworkInfo } from './models/download/expoNetworkInfo';
 import { RootNavigator } from './navigation/RootNavigator';
-import { ServicesProvider, type DownloadPorts } from './services/ServicesProvider';
+import { ServicesProvider, type DevicePorts } from './services/ServicesProvider';
 import { usePalette } from './theme/theme';
 
-const deviceDownloadPorts = (): DownloadPorts => ({
+const devicePorts = (): DevicePorts => ({
   fileSystem: blobUtilFileSystem,
   network: expoNetworkInfo,
+  // e2e builds feed WAV files instead of the microphone, so no system permission prompt may appear.
+  audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? new FakeAudioPorts() : deviceAudioPorts,
 });
 
 // e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.
@@ -35,7 +40,7 @@ export default function App() {
     <SafeAreaProvider>
       <EngineProvider>
         <DatabaseProvider open={openAppDatabase}>
-          <ServicesProvider ports={deviceDownloadPorts}>
+          <ServicesProvider ports={devicePorts}>
             <RootNavigator />
           </ServicesProvider>
           <TestModeBadge />

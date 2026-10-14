@@ -1,0 +1,7 @@
+{
+  "name": "mobi-audio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MobiVoice microphone capture with system echo cancellation, audio interruptions and microphone permission",
+  "main": "index.ts"
+}
