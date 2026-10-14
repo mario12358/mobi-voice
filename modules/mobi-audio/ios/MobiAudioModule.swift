@@ -8,6 +8,7 @@ public class MobiAudioModule: Module {
   private var converter: AVAudioConverter?
   private var capturing = false
   private var interruptionObserver: NSObjectProtocol?
+  private var vad: SileroVad?
 
   public func definition() -> ModuleDefinition {
     Name("MobiAudio")
@@ -47,6 +48,23 @@ public class MobiAudioModule: Module {
 
     AsyncFunction("stopCapture") {
       self.stopEngine()
+    }
+
+    AsyncFunction("loadVad") { (sampleRate: Int) in
+      if self.vad == nil {
+        self.vad = try SileroVad(sampleRate: Int32(sampleRate))
+      }
+    }
+
+    // Synchronous: the VAD runs once per audio chunk on the JS thread.
+    Function("vadAccept") { (samples: Float32Array) -> Bool in
+      guard let vad = self.vad else { return false }
+      let pointer = samples.rawPointer.assumingMemoryBound(to: Float.self)
+      return vad.accept(pointer, count: samples.length)
+    }
+
+    Function("vadReset") {
+      self.vad?.reset()
     }
   }
 
