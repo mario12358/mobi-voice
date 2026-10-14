@@ -177,12 +177,12 @@
 
 ### Faza 4: Tryb przerywany i przerwanie STOP
 
-- [ ] Zadanie 4.1: KeywordMatcher — normalizacja (wielkość liter, polskie znaki, interpunkcja), tolerancja wariantów („odbior", „odbiur"), „odbiór" tylko jako ostatnie słowo segmentu, wycinanie słowa z transkrypcji (wymaga: 1.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 4.1: KeywordMatcher — normalizacja (wielkość liter, polskie znaki, interpunkcja), tolerancja wariantów („odbior", „odbiur"), „odbiór" tylko jako ostatnie słowo segmentu, wycinanie słowa z transkrypcji (wymaga: 1.1) (spec: spec.md) (tech: typescript) (pr: #29)
   - AC: „odbiór paczki jutro" nie wyzwala wysyłki; „to wszystko, odbiór." wyzwala
   - AC: słowo „odbiór" nie trafia do historii ani do LLM
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XEXCWD5H24XGWKY9M) (crit: 01M4TPSC2X3N2VSTTSH6ZVT7FM)
-- [ ] Test: 4.1 — tabela przypadków dopasowania
+- [ ] Test: 4.1 — tabela przypadków dopasowania (pr: #29)
 - [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript)
   - AC: pauzy w trybie przerywanym nie wysyłają wypowiedzi; „odbiór" wysyła całość
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
