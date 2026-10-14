@@ -1,5 +1,6 @@
 import { CloudHttpClient } from '../CloudHttpClient';
 import { OPENAI_CONFIG, OpenAiCompatibleEngine } from '../OpenAiCompatibleEngine';
+import { TOPIC_TOOLS } from '../../services/voice/topicTools';
 import { recordedServer, sse, type Recording } from './support/recordedServer';
 
 const KEY = 'test-openai-key';
@@ -59,6 +60,39 @@ describe('OpenAI adapter', () => {
         ],
       },
     });
+  });
+
+  it('offers the tools and returns the function the model called, its arguments streamed in pieces', async () => {
+    const call = (fn: { name?: string; arguments: string }) => ({
+      choices: [{ delta: { tool_calls: [{ index: 0, function: fn }] } }],
+    });
+    const { engine, calls } = setup({
+      status: 200,
+      chunks: sse(
+        call({ name: 'switch_topic', arguments: '' }),
+        call({ arguments: '{"name":' }),
+        call({ arguments: '"wakacje"}' }),
+        '[DONE]',
+      ),
+    });
+
+    const result = await engine.generate(
+      { ...REQUEST, tools: TOPIC_TOOLS },
+      () => {},
+      new AbortController().signal,
+    );
+
+    expect(result).toEqual({
+      text: '',
+      aborted: false,
+      toolCall: { name: 'switch_topic', arguments: { name: 'wakacje' } },
+    });
+    expect((calls[0]!.body as { tools: unknown[] }).tools).toEqual(
+      TOPIC_TOOLS.map(({ name, description, parameters }) => ({
+        type: 'function',
+        function: { name, description, parameters },
+      })),
+    );
   });
 
   it('uses the default model when the request names none', async () => {

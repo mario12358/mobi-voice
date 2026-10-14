@@ -16,11 +16,13 @@ import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
 import { SummaryRepository } from '../../../db/repositories/SummaryRepository';
 import { SummaryTemplateRepository } from '../../../db/repositories/SummaryTemplateRepository';
 import type { LlmScript } from '../../../engines/fakes/FakeLlmEngine';
+import type { LlmRequest, LlmResult, ToolCall } from '../../../engines/types';
 import { ContextBuilder } from '../../ContextBuilder';
 import { ConversationService } from '../../ConversationService';
 import { SUMMARY_SYSTEM_PROMPT } from '../../prompts';
 import { SummaryService } from '../../SummaryService';
 import { COMMAND_REPLIES, LISTED_TOPICS, TopicCommands } from '../TopicCommands';
+import { TOPIC_TOOLS } from '../topicTools';
 import { VoiceSessionController } from '../VoiceSessionController';
 import { until } from './support/until';
 
@@ -29,11 +31,30 @@ const SUMMARY_MARKDOWN = '**Ustalenia:**\n- Jedziemy na Mazury.\n- Nocleg w Giż
 const SCRIPT: LlmScript = (request) =>
   request.systemPrompt === SUMMARY_SYSTEM_PROMPT ? SUMMARY_MARKDOWN : 'Odpowiedź modelu.';
 
+// A cloud model that answers the next offered question with a tool call instead of text.
+class ToolCallingLlm extends FakeLlmEngine {
+  next: ToolCall | null = null;
+
+  override async generate(
+    request: LlmRequest,
+    onToken: (token: string) => void,
+    signal: AbortSignal,
+  ): Promise<LlmResult> {
+    const call = this.next;
+    if (call === null || request.tools === undefined) return super.generate(request, onToken, signal);
+    this.next = null;
+    this.requests.push(request);
+    return { text: '', aborted: false, toolCall: call };
+  }
+}
+
 describe('voice commands in a voice session', () => {
   let db: SqlDatabase;
   let topics: TopicRepository;
   let messages: MessageRepository;
-  let llm: FakeLlmEngine;
+  let llm: ToolCallingLlm;
+  // The topic's model is a cloud model: it may be offered the topic tools.
+  let cloud: boolean;
   let source: WavAudioSource;
   let stt: FakeSttEngine;
   let tts: FakeTtsEngine;
@@ -51,7 +72,8 @@ describe('voice commands in a voice session', () => {
     const clock = () => (now += 1_000);
     topics = new TopicRepository(db, clock);
     messages = new MessageRepository(db, clock);
-    llm = new FakeLlmEngine(SCRIPT);
+    llm = new ToolCallingLlm(SCRIPT);
+    cloud = false;
     source = new WavAudioSource();
     stt = new FakeSttEngine();
     tts = new FakeTtsEngine(0);
@@ -81,6 +103,7 @@ describe('voice commands in a voice session', () => {
         llm: () => llm,
         budget: () => ({ contextTokens: 4_096, maxOutputTokens: 512 }),
         systemPrompt: () => null,
+        toolsAllowed: () => cloud,
       }),
       silenceThresholdMs: () => 1_500,
       mode: () => 'continuous',
@@ -167,6 +190,7 @@ describe('voice commands in a voice session', () => {
     expect(llm.requests).toHaveLength(0);
   });
 
+  // specky: crit 01M4TPSD981M9JE8DH1AAHE29F
   it('says so when no topic fits, and sends ordinary questions to the model as usual', async () => {
     await say('Przełącz na temat samochód');
     expect(tts.spoken.at(-1)).toBe(COMMAND_REPLIES.notFound('samochód'));
@@ -196,7 +220,7 @@ describe('voice commands in a voice session', () => {
   });
 
   it('"stop" while the summary is prepared saves nothing and listens again', async () => {
-    llm = new FakeLlmEngine(SCRIPT, 40);
+    llm = new ToolCallingLlm(SCRIPT, 40);
     const spoken = tts.spoken.length;
     stt.enqueue('Podsumuj rozmowę');
     source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
@@ -209,5 +233,45 @@ describe('voice commands in a voice session', () => {
     await new Promise((resolve) => setTimeout(resolve, 800));
     expect(await summaries.latest(startTopic.id)).toBeNull();
     expect(tts.spoken.length).toBe(spoken);
+  });
+
+  it('a cloud model that calls switch_topic switches the topic the grammar did not recognize', async () => {
+    cloud = true;
+    llm.next = { name: 'switch_topic', arguments: { name: 'wakacje' } };
+
+    await say('Wróćmy do tego, o czym gadaliśmy przy wakacjach');
+
+    expect(llm.requests.at(-1)!.tools).toEqual(TOPIC_TOOLS);
+    expect(changes.map((topic) => topic.title)).toEqual(['Wakacje 2026']);
+    expect(tts.spoken.at(-1)).toBe(COMMAND_REPLIES.switched('Wakacje 2026'));
+    // The command is not part of the conversation it was said in.
+    expect(await messages.listByTopic(startTopic.id)).toEqual([]);
+
+    await say('Gdzie jechać?');
+    expect((await messages.listByTopic(changes[0]!.id)).map((message) => message.content)).toEqual([
+      'Gdzie jechać?',
+      'Odpowiedź modelu.',
+    ]);
+  });
+
+  it('a cloud model may also create and list topics through its tools', async () => {
+    cloud = true;
+    llm.next = { name: 'create_topic', arguments: { name: 'Ogród' } };
+    await say('Chciałbym zacząć rozmowę o ogrodzie');
+    expect(changes.at(-1)?.title).toBe('Ogród');
+
+    llm.next = { name: 'list_topics', arguments: {} };
+    await say('Przypomnij mi, o czym rozmawialiśmy');
+    expect(tts.spoken.at(-1)).toBe(COMMAND_REPLIES.list(lists[0]!.map((topic) => topic.title)));
+  });
+
+  it('a local model gets no tools and answers as usual', async () => {
+    llm.next = { name: 'switch_topic', arguments: { name: 'wakacje' } };
+
+    await say('Wróćmy do tego, o czym gadaliśmy przy wakacjach');
+
+    expect(llm.requests.at(-1)!.tools).toBeUndefined();
+    expect(changes).toEqual([]);
+    expect(tts.spoken.at(-1)).toBe('Odpowiedź modelu.');
   });
 });

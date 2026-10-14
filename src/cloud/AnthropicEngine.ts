@@ -1,5 +1,5 @@
 import { DomainError } from '../core/errors';
-import type { LlmRequest, LlmResult } from '../engines/types';
+import { parseToolArguments, type LlmRequest, type LlmResult } from '../engines/types';
 import type { CloudHttpClient } from './CloudHttpClient';
 import type { ApiKeySource, CloudLlmEngine } from './types';
 
@@ -13,7 +13,9 @@ export const ANTHROPIC_FALLBACK_MODELS = ['claude-haiku-5-5', 'claude-sonnet-5-5
 
 interface StreamEvent {
   type?: string;
-  delta?: { type?: string; text?: string };
+  index?: number;
+  content_block?: { type?: string; name?: string };
+  delta?: { type?: string; text?: string; partial_json?: string };
 }
 
 function parseEvent(data: string): StreamEvent | null {
@@ -40,6 +42,8 @@ export class AnthropicEngine implements CloudLlmEngine {
   ): Promise<LlmResult> {
     const key = await this.requireKey();
     let text = '';
+    // The first tool_use block: its name at the start, its input as streamed JSON pieces.
+    const tool = { index: -1, name: '', args: '' };
     try {
       const response = await this.client.request({
         url: `${BASE_URL}/messages`,
@@ -50,19 +54,40 @@ export class AnthropicEngine implements CloudLlmEngine {
           ...(request.systemPrompt === null ? {} : { system: request.systemPrompt }),
           messages: request.messages.map(({ role, content }) => ({ role, content })),
           stream: true,
+          ...(request.tools === undefined || request.tools.length === 0
+            ? {}
+            : {
+                tools: request.tools.map(({ name, description, parameters }) => ({
+                  name,
+                  description,
+                  input_schema: parameters,
+                })),
+              }),
         },
         signal,
       });
       await this.client.readEvents(response, (event) => {
         const parsed = parseEvent(event.data);
-        if (signal.aborted || parsed?.type !== 'content_block_delta' || parsed.delta?.type !== 'text_delta')
+        if (signal.aborted || parsed === null) return;
+        if (parsed.type === 'content_block_start' && parsed.content_block?.type === 'tool_use') {
+          if (tool.index === -1)
+            Object.assign(tool, { index: parsed.index ?? 0, name: parsed.content_block.name ?? '' });
           return;
+        }
+        if (parsed.type !== 'content_block_delta') return;
+        if (parsed.delta?.type === 'input_json_delta' && parsed.index === tool.index) {
+          tool.args += parsed.delta.partial_json ?? '';
+          return;
+        }
+        if (parsed.delta?.type !== 'text_delta') return;
         const token = parsed.delta.text ?? '';
         if (token.length === 0) return;
         text += token;
         onToken(token);
       });
-      return { text, aborted: signal.aborted };
+      const toolCall =
+        tool.name === '' ? {} : { toolCall: { name: tool.name, arguments: parseToolArguments(tool.args) } };
+      return { text, aborted: signal.aborted, ...toolCall };
     } catch (error) {
       if (signal.aborted) return { text, aborted: true };
       throw error;

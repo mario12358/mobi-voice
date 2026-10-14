@@ -1,5 +1,5 @@
 import { DomainError } from '../core/errors';
-import type { LlmRequest, LlmResult } from '../engines/types';
+import { parseToolArguments, type LlmRequest, type LlmResult, type ToolDefinition } from '../engines/types';
 import type { CloudProvider } from '../state/SecretStore';
 import type { CloudHttpClient } from './CloudHttpClient';
 import type { ApiKeySource, CloudLlmEngine } from './types';
@@ -14,8 +14,20 @@ export interface OpenAiCompatibleConfig {
   isChatModel?: (id: string) => boolean;
 }
 
+interface ToolCallDelta {
+  index?: number;
+  function?: { name?: string; arguments?: string };
+}
+
 interface ChatChunk {
-  choices?: { delta?: { content?: string | null } }[];
+  choices?: { delta?: { content?: string | null; tool_calls?: ToolCallDelta[] } }[];
+}
+
+function toTools(tools: ToolDefinition[]) {
+  return tools.map(({ name, description, parameters }) => ({
+    type: 'function',
+    function: { name, description, parameters },
+  }));
 }
 
 // A malformed event is skipped rather than ending an answer that is otherwise streaming fine.
@@ -51,6 +63,8 @@ export class OpenAiCompatibleEngine implements CloudLlmEngine {
   ): Promise<LlmResult> {
     const key = await this.requireKey();
     let text = '';
+    // The first tool call, streamed as its name and then its arguments in pieces.
+    const tool = { name: '', args: '' };
     try {
       const response = await this.client.request({
         url: `${this.config.baseUrl}/chat/completions`,
@@ -60,18 +74,29 @@ export class OpenAiCompatibleEngine implements CloudLlmEngine {
           messages: toMessages(request),
           stream: true,
           ...(request.maxTokens === undefined ? {} : { max_tokens: request.maxTokens }),
+          ...(request.tools === undefined || request.tools.length === 0
+            ? {}
+            : { tools: toTools(request.tools) }),
         },
         signal,
       });
       await this.client.readEvents(response, (event) => {
         if (event.data === '[DONE]' || signal.aborted) return;
-        const token = parseChunk(event.data)?.choices?.[0]?.delta?.content;
+        const delta = parseChunk(event.data)?.choices?.[0]?.delta;
+        for (const call of delta?.tool_calls ?? []) {
+          if ((call.index ?? 0) !== 0) continue;
+          tool.name += call.function?.name ?? '';
+          tool.args += call.function?.arguments ?? '';
+        }
+        const token = delta?.content;
         if (typeof token === 'string' && token.length > 0) {
           text += token;
           onToken(token);
         }
       });
-      return { text, aborted: signal.aborted };
+      const toolCall =
+        tool.name === '' ? {} : { toolCall: { name: tool.name, arguments: parseToolArguments(tool.args) } };
+      return { text, aborted: signal.aborted, ...toolCall };
     } catch (error) {
       // STOP while the answer streams: what arrived so far is the answer.
       if (signal.aborted) return { text, aborted: true };

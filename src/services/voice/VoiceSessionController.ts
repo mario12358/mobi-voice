@@ -7,7 +7,7 @@ import type {
   TtsEngine,
   VadEngine,
 } from '../../engines/types';
-import type { ConversationService } from '../ConversationService';
+import type { ConversationService, Exchange } from '../ConversationService';
 import type { LatencySample } from '../../state/latency';
 import type { Topic } from '../../db/repositories/TopicRepository';
 import type { ConversationMode } from '../../state/settings';
@@ -15,6 +15,7 @@ import { matchEndWord } from '../speech/KeywordMatcher';
 import { SentenceSplitter } from '../speech/SpeechText';
 import { SummaryCancelledError } from '../SummaryService';
 import type { CommandOutcome, TopicCommands } from './TopicCommands';
+import { TOPIC_TOOLS } from './topicTools';
 
 export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking';
 
@@ -175,6 +176,12 @@ export class VoiceSessionController {
       this.abort = null;
     }
     if (outcome === null || outcome === undefined || !this.isCurrent(turn)) return outcome != null;
+    await this.applyOutcome(outcome);
+    return true;
+  }
+
+  // What a command (from the grammar or a cloud model's tool call) does to the session, then its reply.
+  private async applyOutcome(outcome: CommandOutcome): Promise<void> {
     this.candidates = outcome.candidates ?? [];
     if (outcome.topic !== undefined) {
       this.topicId = outcome.topic.id;
@@ -186,13 +193,12 @@ export class VoiceSessionController {
     this.setState('speaking');
     if (outcome.modelText !== true) {
       await tts.speak(outcome.reply);
-      return true;
+      return;
     }
     // Model text is Markdown: cleaned and read sentence by sentence, like an answer.
     const splitter = new SentenceSplitter();
     const sentences = [...splitter.push(outcome.reply), ...splitter.flush()];
     await Promise.all(sentences.map((sentence) => tts.speak(sentence)));
-    return true;
   }
 
   // The text to send now, or null while the interrupted-mode utterance goes on.
@@ -239,22 +245,33 @@ export class VoiceSessionController {
     };
 
     this.abort = new AbortController();
+    const signal = this.abort.signal;
+    let exchange: Exchange;
     try {
-      await this.deps.conversation.send(topicId, text, {
-        signal: this.abort.signal,
+      exchange = await this.deps.conversation.send(topicId, text, {
+        signal,
+        // Cloud models also get the topic tools: a command the grammar missed (MV-CMD-1).
+        ...(this.deps.commands === undefined ? {} : { tools: TOPIC_TOOLS }),
         onToken: (token) => {
           firstTokenMs ??= this.now() - endedAt;
           this.listener.onToken?.(token);
           say(splitter.push(token));
         },
       });
-      say(splitter.flush());
+      if (exchange.toolCall === undefined) say(splitter.flush());
       this.listener.onExchange?.();
     } finally {
       this.abort = null;
     }
     await Promise.all(reading);
     report(null);
+    if (exchange.toolCall === undefined || this.deps.commands === undefined || !this.isCurrent(turn)) return;
+    const outcome = await this.deps.commands.runTool(exchange.toolCall, {
+      topicId,
+      candidates: [],
+      signal,
+    });
+    if (outcome !== null && this.isCurrent(turn)) await this.applyOutcome(outcome);
   }
 
   private listenAgain(): void {
