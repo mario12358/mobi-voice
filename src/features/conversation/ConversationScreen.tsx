@@ -107,7 +107,6 @@ function VoicePanel({ voice }: { voice: VoiceSessionView }) {
       {voice.transcript !== null && (
         <BodyText testID="conversation.transcript">{pl.conversation.youSaid(voice.transcript)}</BodyText>
       )}
-      <E2EVoiceControls />
       <Pressable
         testID="conversation.mic"
         accessibilityRole="button"
@@ -175,6 +174,8 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
             onPress={() => setEditingPrompt(true)}
           />
         </View>
+        {/* e2e builds only; at the top, where small CI emulator screens still show it whole. */}
+        <E2EVoiceControls />
         <FlatList
           ref={list}
           style={styles.fill}
