@@ -199,7 +199,7 @@
   - Specky kryteria: (crit: 01M4TPSC5K3QATGJG1DNDG5JWZ) (crit: 01M4TPSC5K6T07CB28MAEV4VWZ) (crit: 01M4TPSC5KA9NT3SHJ61SKQA26) (crit: 01M4TPSC5KZ6SEVP3V2QJ1JE61)
 - [ ] Test: 4.4 — STOP w stanach „przetwarzam" i „mówię" (pr: #30)
 - [ ] ⛔ Test: 4.4 — ręcznie na urządzeniach referencyjnych: skuteczność „odbiór"/„STOP" przez głośnik i słuchawki (scenariusz w ralph/TEST_SCENARIOS)
-- [ ] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript)
+- [ ] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript) (pr: #31)
 
 ### Faza 5: Menedżer modeli i ustawienia
 
