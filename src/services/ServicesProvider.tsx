@@ -3,6 +3,7 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from 're
 import { AudioSessionService } from '../audio/AudioSessionService';
 import type { FetchLike } from '../cloud/CloudHttpClient';
 import { createCloudEngines, type ApiKeyStore } from '../cloud/createCloudEngines';
+import { RoutingLlmEngine } from '../cloud/RoutingLlmEngine';
 import type { CloudLlmEngine } from '../cloud/types';
 import type { AudioPorts } from '../audio/types';
 import { useDatabase } from '../db/DatabaseProvider';
@@ -12,8 +13,7 @@ import { TopicRepository, type Topic } from '../db/repositories/TopicRepository'
 import type { SqlDatabase } from '../db/SqlDatabase';
 import { useEngines } from '../engines/EngineProvider';
 import type { EngineRegistry } from '../engines/EngineRegistry';
-import { selectedLocalModel } from '../engines/llm/createLocalLlmEngine';
-import type { LlmEntry } from '../models/catalog';
+import { isCloudModel, resolveChatModel, type ChatModel } from '../models/chatModel';
 import { ModelDownloadService } from '../models/download/ModelDownloadService';
 import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
 import { useLatencyStore } from '../state/latency';
@@ -34,8 +34,9 @@ export interface AppServices {
   voice: VoiceSessionController;
   deviceMemoryBytes(): number | null;
   cloud: { engines: Record<CloudProvider, CloudLlmEngine>; keys: ApiKeyStore };
-  modelForTopic(topic: Topic | null): LlmEntry;
-  isModelReady(model: LlmEntry): Promise<boolean>;
+  modelForTopic(topic: Topic | null): ChatModel;
+  // Local models need their files on the phone, cloud models a saved API key.
+  isModelReady(model: ChatModel): Promise<boolean>;
 }
 
 export interface DevicePorts {
@@ -53,7 +54,9 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
   const topics = new TopicRepository(db);
   const messages = new MessageRepository(db);
   const modelForTopic = (topic: Topic | null) =>
-    selectedLocalModel(topic?.modelOverride ?? useSettingsStore.getState().defaultModelId);
+    resolveChatModel(topic?.modelOverride ?? useSettingsStore.getState().defaultModelId);
+  const cloudEngines = createCloudEngines(ports.fetch, ports.apiKeys);
+  const llm = new RoutingLlmEngine(() => engines.llm(), cloudEngines);
   const downloads = new ModelDownloadService(ports.fileSystem, ports.network, {
     wifiOnly: () => useSettingsStore.getState().wifiOnlyDownloads,
   });
@@ -66,7 +69,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     topics,
     messages,
     context,
-    llm: () => engines.llm(),
+    llm: () => llm,
     budget: modelForTopic,
     model: (topic) => modelForTopic(topic).id,
     systemPrompt: (topic) =>
@@ -97,11 +100,13 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     audio,
     voice,
     deviceMemoryBytes: ports.memoryBytes,
-    cloud: { engines: createCloudEngines(ports.fetch, ports.apiKeys), keys: ports.apiKeys },
+    cloud: { engines: cloudEngines, keys: ports.apiKeys },
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.
-    isModelReady: async (model) =>
-      engines.mode === 'test' || (await downloads.status(model.id)) === 'downloaded',
+    isModelReady: async (model) => {
+      if (isCloudModel(model)) return (await ports.apiKeys.getApiKey(model.provider)) !== null;
+      return engines.mode === 'test' || (await downloads.status(model.id)) === 'downloaded';
+    },
   };
 }
 

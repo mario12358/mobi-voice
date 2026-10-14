@@ -85,21 +85,25 @@ export class CloudHttpClient {
     for (const event of parser.finish()) onEvent(event);
   }
 
+  // The 60 s limit covers waiting for the response; a STOP from the conversation also cuts the streamed body
+  // afterwards, so the abort stays forwarded once the response has arrived.
   private async attempt(request: CloudRequest, method: string): Promise<HttpResponse> {
-    const timeout = new AbortController();
-    const timer = setTimeout(() => timeout.abort(), REQUEST_TIMEOUT_MS);
-    const forward = () => timeout.abort();
+    const connection = new AbortController();
+    const timer = setTimeout(() => connection.abort(), REQUEST_TIMEOUT_MS);
+    const forward = () => connection.abort();
     request.signal?.addEventListener('abort', forward);
     try {
       return await this.deps.fetch(request.url, {
         method,
         headers: { 'content-type': 'application/json', ...request.headers },
         body: request.body === undefined ? undefined : JSON.stringify(request.body),
-        signal: timeout.signal,
+        signal: connection.signal,
       });
+    } catch (error) {
+      request.signal?.removeEventListener('abort', forward);
+      throw error;
     } finally {
       clearTimeout(timer);
-      request.signal?.removeEventListener('abort', forward);
     }
   }
 }

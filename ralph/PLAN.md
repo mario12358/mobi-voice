@@ -268,11 +268,11 @@
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NM3BC0R81WPKKS9GV) (crit: 01M4TPSD3NCRZBYB6MHAVGWTCR)
 - [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli (pr: #41)
-- [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript) (pr: #42)
   - AC: z modelem chmurowym rozmowa głosowa działa tak samo jak z lokalnym (oba tryby, STOP)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NTQ77B4DZMD45444S)
-- [ ] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP
+- [ ] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP (pr: #42)
 - [ ] Zadanie 6.8: Test e2e — dodanie klucza (atrapa serwera dostawcy), błędny klucz, wybór modelu chmurowego w temacie, rozmowa tekstowa i głosowa, błąd sieci z komunikatem (wymaga: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7) (spec: spec.md) (tech: detox, typescript)
 
 ### Faza 7: Polecenia głosowe tematów

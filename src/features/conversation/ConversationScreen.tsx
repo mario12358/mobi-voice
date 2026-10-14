@@ -18,7 +18,9 @@ import type { Message } from '../../db/repositories/MessageRepository';
 import { pl } from '../../i18n/pl';
 import { downloadSizeBytes } from '../../models/catalog';
 import type { RootScreenProps } from '../../navigation/types';
+import { PROVIDER_NAMES } from '../../cloud/createCloudEngines';
 import { E2EVoiceControls } from '../../e2e/E2EVoiceControls';
+import { isCloudModel } from '../../models/chatModel';
 import { useServices } from '../../services/ServicesProvider';
 import { useLatencyStore, type LatencySample } from '../../state/latency';
 import { useSettingsStore } from '../../state/settings';
@@ -31,8 +33,26 @@ import { useMicPermission } from './useMicPermission';
 import { useVoiceSession, type VoiceSessionView } from './useVoiceSession';
 import { formatSize, useModelReadiness, type ModelReadiness } from './useModelReadiness';
 
-function ModelMissing({ readiness }: { readiness: ModelReadiness }) {
+function ModelMissing({
+  readiness,
+  onOpenApiKeys,
+}: {
+  readiness: ModelReadiness;
+  onOpenApiKeys: () => void;
+}) {
   const { model, progress } = readiness;
+  if (isCloudModel(model)) {
+    return (
+      <View testID="conversation.cloud-key-missing" style={styles.notice}>
+        <BodyText>{pl.conversation.cloudKeyMissing(PROVIDER_NAMES[model.provider])}</BodyText>
+        <TextButton
+          testID="conversation.open-api-keys"
+          label={pl.settings.openApiKeys}
+          onPress={onOpenApiKeys}
+        />
+      </View>
+    );
+  }
   return (
     <View testID="conversation.model-missing" style={styles.notice}>
       <BodyText>{pl.conversation.modelMissing(model.displayName)}</BodyText>
@@ -226,7 +246,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
           <MicDenied onOpenSettings={microphone.openSystemSettings} />
         )}
         {readiness.ready === false ? (
-          <ModelMissing readiness={readiness} />
+          <ModelMissing readiness={readiness} onOpenApiKeys={() => navigation.navigate('ApiKeys')} />
         ) : (
           <>
             <VoicePanel voice={voice} />
