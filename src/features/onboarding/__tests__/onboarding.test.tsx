@@ -8,7 +8,7 @@ import { createTestFactories, EngineRegistry } from '../../../engines/EngineRegi
 import { pl } from '../../../i18n/pl';
 import { RootNavigator } from '../../../navigation/RootNavigator';
 import { useSettingsStore } from '../../../state/settings';
-import { CatalogFileSystem } from '../../models/__tests__/support/catalogFileSystem';
+import { CatalogFileSystem } from '../../../e2e/CatalogFileSystem';
 
 describe('first-run wizard', () => {
   let db: SqlDatabase;

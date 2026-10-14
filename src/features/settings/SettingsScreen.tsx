@@ -6,6 +6,7 @@ import { Screen } from '../../components/Screen';
 import { TextButton } from '../../components/TextButton';
 import { pl } from '../../i18n/pl';
 import type { RootScreenProps } from '../../navigation/types';
+import { useEngines } from '../../engines/EngineProvider';
 import { DEFAULT_LOCAL_MODEL_ID } from '../../engines/llm/createLocalLlmEngine';
 import { llmEntries, ttsEntry } from '../../models/catalog';
 import { DEFAULT_SYSTEM_PROMPT } from '../../services/prompts';
@@ -150,11 +151,12 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
   const mode = useSettingsStore((state) => state.conversationMode);
   const whisper = useSettingsStore((state) => state.whisperVariant);
   const update = useSettingsStore((state) => state.update);
+  const engines = useEngines();
   const shownPrompt = globalPrompt ?? DEFAULT_SYSTEM_PROMPT;
 
   return (
     <Screen testID="settings-screen">
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView testID="settings.scroll" contentContainerStyle={styles.content}>
         <TextButton
           testID="settings.open-models"
           label={pl.settings.openModels}
@@ -208,6 +210,14 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
           label={pl.settings.openLicenses}
           onPress={() => navigation.navigate('Licenses')}
         />
+        {/* e2e builds only: their fake engines skip the first-run wizard at start, so Detox opens it here. */}
+        {engines.mode === 'test' && (
+          <TextButton
+            testID="e2e.open-onboarding"
+            label={pl.common.e2eOnboarding}
+            onPress={() => navigation.navigate('Onboarding')}
+          />
+        )}
       </ScrollView>
     </Screen>
   );

@@ -235,7 +235,7 @@
   - Specky: (req: 01M4TPSCZHV54NDW1AVW7EMMWZ v1.0 @b9ecbc6)
   - Specky kryteria: (crit: 01M4TPSD05YJQ92GQ33KMKKNKM) (crit: 01M4TPSD05K5NH3VE5Q66NVXJM)
 - [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie (pr: #36)
-- [ ] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript)
+- [ ] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript) (pr: #37)
 
 ### Faza 6: Dostawcy chmurowi LLM
 

@@ -11,7 +11,7 @@ import type { ConnectionType } from '../../../models/download/types';
 import type { RootStackParamList } from '../../../navigation/types';
 import { useSettingsStore } from '../../../state/settings';
 import { ModelsScreen } from '../ModelsScreen';
-import { CatalogFileSystem } from './support/catalogFileSystem';
+import { CatalogFileSystem } from '../../../e2e/CatalogFileSystem';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const GB = 1_000_000_000;
