@@ -26,6 +26,7 @@ import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
 import { resolveSystemPrompt } from './prompts';
 import { SummaryService } from './SummaryService';
+import { TopicExporter } from './TopicExporter';
 import { TopicTitler } from './TopicTitler';
 import { TopicCommands } from './voice/TopicCommands';
 import { VoiceSessionController } from './voice/VoiceSessionController';
@@ -36,6 +37,7 @@ export interface AppServices {
   conversation: ConversationService;
   summaries: SummaryService;
   summaryTemplates: SummaryTemplateRepository;
+  exporter: TopicExporter;
   downloads: ModelDownloadService;
   audio: AudioSessionService;
   voice: VoiceSessionController;
@@ -117,6 +119,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     conversation,
     summaries,
     summaryTemplates: new SummaryTemplateRepository(db),
+    exporter: new TopicExporter(topics, messages, ports.apiKeys),
     downloads,
     audio,
     voice,

@@ -10,11 +10,12 @@ interface Props {
   onOpen: (topic: Topic) => void;
   onRename: (topic: Topic) => void;
   onDelete: (topic: Topic) => void;
+  onExport: (topic: Topic) => void;
 }
 
 const DATE_FORMAT = new Intl.DateTimeFormat('pl-PL', { dateStyle: 'medium', timeStyle: 'short' });
 
-function TopicRowComponent({ topic, onOpen, onRename, onDelete }: Props) {
+function TopicRowComponent({ topic, onOpen, onRename, onDelete, onExport }: Props) {
   const palette = usePalette();
   return (
     <View style={[styles.row, { borderColor: palette.border, backgroundColor: palette.surface }]}>
@@ -31,22 +32,33 @@ function TopicRowComponent({ topic, onOpen, onRename, onDelete }: Props) {
           {pl.topicList.lastActivity(DATE_FORMAT.format(new Date(topic.lastActivityAt)))}
         </Text>
       </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={pl.topicList.renameLabel(topic.title)}
-        onPress={() => onRename(topic)}
-        style={styles.action}
-      >
-        <Text style={{ color: palette.accent }}>{pl.topicList.rename}</Text>
-      </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={pl.topicList.deleteLabel(topic.title)}
-        onPress={() => onDelete(topic)}
-        style={styles.action}
-      >
-        <Text style={{ color: palette.accent }}>{pl.topicList.delete}</Text>
-      </Pressable>
+      {/* Below the title, so three actions fit next to a readable title on small phones too. */}
+      <View style={styles.actions}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={pl.topicExport.actionLabel(topic.title)}
+          onPress={() => onExport(topic)}
+          style={styles.action}
+        >
+          <Text style={{ color: palette.accent }}>{pl.topicExport.action}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={pl.topicList.renameLabel(topic.title)}
+          onPress={() => onRename(topic)}
+          style={styles.action}
+        >
+          <Text style={{ color: palette.accent }}>{pl.topicList.rename}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={pl.topicList.deleteLabel(topic.title)}
+          onPress={() => onDelete(topic)}
+          style={styles.action}
+        >
+          <Text style={{ color: palette.accent }}>{pl.topicList.delete}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -54,9 +66,10 @@ function TopicRowComponent({ topic, onOpen, onRename, onDelete }: Props) {
 export const TopicRow = memo(TopicRowComponent);
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 10 },
-  main: { flex: 1, padding: SPACING.md, gap: SPACING.xs },
+  row: { borderWidth: 1, borderRadius: 10 },
+  main: { paddingHorizontal: SPACING.md, paddingTop: SPACING.md, gap: SPACING.xs },
+  actions: { flexDirection: 'row', justifyContent: 'flex-end' },
   title: { fontSize: 16, fontWeight: '600' },
   meta: { fontSize: 12 },
-  action: { paddingHorizontal: SPACING.sm, paddingVertical: SPACING.md },
+  action: { paddingHorizontal: SPACING.md, paddingVertical: SPACING.sm },
 });

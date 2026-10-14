@@ -71,6 +71,16 @@ export const pl = {
       `STT ${stt} · pierwszy token ${firstToken} · pierwsze audio ${firstAudio}`,
     latencyMissing: '—',
   },
+  topicExport: {
+    action: 'Eksportuj',
+    actionLabel: (title: string) => `Eksportuj temat ${title}`,
+    exportedAt: (date: string) => `Wyeksportowano z MobiVoice ${date}`,
+    user: 'Użytkownik',
+    assistant: 'Asystent',
+    interrupted: '(odpowiedź przerwana)',
+    empty: 'Brak wiadomości.',
+    keyRemoved: '[usunięto klucz API]',
+  },
   summary: {
     title: 'Podsumowanie',
     placeholder: 'Ten temat nie ma jeszcze podsumowania. Wybierz formę i naciśnij „Podsumuj”.',
