@@ -115,6 +115,18 @@ export const pl = {
     wifiOnly: 'Pobieraj tylko przez Wi-Fi',
     wifiOnlyHint: 'Poza Wi-Fi aplikacja zapyta o zgodę przed pobraniem.',
   },
+  onboarding: {
+    title: 'Witaj w MobiVoice',
+    intro:
+      'Rozmowa działa na telefonie, bez wysyłania głosu do internetu. Potrzebne są trzy modele: rozpoznawanie mowy, głos asystenta i model językowy.',
+    stepStt: 'Rozpoznawanie mowy',
+    stepVoice: 'Głos asystenta',
+    stepLlm: 'Model językowy',
+    downloadAll: (size: string) => `Pobierz wszystko (${size})`,
+    done: 'Gotowe — zaczynamy',
+    skip: 'Pomiń na razie',
+    skipHint: 'Modele pobierzesz później w Ustawienia → Modele.',
+  },
 } as const;
 
 export type Translations = typeof pl;

@@ -5,6 +5,7 @@ import { openNodeSqlDatabase } from '../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../db/migrate';
 import { MIGRATIONS } from '../db/migrations';
 import type { SqlDatabase } from '../db/SqlDatabase';
+import { useSettingsStore } from '../state/settings';
 
 const mockOpenAppDatabase = jest.fn<Promise<SqlDatabase>, []>();
 
@@ -18,6 +19,9 @@ describe('App', () => {
   beforeEach(() => {
     db = openNodeSqlDatabase();
     mockOpenAppDatabase.mockReset();
+    // A returning user: the first-run wizard is behind them.
+    useSettingsStore.getState().reset();
+    useSettingsStore.getState().update({ onboardingDone: true });
   });
 
   afterEach(async () => {

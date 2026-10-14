@@ -215,11 +215,11 @@
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRQYNMQH707Z7NFVT5)
 - [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową (pr: #33)
-- [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #34)
   - AC: wejście — pierwsze uruchomienie aplikacji bez pobranych modeli
   - Specky: (req: 01M4TPSCT6VW2MN48Y3MP3WBXC v1.0 @aab204b)
   - Specky kryteria: (crit: 01M4TPSCTRFJVN1RZX3P717BYQ) (crit: 01M4TPSCTRC2WYRFBHHV417XND)
-- [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie
+- [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie (pr: #34)
 - [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript)
   - AC: zmiana głosu, trybu i progu działa od następnej wypowiedzi
   - AC: ekran licencji wymienia Llama 3.2 Community License, Gemma Terms of Use, Apache 2.0 (Qwen), licencje głosów Piper

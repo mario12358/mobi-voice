@@ -10,7 +10,8 @@ import { downloadSizeBytes, type CatalogEntry } from '../../models/catalog';
 import { useSettingsStore } from '../../state/settings';
 import { SPACING, usePalette } from '../../theme/theme';
 import { formatSize } from '../conversation/useModelReadiness';
-import { useModelManager, type DownloadQuestion, type ModelView } from './useModelManager';
+import { useDownloadQuestions } from './useDownloadQuestions';
+import { useModelManager, type ModelView } from './useModelManager';
 
 const SECTIONS: { kind: CatalogEntry['kind']; title: string }[] = [
   { kind: 'llm', title: pl.models.sectionLlm },
@@ -93,29 +94,12 @@ function WifiOnlySwitch() {
   );
 }
 
-interface Pending {
-  entry: CatalogEntry;
-  question: DownloadQuestion;
-  answered: DownloadQuestion[];
-}
-
 // Model manager (MV-MOD-1, MV-MOD-4): download, resume, cancel and delete on-device models.
 export function ModelsScreen() {
   const palette = usePalette();
   const manager = useModelManager();
-  const [pending, setPending] = useState<Pending | null>(null);
+  const questions = useDownloadQuestions(manager);
   const [deleting, setDeleting] = useState<CatalogEntry | null>(null);
-
-  async function download(entry: CatalogEntry, answered: DownloadQuestion[] = []) {
-    const question = await manager.download(entry, answered);
-    if (question !== null) setPending({ entry, question, answered });
-  }
-
-  function confirmPending() {
-    if (pending === null) return;
-    setPending(null);
-    void download(pending.entry, [...pending.answered, pending.question]);
-  }
 
   async function confirmDelete() {
     if (deleting === null) return;
@@ -144,7 +128,7 @@ export function ModelsScreen() {
                 <ModelRow
                   key={model.entry.id}
                   model={model}
-                  onDownload={() => void download(model.entry)}
+                  onDownload={() => void questions.download(model.entry)}
                   onCancel={() => manager.cancel(model.entry)}
                   onDelete={() => setDeleting(model.entry)}
                 />
@@ -152,23 +136,7 @@ export function ModelsScreen() {
           </View>
         ))}
       </ScrollView>
-      {pending !== null && (
-        <ConfirmDialog
-          testID="models.confirm-download"
-          title={pending.question === 'cellular' ? pl.models.cellularTitle : pl.models.notRecommendedTitle}
-          message={
-            pending.question === 'cellular'
-              ? pl.models.cellularMessage(formatSize(downloadSizeBytes(pending.entry.id)))
-              : pl.models.notRecommendedMessage(pending.entry.displayName)
-          }
-          confirmLabel={
-            pending.question === 'cellular' ? pl.models.cellularConfirm : pl.models.downloadAnyway
-          }
-          cancelLabel={pl.models.cancel}
-          onConfirm={confirmPending}
-          onCancel={() => setPending(null)}
-        />
-      )}
+      {questions.dialog}
       {deleting !== null && (
         <ConfirmDialog
           testID="models.delete-dialog"
