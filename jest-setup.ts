@@ -7,6 +7,7 @@ jest.mock(
 );
 // Native-only modules: unit tests use fakes; files that test an adapter mock these themselves.
 jest.mock('llama.rn', () => ({ initLlama: jest.fn(), releaseAllLlama: jest.fn() }));
+jest.mock('whisper.rn/index', () => ({ initWhisper: jest.fn(), releaseAllWhisper: jest.fn() }));
 jest.mock('react-native-blob-util', () => ({
   __esModule: true,
   default: { fs: { dirs: { DocumentDir: '/docs' } }, config: jest.fn() },

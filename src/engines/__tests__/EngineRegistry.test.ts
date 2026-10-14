@@ -8,6 +8,7 @@ import { FakeSttEngine } from '../fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../fakes/FakeTtsEngine';
 import { WavAudioSource } from '../fakes/WavAudioSource';
 import { LocalLlmEngine } from '../llm/LocalLlmEngine';
+import { WhisperSttEngine } from '../stt/WhisperSttEngine';
 
 describe('EngineRegistry', () => {
   it.each([
@@ -36,7 +37,8 @@ describe('EngineRegistry', () => {
     expect(registry.llm()).toBeInstanceOf(LocalLlmEngine);
     expect(registry.llm()).not.toBeInstanceOf(FakeLlmEngine);
     expect(registry.audioSource()).toBeInstanceOf(NativeMicrophone);
-    expect(() => registry.stt()).toThrow(DomainError);
-    expect(() => registry.stt()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
+    expect(registry.stt()).toBeInstanceOf(WhisperSttEngine);
+    expect(() => registry.tts()).toThrow(DomainError);
+    expect(() => registry.tts()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
   });
 });

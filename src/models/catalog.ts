@@ -252,6 +252,14 @@ export function llmEntries(): LlmEntry[] {
   return MODEL_CATALOG.filter((entry): entry is LlmEntry => entry.kind === 'llm');
 }
 
+export function sttEntry(variant: WhisperVariant): SttEntry {
+  const entry = MODEL_CATALOG.find(
+    (candidate): candidate is SttEntry => candidate.kind === 'stt' && candidate.variant === variant,
+  );
+  if (entry === undefined) throw new Error(`Whisper ${variant} missing from the catalog`);
+  return entry;
+}
+
 // Bytes to download for an entry including the entries it requires (each counted once).
 export function downloadSizeBytes(id: string, seen = new Set<string>()): number {
   const entry = catalogEntry(id);
