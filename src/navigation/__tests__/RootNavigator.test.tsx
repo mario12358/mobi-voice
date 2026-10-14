@@ -59,7 +59,7 @@ describe('RootNavigator', () => {
     expect(await screen.findByTestId('settings-screen')).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: pl.settings.openModels }));
     expect(await screen.findByTestId('models-screen')).toBeTruthy();
-    expect(screen.getByText(pl.models.placeholder)).toBeTruthy();
+    expect(screen.getByText(pl.models.sectionLlm)).toBeTruthy();
   });
 
   it('opens the summary of the current topic from the conversation', async () => {
