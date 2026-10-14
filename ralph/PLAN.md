@@ -262,12 +262,12 @@
   - AC: implementuje LlmEngine; „Facebook" ze spec = Meta Llama API
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
 - [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP (pr: #40)
-- [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript) (pr: #41)
   - AC: nieprawidłowy klucz nie zostaje zapisany i pokazuje komunikat
   - AC: modele chmurowe dostawcy z poprawnym kluczem pojawiają się w wyborze modelu (globalnym i per temat)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NM3BC0R81WPKKS9GV) (crit: 01M4TPSD3NCRZBYB6MHAVGWTCR)
-- [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli
+- [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli (pr: #41)
 - [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript)
   - AC: z modelem chmurowym rozmowa głosowa działa tak samo jak z lokalnym (oba tryby, STOP)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)

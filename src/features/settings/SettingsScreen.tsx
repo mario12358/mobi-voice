@@ -204,6 +204,11 @@ export function SettingsScreen({ navigation }: RootScreenProps<'Settings'>) {
         <DiagnosticsSwitch />
         <Privacy />
         <TextButton
+          testID="settings.open-api-keys"
+          label={pl.settings.openApiKeys}
+          onPress={() => navigation.navigate('ApiKeys')}
+        />
+        <TextButton
           testID="settings.open-licenses"
           label={pl.settings.openLicenses}
           onPress={() => navigation.navigate('Licenses')}
