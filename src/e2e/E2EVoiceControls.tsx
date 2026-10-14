@@ -19,5 +19,5 @@ export function E2EVoiceControls() {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: SPACING.sm },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
 });
