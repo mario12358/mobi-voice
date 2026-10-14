@@ -230,11 +230,11 @@
   - Specky: (req: 01M4TPSDPBEDTZZQQMS63N2YES v1.0 @5f3694f)
   - Specky kryteria: (crit: 01M4TPSDPP4W0NEMR8EHA2PQQP)
 - [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja (pr: #35)
-- [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript) (pr: #36)
   - AC: temat z nadpisanym modelem używa go; bez nadpisania — modelu globalnego
   - Specky: (req: 01M4TPSCZHV54NDW1AVW7EMMWZ v1.0 @b9ecbc6)
   - Specky kryteria: (crit: 01M4TPSD05YJQ92GQ33KMKKNKM) (crit: 01M4TPSD05K5NH3VE5Q66NVXJM)
-- [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie
+- [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie (pr: #36)
 - [ ] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript)
 
 ### Faza 6: Dostawcy chmurowi LLM
