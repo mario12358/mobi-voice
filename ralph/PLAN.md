@@ -277,11 +277,11 @@
 
 ### Faza 7: Polecenia głosowe tematów
 
-- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript) (pr: #44)
   - AC: „przełącz na temat wakacje" dopasowuje temat „Wakacje 2026"; brak dopasowania → przekazanie do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD985J6R5DR64N3QGXJD) (crit: 01M4TPSD981M9JE8DH1AAHE29F)
-- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań
+- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
 - [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript)
   - AC: „jakie mam tematy" odczytuje głosem i pokazuje listę ostatnich tematów
   - AC: wejście — każda zakończona wypowiedź usera przechodzi przez parser przed wysłaniem do LLM
