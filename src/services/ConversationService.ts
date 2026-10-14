@@ -11,6 +11,8 @@ export interface ConversationDependencies {
   context: ContextBuilder;
   llm: () => LlmEngine;
   budget: (topic: Topic) => ModelBudget;
+  // The model the topic talks to (its own choice or the global one), passed to the engine.
+  model?: (topic: Topic) => string;
   systemPrompt: (topic: Topic) => string | null;
   titler?: TopicTitler;
 }
@@ -47,7 +49,14 @@ export class ConversationService {
       this.deps.budget(topic),
     );
     const signal = options.signal ?? new AbortController().signal;
-    const result = await this.deps.llm().generate(request, (token) => options.onToken?.(token), signal);
+    const model = this.deps.model?.(topic);
+    const result = await this.deps
+      .llm()
+      .generate(
+        model === undefined ? request : { ...request, model },
+        (token) => options.onToken?.(token),
+        signal,
+      );
 
     const answer = result.text.trim();
     if (answer.length === 0) {

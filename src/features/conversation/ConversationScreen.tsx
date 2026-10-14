@@ -19,10 +19,12 @@ import { pl } from '../../i18n/pl';
 import { downloadSizeBytes } from '../../models/catalog';
 import type { RootScreenProps } from '../../navigation/types';
 import { E2EVoiceControls } from '../../e2e/E2EVoiceControls';
+import { useServices } from '../../services/ServicesProvider';
 import { useLatencyStore, type LatencySample } from '../../state/latency';
 import { useSettingsStore } from '../../state/settings';
 import { SPACING, usePalette } from '../../theme/theme';
 import { MessageBubble } from './MessageBubble';
+import { TopicModelDialog } from './TopicModelDialog';
 import { TopicPromptDialog } from './TopicPromptDialog';
 import { useConversation } from './useConversation';
 import { useMicPermission } from './useMicPermission';
@@ -140,6 +142,8 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
   const voice = useVoiceSession(topicId, conversation.reload);
   const [draft, setDraft] = useState('');
   const [editingPrompt, setEditingPrompt] = useState(false);
+  const [choosingModel, setChoosingModel] = useState(false);
+  const services = useServices();
   const list = useRef<FlatList<Message>>(null);
   const generating = conversation.streaming !== null;
   const streaming = conversation.streaming ?? voice.streaming;
@@ -175,6 +179,11 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
             testID="conversation.open-topic-prompt"
             label={pl.promptEditor.openTopicPrompt}
             onPress={() => setEditingPrompt(true)}
+          />
+          <TextButton
+            testID="conversation.open-topic-model"
+            label={pl.conversation.topicModel(readiness.model.displayName)}
+            onPress={() => setChoosingModel(true)}
           />
         </View>
         {/* e2e builds only; at the top, where small CI emulator screens still show it whole. */}
@@ -250,6 +259,17 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
           </>
         )}
       </KeyboardAvoidingView>
+      {choosingModel && (
+        <TopicModelDialog
+          override={conversation.topic?.modelOverride ?? null}
+          defaultModelName={services.modelForTopic(null).displayName}
+          onChoose={(modelId) => {
+            setChoosingModel(false);
+            void conversation.setTopicModel(modelId);
+          }}
+          onClose={() => setChoosingModel(false)}
+        />
+      )}
       {editingPrompt && (
         <TopicPromptDialog
           prompt={conversation.topic?.systemPrompt ?? null}
@@ -263,7 +283,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  toolbar: { flexDirection: 'row', gap: SPACING.sm },
+  toolbar: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   messages: { gap: SPACING.sm, paddingVertical: SPACING.sm },
   notice: { gap: SPACING.sm },
   composer: { flexDirection: 'row', alignItems: 'flex-end', gap: SPACING.sm },

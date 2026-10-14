@@ -60,6 +60,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     context,
     llm: () => engines.llm(),
     budget: modelForTopic,
+    model: (topic) => modelForTopic(topic).id,
     systemPrompt: (topic) =>
       resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),

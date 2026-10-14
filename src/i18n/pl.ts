@@ -59,6 +59,10 @@ export const pl = {
       speaking: 'Mówię…',
     },
     youSaid: (text: string) => `Ty: ${text}`,
+    topicModel: (model: string) => `Model: ${model}`,
+    topicModelTitle: 'Model tego tematu',
+    topicModelHint: 'Zmiana modelu zachowuje historię rozmowy.',
+    topicModelDefault: (model: string) => `Jak w ustawieniach (${model})`,
     modeContinuous: 'Tryb: ciągły',
     modeInterrupted: 'Tryb: przerywany',
     latency: (stt: string, firstToken: string, firstAudio: string) =>

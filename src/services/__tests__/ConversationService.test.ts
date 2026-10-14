@@ -8,6 +8,7 @@ import { FakeLlmEngine } from '../../engines/fakes/FakeLlmEngine';
 import type { LlmRequest } from '../../engines/types';
 import { ContextBuilder } from '../ContextBuilder';
 import { ConversationService } from '../ConversationService';
+import { CONTEXT_SUMMARY_HEADER } from '../prompts';
 
 describe('ConversationService', () => {
   let db: SqlDatabase;
@@ -135,5 +136,40 @@ describe('ConversationService', () => {
 
   it('rejects a topic that does not exist', async () => {
     await expect(service.send(999, 'x')).rejects.toMatchObject({ code: 'topic_not_found' });
+  });
+
+  // specky: crit 01M4TPSD05K5NH3VE5Q66NVXJM
+  it("keeps the history when the topic's model changes and fits the context to the new model's budget", async () => {
+    const topics2 = new TopicRepository(db);
+    const budgets: Record<string, number> = { big: 4_096, tiny: 60 };
+    const perModel = new ConversationService({
+      topics: topics2,
+      messages,
+      context: new ContextBuilder(messages, new ContextSummaryRepository(db), {
+        summarize: async () => 'streszczenie',
+      }),
+      llm: () => llm,
+      budget: (topic) => ({
+        contextTokens: budgets[topic.modelOverride ?? 'big'] ?? 4_096,
+        maxOutputTokens: 8,
+      }),
+      model: (topic) => topic.modelOverride ?? 'big',
+      systemPrompt: () => null,
+    });
+    replies = ['Pierwsza dość długa odpowiedź o jeziorach na Mazurach.', 'Druga.', 'Trzecia.'];
+    await perModel.send(topicId, 'Opowiedz o jeziorach na Mazurach i okolicy.');
+    await perModel.send(topicId, 'A które jest największe?');
+
+    await topics2.setModelOverride(topicId, 'tiny');
+    await perModel.send(topicId, 'Krótko proszę.');
+
+    expect(llm.requests[1]?.model).toBe('big');
+    expect(llm.requests[1]?.messages).toHaveLength(3);
+    expect(llm.requests[2]?.model).toBe('tiny');
+    // The whole history (4 messages) and the question would not fit the tiny model: older turns go to a summary.
+    expect(llm.requests[2]?.messages.length).toBeLessThan(5);
+    expect(llm.requests[2]?.systemPrompt).toContain(CONTEXT_SUMMARY_HEADER);
+    expect(llm.requests[2]?.messages.at(-1)).toEqual({ role: 'user', content: 'Krótko proszę.' });
+    expect(await messages.listByTopic(topicId)).toHaveLength(6);
   });
 });
