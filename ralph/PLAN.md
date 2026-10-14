@@ -296,11 +296,11 @@
 
 ### Faza 8: Podsumowania i eksport
 
-- [ ] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql)
+- [ ] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #46)
   - AC: własna instrukcja zapisana raz jest dostępna jako szablon w kolejnych tematach
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
   - Specky kryteria: (crit: 01M4TPSDBQ9JEYACQWXJW1SFEH)
-- [ ] Test: 8.1 — CRUD szablonów, obecność wbudowanych
+- [ ] Test: 8.1 — CRUD szablonów, obecność wbudowanych (pr: #46)
 - [ ] Zadanie 8.2: SummaryService — generowanie podsumowania całej historii tematu wg szablonu (dla małych kontekstów etapami: fragmenty → scalenie), zapis przy temacie, ponowne generowanie (wymaga: 2.4, 8.1) (spec: spec.md) (tech: typescript)
   - AC: podsumowanie obejmuje całą historię także przy budżecie mniejszym niż historia
   - AC: wejście — przycisk „Podsumuj" (8.3) i polecenie głosowe „podsumuj rozmowę" (8.5)
