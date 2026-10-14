@@ -1,6 +1,9 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 import { AudioSessionService } from '../audio/AudioSessionService';
+import type { FetchLike } from '../cloud/CloudHttpClient';
+import { createCloudEngines, type ApiKeyStore } from '../cloud/createCloudEngines';
+import type { CloudLlmEngine } from '../cloud/types';
 import type { AudioPorts } from '../audio/types';
 import { useDatabase } from '../db/DatabaseProvider';
 import { ContextSummaryRepository } from '../db/repositories/ContextSummaryRepository';
@@ -14,6 +17,7 @@ import type { LlmEntry } from '../models/catalog';
 import { ModelDownloadService } from '../models/download/ModelDownloadService';
 import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
 import { useLatencyStore } from '../state/latency';
+import type { CloudProvider } from '../state/SecretStore';
 import { useSettingsStore } from '../state/settings';
 import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
@@ -29,6 +33,7 @@ export interface AppServices {
   audio: AudioSessionService;
   voice: VoiceSessionController;
   deviceMemoryBytes(): number | null;
+  cloud: { engines: Record<CloudProvider, CloudLlmEngine>; keys: ApiKeyStore };
   modelForTopic(topic: Topic | null): LlmEntry;
   isModelReady(model: LlmEntry): Promise<boolean>;
 }
@@ -39,6 +44,9 @@ export interface DevicePorts {
   audio: AudioPorts;
   // Total RAM of the phone in bytes, or null when unknown (MV-MOD-4).
   memoryBytes: () => number | null;
+  // Cloud providers (MV-CLOUD-1): where API keys are kept and how requests reach the providers.
+  apiKeys: ApiKeyStore;
+  fetch: FetchLike;
 }
 
 export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DevicePorts): AppServices {
@@ -89,6 +97,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     audio,
     voice,
     deviceMemoryBytes: ports.memoryBytes,
+    cloud: { engines: createCloudEngines(ports.fetch, ports.apiKeys), keys: ports.apiKeys },
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.
     isModelReady: async (model) =>

@@ -98,6 +98,7 @@ export const pl = {
     privacyText:
       'Rozmowy, nagrania i transkrypcje zostają na tym telefonie. Model lokalny działa bez internetu. Gdy wybierzesz model w chmurze, treść rozmowy trafia tylko do jego dostawcy. Aplikacja nie zbiera analityki.',
     openLicenses: 'Licencje',
+    openApiKeys: 'Klucze API',
     diagnostics: 'Tryb diagnostyczny',
     diagnosticsHint: 'Pokazuje na ekranie rozmowy czasy rozpoznawania mowy i odpowiedzi.',
   },
@@ -136,6 +137,20 @@ export const pl = {
     cellularConfirm: 'Pobierz',
     wifiOnly: 'Pobieraj tylko przez Wi-Fi',
     wifiOnlyHint: 'Poza Wi-Fi aplikacja zapyta o zgodę przed pobraniem.',
+  },
+  apiKeys: {
+    title: 'Klucze API',
+    intro:
+      'Własny klucz pozwala rozmawiać z modelami w chmurze. Klucz zostaje w bezpiecznym magazynie telefonu, a treść rozmowy trafia tylko do wybranego dostawcy.',
+    configured: 'Klucz zapisany',
+    missing: 'Brak klucza',
+    inputLabel: (provider: string) => `Klucz API ${provider}`,
+    inputPlaceholder: 'Wklej klucz API',
+    replacePlaceholder: 'Wklej nowy klucz, aby zastąpić zapisany',
+    save: 'Sprawdź i zapisz',
+    checking: 'Sprawdzam klucz…',
+    remove: 'Usuń klucz',
+    models: (list: string) => `Dostępne modele: ${list}`,
   },
   licenses: {
     title: 'Licencje',
