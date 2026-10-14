@@ -23,22 +23,39 @@ export interface CommandOutcome {
   listed?: Topic[];
   // The next utterance answers "which one?" for these topics.
   candidates?: Topic[];
+  // The reply was written by the model (a summary): Markdown, read sentence by sentence.
+  modelText?: boolean;
 }
+
+export interface CommandContext {
+  // The topic the session is in.
+  topicId: number;
+  // Topics from the last "which one?", when this utterance answers it.
+  candidates: Topic[];
+  // "Stop" while a summary is being prepared.
+  signal: AbortSignal;
+}
+
+// Summarizes the topic and resolves with the text to read (MV-SUM-1).
+export type Summarize = (topicId: number, signal: AbortSignal) => Promise<string>;
 
 // Runs the topic commands spoken in a voice session; anything else is for the model.
 export class TopicCommands {
-  constructor(private readonly topics: TopicRepository) {}
+  constructor(
+    private readonly topics: TopicRepository,
+    private readonly summarize?: Summarize,
+  ) {}
 
-  async handle(transcript: string, candidates: Topic[] = []): Promise<CommandOutcome | null> {
-    if (candidates.length > 0) {
+  async handle(transcript: string, context: CommandContext): Promise<CommandOutcome | null> {
+    if (context.candidates.length > 0) {
       // Answer to "which one?": the name said is matched among the candidates only.
-      return this.choose(transcript, candidates);
+      return this.choose(transcript, context.candidates);
     }
     const command = parseVoiceCommand(transcript);
-    return command === null ? null : this.run(command);
+    return command === null ? null : this.run(command, context);
   }
 
-  private async run(command: VoiceCommand): Promise<CommandOutcome | null> {
+  private async run(command: VoiceCommand, context: CommandContext): Promise<CommandOutcome | null> {
     switch (command.type) {
       case 'create': {
         const topic = await this.topics.create(command.name);
@@ -52,9 +69,10 @@ export class TopicCommands {
           listed.length === 0 ? COMMAND_REPLIES.noTopics : COMMAND_REPLIES.list(listed.map((t) => t.title));
         return { reply, listed };
       }
-      // Summaries arrive with Phase 8; until then the request goes to the model like any question.
+      // Saved with the topic in the form used last, then read aloud; without summaries it is a question.
       case 'summarize':
-        return null;
+        if (this.summarize === undefined) return null;
+        return { reply: await this.summarize(context.topicId, context.signal), modelText: true };
     }
   }
 

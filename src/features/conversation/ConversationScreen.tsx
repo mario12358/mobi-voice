@@ -30,6 +30,7 @@ import { TopicModelDialog } from './TopicModelDialog';
 import { TopicPromptDialog } from './TopicPromptDialog';
 import { useConversation } from './useConversation';
 import { useMicPermission } from './useMicPermission';
+import { useTopicExport } from '../topics/useTopicExport';
 import { useVoiceSession, type VoiceSessionView } from './useVoiceSession';
 import { formatSize, useModelReadiness, type ModelReadiness } from './useModelReadiness';
 
@@ -165,6 +166,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
   const headerHeight = useHeaderHeight();
   const conversation = useConversation(topicId);
   const readiness = useModelReadiness(conversation.topic);
+  const exportTopic = useTopicExport();
   const microphone = useMicPermission();
   // A voice command moves the running session to another topic: same screen, new topic, session goes on.
   const showTopic = useCallback((topic: Topic) => navigation.setParams({ topicId: topic.id }), [navigation]);
@@ -201,8 +203,14 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
       >
         <View style={styles.toolbar}>
           <TextButton
+            testID="conversation.open-summary"
             label={pl.conversation.openSummary}
             onPress={() => navigation.navigate('Summary', { topicId })}
+          />
+          <TextButton
+            testID="conversation.export"
+            label={pl.topicExport.action}
+            onPress={() => void exportTopic(topicId)}
           />
           <TextButton
             testID="conversation.open-topic-prompt"

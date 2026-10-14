@@ -3,12 +3,16 @@ import type { EngineRegistry } from '../engines/EngineRegistry';
 import { FakeKeywordSpotter } from '../engines/fakes/FakeKeywordSpotter';
 import { FakeSttEngine } from '../engines/fakes/FakeSttEngine';
 import { WavAudioSource } from '../engines/fakes/WavAudioSource';
+import { MemoryShareSheet } from '../share/memoryShareSheet';
 
 // e2e builds only: the microphone permission Detox tests can deny, and a spoken utterance they can inject.
 export const e2eAudioPorts = new FakeAudioPorts();
 
 // A "4 GB" phone as it reports itself: 3B models are not recommended, 1–2B ones are fine.
 export const E2E_MEMORY_BYTES = 3_700_000_000;
+
+// e2e builds only: copied and shared text stays here, so tests can check it without the system sheet.
+export const e2eShareSheet = new MemoryShareSheet();
 
 const SAMPLE_RATE = 16_000;
 

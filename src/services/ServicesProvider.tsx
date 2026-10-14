@@ -9,6 +9,8 @@ import type { AudioPorts } from '../audio/types';
 import { useDatabase } from '../db/DatabaseProvider';
 import { ContextSummaryRepository } from '../db/repositories/ContextSummaryRepository';
 import { MessageRepository } from '../db/repositories/MessageRepository';
+import { SummaryRepository } from '../db/repositories/SummaryRepository';
+import { SummaryTemplateRepository } from '../db/repositories/SummaryTemplateRepository';
 import { TopicRepository, type Topic } from '../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../db/SqlDatabase';
 import { useEngines } from '../engines/EngineProvider';
@@ -16,12 +18,15 @@ import type { EngineRegistry } from '../engines/EngineRegistry';
 import { isCloudModel, resolveChatModel, type ChatModel } from '../models/chatModel';
 import { ModelDownloadService } from '../models/download/ModelDownloadService';
 import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
+import type { ShareSheet } from '../share/types';
 import { useLatencyStore } from '../state/latency';
 import type { CloudProvider } from '../state/SecretStore';
 import { useSettingsStore } from '../state/settings';
 import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
 import { resolveSystemPrompt } from './prompts';
+import { SummaryService } from './SummaryService';
+import { TopicExporter } from './TopicExporter';
 import { TopicTitler } from './TopicTitler';
 import { TopicCommands } from './voice/TopicCommands';
 import { VoiceSessionController } from './voice/VoiceSessionController';
@@ -30,10 +35,14 @@ export interface AppServices {
   topics: TopicRepository;
   messages: MessageRepository;
   conversation: ConversationService;
+  summaries: SummaryService;
+  summaryTemplates: SummaryTemplateRepository;
+  exporter: TopicExporter;
   downloads: ModelDownloadService;
   audio: AudioSessionService;
   voice: VoiceSessionController;
   deviceMemoryBytes(): number | null;
+  share: ShareSheet;
   cloud: { engines: Record<CloudProvider, CloudLlmEngine>; keys: ApiKeyStore };
   modelForTopic(topic: Topic | null): ChatModel;
   // Local models need their files on the phone, cloud models a saved API key.
@@ -49,6 +58,7 @@ export interface DevicePorts {
   // Cloud providers (MV-CLOUD-1): where API keys are kept and how requests reach the providers.
   apiKeys: ApiKeyStore;
   fetch: FetchLike;
+  share: ShareSheet;
 }
 
 export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DevicePorts): AppServices {
@@ -77,6 +87,17 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
       resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),
   });
+  // Summaries go to the topic's own model, local or cloud (MV-SUM-1).
+  const summaryTemplates = new SummaryTemplateRepository(db);
+  const summaries = new SummaryService({
+    topics,
+    messages,
+    summaries: new SummaryRepository(db),
+    templates: summaryTemplates,
+    llm: () => llm,
+    budget: modelForTopic,
+    model: (topic) => modelForTopic(topic).id,
+  });
   const audio = new AudioSessionService({
     ...ports.audio,
     source: () => engines.audioSource(),
@@ -91,17 +112,23 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     conversation,
     silenceThresholdMs: () => useSettingsStore.getState().silenceThresholdMs,
     mode: () => useSettingsStore.getState().conversationMode,
-    commands: new TopicCommands(topics),
+    commands: new TopicCommands(topics, (topicId, signal) =>
+      summaries.generateInLastForm(topicId, signal).then((summary) => summary.content),
+    ),
     recordLatency: (sample) => useLatencyStore.getState().record(sample),
   });
   return {
     topics,
     messages,
     conversation,
+    summaries,
+    summaryTemplates,
+    exporter: new TopicExporter(topics, messages, ports.apiKeys),
     downloads,
     audio,
     voice,
     deviceMemoryBytes: ports.memoryBytes,
+    share: ports.share,
     cloud: { engines: cloudEngines, keys: ports.apiKeys },
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.

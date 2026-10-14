@@ -2,7 +2,7 @@ import type { ChatMessage } from '../engines/types';
 
 // Without the model's tokenizer in JS we over-estimate: Polish text averages ~3.5–4 characters per
 // token in Qwen/Llama/Gemma vocabularies, so 3 keeps the real prompt under the budget.
-const CHARS_PER_TOKEN = 3;
+export const CHARS_PER_TOKEN = 3;
 // Role markers and separators added by chat templates.
 const MESSAGE_OVERHEAD_TOKENS = 8;
 

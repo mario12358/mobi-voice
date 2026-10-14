@@ -14,6 +14,7 @@ import { until } from '../../services/voice/__tests__/support/until';
 import type { CloudProvider } from '../../state/SecretStore';
 import { useSettingsStore } from '../../state/settings';
 import type { FetchLike } from '../CloudHttpClient';
+import { MemoryShareSheet } from '../../share/memoryShareSheet';
 import { MemoryApiKeys } from '../../e2e/MemoryApiKeys';
 import { recordedServer, sse } from './support/recordedServer';
 
@@ -78,6 +79,7 @@ describe('conversation on a cloud model', () => {
       memoryBytes: () => null,
       apiKeys: keys,
       fetch,
+      share: new MemoryShareSheet(),
     });
     const topic = await services.topics.create('Chmura');
     await services.topics.setModelOverride(topic.id, `cloud:${provider}:${MODELS[provider]}`);

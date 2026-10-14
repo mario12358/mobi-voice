@@ -1,4 +1,4 @@
-import { TITLE_SYSTEM_PROMPT } from '../../services/prompts';
+import { SUMMARY_SYSTEM_PROMPT, TITLE_SYSTEM_PROMPT } from '../../services/prompts';
 import type { LlmEngine, LlmRequest, LlmResult } from '../types';
 
 export type LlmScript = (request: LlmRequest) => string;
@@ -13,8 +13,15 @@ export const E2E_LONG_ANSWER_TRIGGER = 'długo';
 
 export const E2E_TOPIC_TITLE = 'Rozmowa testowa';
 
+// A summary names the form it was asked for (the first line of the prompt is the instruction).
+export const E2E_SUMMARY_PREFIX = 'Podsumowanie testowe';
+
 export const E2E_SCRIPT: LlmScript = (request) => {
   if (request.systemPrompt === TITLE_SYSTEM_PROMPT) return E2E_TOPIC_TITLE;
+  if (request.systemPrompt === SUMMARY_SYSTEM_PROMPT) {
+    const instruction = request.messages[0]?.content.split('\n')[0] ?? '';
+    return `${E2E_SUMMARY_PREFIX}. Forma: ${instruction}`;
+  }
   const lastUser = [...request.messages].reverse().find((message) => message.role === 'user');
   if (lastUser?.content.includes(E2E_LONG_ANSWER_TRIGGER)) {
     return Array.from({ length: 300 }, (_, index) => `Zdanie numer ${index + 1}.`).join(' ');
