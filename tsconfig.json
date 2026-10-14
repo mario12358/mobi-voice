@@ -6,5 +6,5 @@
     "noImplicitReturns": true,
     "types": ["jest", "node"]
   },
-  "include": ["index.ts", "jest-setup.ts", "src", "e2e"]
+  "include": ["index.ts", "jest-setup.ts", "src", "e2e", "modules"]
 }

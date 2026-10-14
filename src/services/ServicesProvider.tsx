@@ -1,5 +1,7 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
+import { AudioSessionService } from '../audio/AudioSessionService';
+import type { AudioPorts } from '../audio/types';
 import { useDatabase } from '../db/DatabaseProvider';
 import { ContextSummaryRepository } from '../db/repositories/ContextSummaryRepository';
 import { MessageRepository } from '../db/repositories/MessageRepository';
@@ -22,16 +24,18 @@ export interface AppServices {
   messages: MessageRepository;
   conversation: ConversationService;
   downloads: ModelDownloadService;
+  audio: AudioSessionService;
   modelForTopic(topic: Topic | null): LlmEntry;
   isModelReady(model: LlmEntry): Promise<boolean>;
 }
 
-export interface DownloadPorts {
+export interface DevicePorts {
   fileSystem: ModelFileSystem;
   network: NetworkInfo;
+  audio: AudioPorts;
 }
 
-export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DownloadPorts): AppServices {
+export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DevicePorts): AppServices {
   const topics = new TopicRepository(db);
   const messages = new MessageRepository(db);
   const modelForTopic = (topic: Topic | null) =>
@@ -54,11 +58,17 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
       resolveSystemPrompt(topic.systemPrompt, useSettingsStore.getState().globalSystemPrompt),
     titler: new TopicTitler(() => engines.llm()),
   });
+  const audio = new AudioSessionService({
+    ...ports.audio,
+    source: () => engines.audioSource(),
+    tts: () => engines.tts(),
+  });
   return {
     topics,
     messages,
     conversation,
     downloads,
+    audio,
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.
     isModelReady: async (model) =>
@@ -70,14 +80,14 @@ const ServicesContext = createContext<AppServices | null>(null);
 
 interface Props {
   children: ReactNode;
-  ports: () => DownloadPorts;
+  ports: () => DevicePorts;
 }
 
 export function ServicesProvider({ children, ports }: Props) {
   const db = useDatabase();
   const engines = useEngines();
-  const [downloadPorts] = useState(ports);
-  const services = useMemo(() => createServices(db, engines, downloadPorts), [db, engines, downloadPorts]);
+  const [devicePorts] = useState(ports);
+  const services = useMemo(() => createServices(db, engines, devicePorts), [db, engines, devicePorts]);
   return <ServicesContext.Provider value={services}>{children}</ServicesContext.Provider>;
 }
 

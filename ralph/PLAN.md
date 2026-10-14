@@ -127,14 +127,14 @@
 
 ### Faza 3: Potok głosowy — tryb ciągły
 
-- [ ] Zadanie 3.1: AudioSessionService — przechwytywanie mikrofonu w trybie z systemowym AEC (iOS VoiceProcessingIO, Android AcousticEchoCanceler), obsługa przerwań audio, uprawnienie mikrofonu, ekran nie gaśnie w trakcie rozmowy (wymaga: 1.6) (tech: react-native, typescript)
+- [ ] Zadanie 3.1: AudioSessionService — przechwytywanie mikrofonu w trybie z systemowym AEC (iOS VoiceProcessingIO, Android AcousticEchoCanceler), obsługa przerwań audio, uprawnienie mikrofonu, ekran nie gaśnie w trakcie rozmowy (wymaga: 1.6) (tech: react-native, typescript) (pr: #22)
   - AC: odmowa mikrofonu → komunikat z linkiem do ustawień systemu, rozmowa tekstem nadal działa
   - AC: połączenie telefoniczne wstrzymuje nasłuch i TTS; po powrocie stan nasłuchu bez wznawiania odczytu
   - Specky: (req: 01M4TPSCEP4B390R81AQSKZWEX v1.0 @c8b0845)
   - Specky kryteria: (crit: 01M4TPSCFBD729TD4DGRJNHKRW) (crit: 01M4TPSCFBKVXWKN61HZM7D781) (crit: 01M4TPSCFB2Z3N9PPK993P4VX6)
   - Specky: (req: 01M4TPSBVARMFASRVTYM6ERQB3 v1.0 @9adb713)
   - Specky kryteria: (crit: 01M4TPSBVH4RAMAQ7GSXN6R8NK)
-- [ ] Test: 3.1 — reakcje na przerwania i odmowę uprawnień (atrapy modułów natywnych)
+- [ ] Test: 3.1 — reakcje na przerwania i odmowę uprawnień (atrapy modułów natywnych) (pr: #22)
 - [ ] Zadanie 3.2: VadEngine na sherpa-onnx (Silero VAD) — segmentacja mowy, koniec wypowiedzi po progu ciszy z ustawień (1,5–6 s, domyślnie 3 s) (wymaga: 3.1) (spec: spec.md) (tech: react-native, typescript)
   - AC: po ciszy równej progowi emitowane jest zdarzenie końca wypowiedzi
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)

@@ -1,0 +1,28 @@
+import { requireOptionalNativeModule, type EventSubscription } from 'expo-modules-core';
+
+export interface NativePermissionResponse {
+  status: 'granted' | 'denied' | 'undetermined';
+  canAskAgain: boolean;
+}
+
+// 16-bit little-endian mono PCM, base64-encoded.
+export interface NativeAudioEvent {
+  data: string;
+  sampleRate: number;
+}
+
+export interface NativeInterruptionEvent {
+  phase: 'began' | 'ended';
+}
+
+export interface MobiAudioNativeModule {
+  getPermission(): Promise<NativePermissionResponse>;
+  requestPermission(): Promise<NativePermissionResponse>;
+  startCapture(sampleRate: number): Promise<void>;
+  stopCapture(): Promise<void>;
+  addListener(event: 'onAudio', listener: (event: NativeAudioEvent) => void): EventSubscription;
+  addListener(event: 'onInterruption', listener: (event: NativeInterruptionEvent) => void): EventSubscription;
+}
+
+// Null where the native side is absent (Jest, Expo Go).
+export const MobiAudio = requireOptionalNativeModule<MobiAudioNativeModule>('MobiAudio');

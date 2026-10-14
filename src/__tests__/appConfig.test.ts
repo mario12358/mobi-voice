@@ -27,4 +27,9 @@ describe('app config: one codebase for iOS and Android', () => {
   it('follows the system light/dark appearance', () => {
     expect(appJson.expo.userInterfaceStyle).toBe('automatic');
   });
+
+  it('declares the microphone with a Polish reason on iOS and the permission on Android', () => {
+    expect(appJson.expo.ios.infoPlist.NSMicrophoneUsageDescription).toMatch(/mikrofon/);
+    expect(appJson.expo.android.permissions).toContain('android.permission.RECORD_AUDIO');
+  });
 });

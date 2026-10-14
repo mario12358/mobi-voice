@@ -1,4 +1,5 @@
 import { DomainError } from '../../core/errors';
+import { NativeMicrophone } from '../audio/NativeMicrophone';
 import { createEngineRegistry, resolveEngineMode } from '../EngineRegistry';
 import { EnergyVadEngine } from '../fakes/EnergyVadEngine';
 import { FakeKeywordSpotter } from '../fakes/FakeKeywordSpotter';
@@ -34,7 +35,8 @@ describe('EngineRegistry', () => {
     const registry = createEngineRegistry('production');
     expect(registry.llm()).toBeInstanceOf(LocalLlmEngine);
     expect(registry.llm()).not.toBeInstanceOf(FakeLlmEngine);
-    expect(() => registry.audioSource()).toThrow(DomainError);
-    expect(() => registry.audioSource()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
+    expect(registry.audioSource()).toBeInstanceOf(NativeMicrophone);
+    expect(() => registry.stt()).toThrow(DomainError);
+    expect(() => registry.stt()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
   });
 });

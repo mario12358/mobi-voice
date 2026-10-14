@@ -5,27 +5,30 @@ import type { SqlDatabase } from '../../db/SqlDatabase';
 import { EngineProvider } from '../../engines/EngineProvider';
 import { createEngineRegistry, type EngineRegistry } from '../../engines/EngineRegistry';
 import { MemoryModelFileSystem } from '../../models/download/__tests__/support/memoryModelFileSystem';
-import type { DownloadPorts } from '../../services/ServicesProvider';
+import { FakeAudioPorts } from '../../audio/fakeAudioPorts';
+import type { DevicePorts } from '../../services/ServicesProvider';
 import { ServicesProvider } from '../../services/ServicesProvider';
 
 interface Props {
   db: SqlDatabase;
   children: ReactNode;
   engines?: EngineRegistry;
-  ports?: DownloadPorts;
+  ports?: Partial<DevicePorts>;
 }
 
-// The app's providers wired for Jest: real SQLite (better-sqlite3), test engines, in-memory downloads.
+// The app's providers wired for Jest: real SQLite (better-sqlite3), test engines, in-memory downloads and audio.
 export function TestProviders({ db, children, engines, ports }: Props) {
   const registry = engines ?? createEngineRegistry('test');
-  const downloadPorts = ports ?? {
+  const devicePorts: DevicePorts = {
     fileSystem: new MemoryModelFileSystem(new Map()),
     network: { connection: async () => 'wifi' as const },
+    audio: new FakeAudioPorts(),
+    ...ports,
   };
   return (
     <EngineProvider createRegistry={() => registry}>
       <DatabaseProvider open={async () => db}>
-        <ServicesProvider ports={() => downloadPorts}>{children}</ServicesProvider>
+        <ServicesProvider ports={() => devicePorts}>{children}</ServicesProvider>
       </DatabaseProvider>
     </EngineProvider>
   );
