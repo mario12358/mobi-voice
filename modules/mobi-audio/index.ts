@@ -20,6 +20,10 @@ export interface MobiAudioNativeModule {
   requestPermission(): Promise<NativePermissionResponse>;
   startCapture(sampleRate: number): Promise<void>;
   stopCapture(): Promise<void>;
+  loadVad(sampleRate: number): Promise<void>;
+  // True while Silero VAD hears speech, after feeding it these samples.
+  vadAccept(samples: Float32Array): boolean;
+  vadReset(): void;
   addListener(event: 'onAudio', listener: (event: NativeAudioEvent) => void): EventSubscription;
   addListener(event: 'onInterruption', listener: (event: NativeInterruptionEvent) => void): EventSubscription;
 }

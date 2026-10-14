@@ -17,6 +17,7 @@ import expo.modules.kotlin.Promise
 import expo.modules.kotlin.exception.CodedException
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import expo.modules.kotlin.typedarray.Float32Array
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -28,6 +29,7 @@ class MobiAudioModule : Module() {
   private var noiseSuppressor: NoiseSuppressor? = null
   private var reader: Thread? = null
   private var focusRequest: AudioFocusRequest? = null
+  private var vad: SileroVad? = null
 
   @Volatile private var capturing = false
 
@@ -52,6 +54,8 @@ class MobiAudioModule : Module() {
 
     OnDestroy {
       stopCapture()
+      vad?.release()
+      vad = null
     }
 
     AsyncFunction("getPermission") { promise: Promise ->
@@ -68,6 +72,23 @@ class MobiAudioModule : Module() {
 
     AsyncFunction("stopCapture") {
       stopCapture()
+    }
+
+    AsyncFunction("loadVad") { sampleRate: Int ->
+      if (vad == null) {
+        val assets = appContext.reactContext?.assets ?: throw CodedException("vad_init", "No Android context", null)
+        vad = SileroVad(assets, sampleRate)
+      }
+    }
+
+    // Synchronous: the VAD runs once per audio chunk on the JS thread.
+    Function("vadAccept") { samples: Float32Array ->
+      val detector = vad ?: return@Function false
+      detector.accept(FloatArray(samples.length) { samples[it] })
+    }
+
+    Function("vadReset") {
+      vad?.reset()
     }
   }
 

@@ -1,7 +1,8 @@
 {
   "platforms": ["apple", "android"],
   "apple": {
-    "modules": ["MobiAudioModule"]
+    "modules": ["MobiAudioModule"],
+    "podspecPath": "MobiAudio.podspec"
   },
   "android": {
     "modules": ["app.mobivoice.audio.MobiAudioModule"]

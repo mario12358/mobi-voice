@@ -2,15 +2,26 @@ import type { AudioChunk } from '../../types';
 
 export const SAMPLE_RATE = 16_000;
 
-export type AudioPart = { tone: number } | { silence: number };
+export type AudioPart = { tone: number } | { silence: number } | { noise: number };
 
-// Builds deterministic test audio: tone parts are a 440 Hz sine, silence parts are zeros (durations in ms).
+// Background hiss well below speech level, from a fixed-seed generator so tests stay deterministic.
+function quietNoise(length: number): Float32Array {
+  let seed = 12345;
+  return Float32Array.from({ length }, () => {
+    seed = (seed * 1103515245 + 12345) % 2147483648;
+    return (seed / 2147483648 - 0.5) * 0.01;
+  });
+}
+
+// Builds deterministic test audio: tone parts are a 440 Hz sine, silence parts are zeros, noise parts a
+// quiet hiss (durations in ms).
 export function synthesize(parts: AudioPart[], sampleRate = SAMPLE_RATE): AudioChunk {
   const pieces = parts.map((part) => {
-    const isTone = 'tone' in part;
-    const length = Math.round(((isTone ? part.tone : part.silence) * sampleRate) / 1000);
+    const durationMs = 'tone' in part ? part.tone : 'noise' in part ? part.noise : part.silence;
+    const length = Math.round((durationMs * sampleRate) / 1000);
+    if ('noise' in part) return quietNoise(length);
     return Float32Array.from({ length }, (_, index) =>
-      isTone ? 0.3 * Math.sin((2 * Math.PI * 440 * index) / sampleRate) : 0,
+      'tone' in part ? 0.3 * Math.sin((2 * Math.PI * 440 * index) / sampleRate) : 0,
     );
   });
   const samples = new Float32Array(pieces.reduce((total, piece) => total + piece.length, 0));
