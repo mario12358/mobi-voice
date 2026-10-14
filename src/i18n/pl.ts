@@ -54,6 +54,8 @@ export const pl = {
     openModels: 'Modele',
     systemPromptTitle: 'Prompt systemowy',
     systemPromptHint: 'Instrukcja dla modelu we wszystkich tematach, które nie mają własnej.',
+    voiceTitle: 'Głos asystenta',
+    voiceHint: 'Nowy głos usłyszysz od następnej odpowiedzi.',
   },
   promptEditor: {
     save: 'Zapisz',

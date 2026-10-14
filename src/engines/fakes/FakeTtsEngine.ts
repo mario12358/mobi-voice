@@ -11,6 +11,8 @@ export class FakeTtsEngine implements TtsEngine {
     return this.finishCurrent !== null;
   }
 
+  beginAnswer(): void {}
+
   speak(text: string): Promise<void> {
     this.spoken.push(text);
     return new Promise((resolve) => {

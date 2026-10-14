@@ -260,6 +260,14 @@ export function sttEntry(variant: WhisperVariant): SttEntry {
   return entry;
 }
 
+export function ttsEntry(voice: TtsVoice): TtsEntry {
+  const entry = MODEL_CATALOG.find(
+    (candidate): candidate is TtsEntry => candidate.kind === 'tts' && candidate.voice === voice,
+  );
+  if (entry === undefined) throw new Error(`Voice ${voice} missing from the catalog`);
+  return entry;
+}
+
 // Bytes to download for an entry including the entries it requires (each counted once).
 export function downloadSizeBytes(id: string, seen = new Set<string>()): number {
   const entry = catalogEntry(id);

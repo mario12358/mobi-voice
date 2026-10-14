@@ -3,7 +3,9 @@ package app.mobivoice.audio
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
 import android.media.AudioAttributes
+import android.media.AudioDeviceInfo
 import android.media.AudioFocusRequest
 import android.media.AudioFormat
 import android.media.AudioManager
@@ -30,6 +32,8 @@ class MobiAudioModule : Module() {
   private var reader: Thread? = null
   private var focusRequest: AudioFocusRequest? = null
   private var vad: SileroVad? = null
+  private var tts: PiperTts? = null
+  private val player = SpeechPlayer()
 
   @Volatile private var capturing = false
 
@@ -40,6 +44,7 @@ class MobiAudioModule : Module() {
   private val focusListener = AudioManager.OnAudioFocusChangeListener { change ->
     when (change) {
       AudioManager.AUDIOFOCUS_LOSS, AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+        player.stop()
         stopRecorder()
         sendEvent("onInterruption", mapOf("phase" to "began"))
       }
@@ -53,9 +58,12 @@ class MobiAudioModule : Module() {
     Events("onAudio", "onInterruption")
 
     OnDestroy {
+      player.stop()
       stopCapture()
       vad?.release()
       vad = null
+      tts?.release()
+      tts = null
     }
 
     AsyncFunction("getPermission") { promise: Promise ->
@@ -90,12 +98,69 @@ class MobiAudioModule : Module() {
     Function("vadReset") {
       vad?.reset()
     }
+
+    AsyncFunction("loadTts") { modelPath: String, tokensPath: String, dataDir: String ->
+      if (tts?.modelPath != modelPath) {
+        tts?.release()
+        tts = null
+        tts = PiperTts(modelPath, tokensPath, dataDir)
+      }
+    }
+
+    AsyncFunction("synthesize") { text: String ->
+      val voice = tts ?: throw CodedException("tts_not_loaded", "Load a voice before synthesizing", null)
+      val (pcm, sampleRate) = voice.generate(text)
+      val bytes = ByteBuffer.allocate(pcm.size * 2).order(ByteOrder.LITTLE_ENDIAN)
+      bytes.asShortBuffer().put(pcm)
+      mapOf("data" to Base64.encodeToString(bytes.array(), Base64.NO_WRAP), "sampleRate" to sampleRate)
+    }
+
+    // Resolves when the audio has been played back or playback was stopped.
+    AsyncFunction("play") { data: String, sampleRate: Int, promise: Promise ->
+      val bytes = Base64.decode(data, Base64.NO_WRAP)
+      val pcm = ShortArray(bytes.size / 2)
+      ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(pcm)
+      requestFocus()
+      routeToSpeaker()
+      player.play(pcm, sampleRate, promise)
+    }
+
+    AsyncFunction("stopPlayback") {
+      player.stop()
+    }
+  }
+
+  // Communication mode lets the platform echo canceller pair playback with the microphone; the
+  // loudspeaker (not the earpiece) because the phone is used hands-free.
+  private fun routeToSpeaker() {
+    val manager = audioManager
+    manager.mode = AudioManager.MODE_IN_COMMUNICATION
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      manager.availableCommunicationDevices
+        .firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
+        ?.let { manager.setCommunicationDevice(it) }
+    } else {
+      @Suppress("DEPRECATION")
+      manager.isSpeakerphoneOn = true
+    }
+  }
+
+  private fun releaseRouting() {
+    val manager = audioManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      manager.clearCommunicationDevice()
+    } else {
+      @Suppress("DEPRECATION")
+      manager.isSpeakerphoneOn = false
+    }
+    manager.mode = AudioManager.MODE_NORMAL
   }
 
   @SuppressLint("MissingPermission") // JS asks for RECORD_AUDIO before starting capture.
   private fun startCapture(sampleRate: Int) {
     if (capturing) return
     requestFocus()
+    routeToSpeaker()
     val minBuffer = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
     val chunkSamples = sampleRate / 10
     val record = AudioRecord(
@@ -151,6 +216,9 @@ class MobiAudioModule : Module() {
 
   private fun stopCapture() {
     stopRecorder()
+    // A reply may still be playing (the session keeps the speaker until it ends or is stopped).
+    if (player.isPlaying) return
+    releaseRouting()
     focusRequest?.let { audioManager.abandonAudioFocusRequest(it) }
     focusRequest = null
   }

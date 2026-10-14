@@ -140,21 +140,21 @@
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)
   - Specky kryteria: (crit: 01M4TPSC0BNXA9C4VKYN7C7HRN)
 - [x] Test: 3.2 — segmentacja nagranych plików WAV (mowa, cisza, szum) (pr: #24)
-- [ ] Zadanie 3.3: WhisperSttEngine na whisper.rn — język wymuszony `pl`, model small domyślnie, wariant base z ustawień, akceleracja Core ML/Metal na iOS (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #25)
+- [x] Zadanie 3.3: WhisperSttEngine na whisper.rn — język wymuszony `pl`, model small domyślnie, wariant base z ustawień, akceleracja Core ML/Metal na iOS (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #25)
   - AC: segment audio zamieniany na tekst polski; wybór small/base z ustawień
   - Specky: (req: 01M4TPSC9XQS0B0N608Z41T867 v1.0 @efdc982)
   - Specky kryteria: (crit: 01M4TPSCA6KQW1NH3DSRYASVF3) (crit: 01M4TPSCA6EWAV8RB7HWB6XR17)
-- [ ] Test: 3.3 — adapter z atrapą modułu natywnego, wybór wariantu (pr: #25)
-- [ ] Zadanie 3.4: PiperTtsEngine na sherpa-onnx — głosy pl_PL-darkman-medium i pl_PL-gosia-medium, kolejka odtwarzania zdań, natychmiastowe zatrzymanie (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript)
+- [x] Test: 3.3 — adapter z atrapą modułu natywnego, wybór wariantu (pr: #25)
+- [ ] Zadanie 3.4: PiperTtsEngine na sherpa-onnx — głosy pl_PL-darkman-medium i pl_PL-gosia-medium, kolejka odtwarzania zdań, natychmiastowe zatrzymanie (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #26)
   - AC: user wybiera jeden z dwóch głosów; stop() przerywa odtwarzanie i czyści kolejkę
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
   - Specky kryteria: (crit: 01M4TPSCC9WQ6ZKBQT91ANM77J)
-- [ ] Test: 3.4 — kolejka zdań, stop, zmiana głosu
-- [ ] Zadanie 3.5: SpeechText — usuwanie markdown i emoji przed TTS (w czacie zostają) i podział strumienia tokenów na pełne zdania (wymaga: 1.1) (tech: typescript) (pr: #27)
+- [ ] Test: 3.4 — kolejka zdań, stop, zmiana głosu (pr: #26)
+- [x] Zadanie 3.5: SpeechText — usuwanie markdown i emoji przed TTS (w czacie zostają) i podział strumienia tokenów na pełne zdania (wymaga: 1.1) (tech: typescript) (pr: #27)
   - AC: pierwsze pełne zdanie trafia do TTS przed końcem generowania
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDA2ZHEJR7GGB3Z4DX)
-- [ ] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki) (pr: #27)
+- [x] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki) (pr: #27)
 - [ ] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript)
   - AC: po ciszy ≥ progu wypowiedź wysyłana z kontekstem tematu; odpowiedź pisemnie i głosowo
   - AC: wejście — przycisk mikrofonu na ekranie Rozmowa (3.7)
