@@ -81,6 +81,7 @@ Konwencje:
 | 2026-10-13 | 📌 Prompt systemowy: `resolveSystemPrompt(temat, globalny)` → temat, potem globalny, potem `DEFAULT_SYSTEM_PROMPT` (`services/prompts.ts`); globalny równy domyślnemu zapisywany jako null; edytor `PromptEditor` w Ustawieniach i w oknie tematu | MV-CHAT-4 |
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
+| 2026-10-14 | 📌 Podsumowania: `SummaryService` (model tematu; historia ponad budżet → notatki z części przycinane do przydziału, potem forma z szablonu; przerwanie → `SummaryCancelledError`, nic nie zapisane), `SummaryRepository` (tabela `summaries`, ponowne generowanie dodaje nowsze, `lastUsedTemplateId` dla polecenia głosowego); wyjście tekstu przez port `ShareSheet` w `DevicePorts` (expo-clipboard + RN `Share`; `MemoryShareSheet` w Jest i e2e), udostępniany Markdown `# <temat>` | 8.2, 8.3, MV-SUM-1 |
 
 ## Znane problemy i rozwiązania
 
@@ -119,6 +120,6 @@ Konwencje:
 <!-- rotuje się nic. Dopisywanie kolejnych akapitów „tura z 19.08 domknięta" zamienia tę   -->
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
-- Ostatnie ukończone zadanie: 2.10 — Faza 2 ukończona, tag `ralph/faza-2` (main 0f60d41)
-- Następne zadanie: 3.5 SpeechText — czyszczenie markdown/emoji i podział strumienia tokenów na zdania
+- Ostatnie ukończone zadanie: 8.2 SummaryService (PR #47); w toku 8.3 ekran Podsumowanie
+- Następne zadanie: 8.4 eksport tematu do Markdown, potem 8.5 „podsumuj rozmowę”, 8.6 e2e; odłożone 7.3 (function calling w chmurze) i 7.4; #43 (e2e 5.6/6.8) czeka na CI
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), decyzja bibliotek audio (01M4WKFKSXWNW7ZJ71XBMQCR7V), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)

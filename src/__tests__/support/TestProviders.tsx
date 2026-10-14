@@ -7,6 +7,7 @@ import { createEngineRegistry, type EngineRegistry } from '../../engines/EngineR
 import { MemoryModelFileSystem } from '../../models/download/__tests__/support/memoryModelFileSystem';
 import { FakeAudioPorts } from '../../audio/fakeAudioPorts';
 import { MemoryApiKeys } from '../../cloud/__tests__/support/memoryApiKeys';
+import { MemoryShareSheet } from '../../share/memoryShareSheet';
 import type { DevicePorts } from '../../services/ServicesProvider';
 import { ServicesProvider } from '../../services/ServicesProvider';
 
@@ -30,6 +31,7 @@ export function TestProviders({ db, children, engines, ports }: Props) {
     fetch: async () => {
       throw new Error('no network in tests');
     },
+    share: new MemoryShareSheet(),
     ...ports,
   };
   return (

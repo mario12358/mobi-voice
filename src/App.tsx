@@ -5,7 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { deviceAudioPorts } from './audio/deviceAudio';
 import { expoFetch } from './cloud/expoFetch';
 import { DatabaseProvider } from './db/DatabaseProvider';
-import { e2eAudioPorts } from './e2e/testHooks';
+import { e2eAudioPorts, e2eShareSheet } from './e2e/testHooks';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
 import { resolveEngineMode } from './engines/EngineRegistry';
@@ -14,6 +14,7 @@ import { blobUtilFileSystem } from './models/download/blobUtilFileSystem';
 import { expoNetworkInfo } from './models/download/expoNetworkInfo';
 import { deviceMemoryBytes } from './models/deviceMemory';
 import { RootNavigator } from './navigation/RootNavigator';
+import { deviceShareSheet } from './share/deviceShareSheet';
 import { ServicesProvider, type DevicePorts } from './services/ServicesProvider';
 import { SecretStore } from './state/SecretStore';
 import { usePalette } from './theme/theme';
@@ -26,6 +27,7 @@ const devicePorts = (): DevicePorts => ({
   audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eAudioPorts : deviceAudioPorts,
   apiKeys: SecretStore,
   fetch: expoFetch,
+  share: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eShareSheet : deviceShareSheet,
 });
 
 // e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.

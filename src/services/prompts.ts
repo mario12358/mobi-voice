@@ -41,6 +41,9 @@ export function withContextSummary(systemPrompt: string | null, summary: string)
   return systemPrompt === null ? block : `${systemPrompt}\n\n${block}`;
 }
 
+export const SUMMARY_SYSTEM_PROMPT =
+  'Podsumowujesz rozmowę użytkownika z asystentem. Opierasz się wyłącznie na jej treści, piszesz po polsku.';
+
 export const TITLE_SYSTEM_PROMPT =
   'Nadajesz tytuły rozmowom. Odpowiedz wyłącznie tytułem: 2–5 słów po polsku, bez cudzysłowów i kropki na końcu.';
 
