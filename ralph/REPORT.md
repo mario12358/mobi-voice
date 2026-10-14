@@ -70,6 +70,8 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 2.9 Prompt systemowy + Test 2.9 | ✅ zmergowane (PR #19) | 165/165 | 1 | 4db9e34 | 2026-10-13 |
 | 2.10 Test e2e Fazy 2 (Detox) | ✅ zmergowane (PR #20) | 165/165 + e2e 7/7 Android i iOS | 8 | 0f60d41 | 2026-10-13 |
 | 3.1 AudioSessionService + Test 3.1 | ✅ zmergowane (PR #22) | 175/175 | 1 | bbf2528 | 2026-10-14 |
+| 3.5 SpeechText + Test 3.5 | ✅ zmergowane (PR #27) | 201/201 | 1 | 0e11204 | 2026-10-14 |
+| 3.2 VadEngine (Silero, sherpa-onnx) + Test 3.2 | ✅ zmergowane (PR #24) | 211/211 | 4 | 73c2a69 | 2026-10-14 |
 
 ## Historia zmian
 
@@ -164,3 +166,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-14] [check] PR #23 (3.2, łańcuchowy na 3.1) zamknięty automatycznie przez GitHub, gdy merge #22 z `--delete-branch` usunął jego gałąź bazową — gałąź 3.2 przeniesiona na main (`rebase --onto`), nowy PR #24. Na przyszłość: przed merge bazy przepiąć PR łańcuchowy na main (`gh pr edit --base main`).
 - [2026-10-14] [check] PR #24 — ios (native-build): `source_files = 'ios/**/*.{h,m,swift}'` łapał nagłówki C++ z pobranego onnxruntime.xcframework (w `ios/Frameworks`) do nagłówka zbiorczego modułu Swift → „'cmath' file not found". Binarki przeniesione do `modules/mobi-audio/vendor/ios`, `source_files` tylko `ios/*.swift`; lokalnie `pod install` daje nagłówek zbiorczy bez onnxruntime.
 - [2026-10-14] [check] PR #24 — ios: po poprawce nagłówków Swift kompiluje się, ale linker: „framework 'sherpa-onnx' not found" — CocoaPods linkuje vendored xcframework po nazwie katalogu, a w środku jest `SherpaOnnxC.framework`; skrypt zmienia nazwę katalogu na `SherpaOnnxC.xcframework`.
+- [2026-10-14] Zadanie 3.3: whisper.rn 0.7.4 — `exports` paczki nie ma wpisu „.", tylko ścieżki podrzędne, więc import z `whisper.rn/index` (TS bundler i Metro); atrapa w `jest-setup.ts`. `transcribeData(ArrayBuffer)` czyta 16-bit PCM LE (wbrew opisowi „float32" w typach — sprawdzone w RNWhisperJSI.cpp). Akceleracja: Metal (`useGpu`) na iOS; Core ML pominięty — wymaga osobnego pliku encodera `.mlmodelc`, którego katalog modeli nie ma (do rozważenia po pomiarach na urządzeniu). Zmiana testu `EngineRegistry.test.ts` — produkcyjne `stt()` to teraz `WhisperSttEngine`; brak silnika sprawdzany na `tts()`. Build Androida lokalnie zielony. Mutacja przełączania wariantu → test czerwony.

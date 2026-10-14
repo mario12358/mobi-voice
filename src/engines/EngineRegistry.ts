@@ -7,6 +7,7 @@ import { FakeSttEngine } from './fakes/FakeSttEngine';
 import { FakeTtsEngine } from './fakes/FakeTtsEngine';
 import { WavAudioSource } from './fakes/WavAudioSource';
 import { createLocalLlmEngine } from './llm/createLocalLlmEngine';
+import { createWhisperSttEngine } from './stt/createWhisperSttEngine';
 import { EndpointingVad } from './vad/EndpointingVad';
 import { SileroSpeechDetector } from './vad/SileroSpeechDetector';
 import type { AudioSource, KeywordSpotter, LlmEngine, SttEngine, TtsEngine, VadEngine } from './types';
@@ -45,10 +46,10 @@ function unavailable(name: EngineName): never {
   throw new DomainError('engine_unavailable', `Native ${name} engine is not wired yet`);
 }
 
-// Native adapters replace these entries as they land (sherpa-onnx 3.4/4.3, whisper.rn 3.3).
+// Native adapters replace these entries as they land (sherpa-onnx 3.4/4.3).
 export const PRODUCTION_FACTORIES: EngineFactories = {
   llm: createLocalLlmEngine,
-  stt: () => unavailable('stt'),
+  stt: createWhisperSttEngine,
   tts: () => unavailable('tts'),
   vad: () => new EndpointingVad(new SileroSpeechDetector(CAPTURE_SAMPLE_RATE)),
   keywordSpotter: () => unavailable('keywordSpotter'),

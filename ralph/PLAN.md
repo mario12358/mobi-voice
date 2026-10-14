@@ -135,16 +135,16 @@
   - Specky: (req: 01M4TPSBVARMFASRVTYM6ERQB3 v1.0 @9adb713)
   - Specky kryteria: (crit: 01M4TPSBVH4RAMAQ7GSXN6R8NK)
 - [x] Test: 3.1 — reakcje na przerwania i odmowę uprawnień (atrapy modułów natywnych) (pr: #22)
-- [ ] Zadanie 3.2: VadEngine na sherpa-onnx (Silero VAD) — segmentacja mowy, koniec wypowiedzi po progu ciszy z ustawień (1,5–6 s, domyślnie 3 s) (wymaga: 3.1) (spec: spec.md) (tech: react-native, typescript) (pr: #24)
+- [x] Zadanie 3.2: VadEngine na sherpa-onnx (Silero VAD) — segmentacja mowy, koniec wypowiedzi po progu ciszy z ustawień (1,5–6 s, domyślnie 3 s) (wymaga: 3.1) (spec: spec.md) (tech: react-native, typescript) (pr: #24)
   - AC: po ciszy równej progowi emitowane jest zdarzenie końca wypowiedzi
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)
   - Specky kryteria: (crit: 01M4TPSC0BNXA9C4VKYN7C7HRN)
-- [ ] Test: 3.2 — segmentacja nagranych plików WAV (mowa, cisza, szum) (pr: #24)
-- [ ] Zadanie 3.3: WhisperSttEngine na whisper.rn — język wymuszony `pl`, model small domyślnie, wariant base z ustawień, akceleracja Core ML/Metal na iOS (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript)
+- [x] Test: 3.2 — segmentacja nagranych plików WAV (mowa, cisza, szum) (pr: #24)
+- [ ] Zadanie 3.3: WhisperSttEngine na whisper.rn — język wymuszony `pl`, model small domyślnie, wariant base z ustawień, akceleracja Core ML/Metal na iOS (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #25)
   - AC: segment audio zamieniany na tekst polski; wybór small/base z ustawień
   - Specky: (req: 01M4TPSC9XQS0B0N608Z41T867 v1.0 @efdc982)
   - Specky kryteria: (crit: 01M4TPSCA6KQW1NH3DSRYASVF3) (crit: 01M4TPSCA6EWAV8RB7HWB6XR17)
-- [ ] Test: 3.3 — adapter z atrapą modułu natywnego, wybór wariantu
+- [ ] Test: 3.3 — adapter z atrapą modułu natywnego, wybór wariantu (pr: #25)
 - [ ] Zadanie 3.4: PiperTtsEngine na sherpa-onnx — głosy pl_PL-darkman-medium i pl_PL-gosia-medium, kolejka odtwarzania zdań, natychmiastowe zatrzymanie (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript)
   - AC: user wybiera jeden z dwóch głosów; stop() przerywa odtwarzanie i czyści kolejkę
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
