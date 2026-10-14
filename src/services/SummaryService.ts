@@ -4,16 +4,23 @@ import type { Topic, TopicRepository } from '../db/repositories/TopicRepository'
 import { DomainError } from '../core/errors';
 import type { LlmEngine } from '../engines/types';
 import type { ModelBudget } from './ContextBuilder';
+import { SUMMARY_SYSTEM_PROMPT } from './prompts';
 import { CHARS_PER_TOKEN, estimateTextTokens } from './tokens';
 
 // Model-facing instructions (not UI text). Polish, because the conversations are.
-export const SUMMARY_SYSTEM_PROMPT =
-  'Podsumowujesz rozmowę użytkownika z asystentem. Opierasz się wyłącznie na jej treści, piszesz po polsku.';
 export const PART_NOTES_INSTRUCTION =
   'To fragment dłuższej rozmowy. Zanotuj zwięźle w punktach wszystkie fakty, liczby, nazwy, decyzje i otwarte sprawy z tego fragmentu.';
 export const MERGE_INTRO = 'Poniżej notatki z kolejnych części jednej rozmowy, w kolejności.';
 
 const MAX_PASSES = 4;
+
+// Thrown when the user stops the generation: nothing is saved.
+export class SummaryCancelledError extends Error {
+  constructor() {
+    super('Summary cancelled');
+    this.name = 'SummaryCancelledError';
+  }
+}
 
 export interface SummaryRequest {
   instruction: string;
@@ -64,6 +71,10 @@ export class SummaryService {
 
   latest(topicId: number): Promise<Summary | null> {
     return this.deps.summaries.latest(topicId);
+  }
+
+  lastUsedTemplateId(): Promise<number | null> {
+    return this.deps.summaries.lastUsedTemplateId();
   }
 
   // Shrinks the text until it fits one request: each pass turns parts into notes. A model that
@@ -120,6 +131,7 @@ export class SummaryService {
       () => undefined,
       signal ?? new AbortController().signal,
     );
+    if (result.aborted || signal?.aborted === true) throw new SummaryCancelledError();
     return result.text.trim();
   }
 }

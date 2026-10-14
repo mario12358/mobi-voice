@@ -7,7 +7,8 @@ import { TopicRepository } from '../../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../../db/SqlDatabase';
 import type { LlmEngine, LlmRequest, LlmResult } from '../../engines/types';
 import type { ModelBudget } from '../ContextBuilder';
-import { PART_NOTES_INSTRUCTION, SUMMARY_SYSTEM_PROMPT, SummaryService } from '../SummaryService';
+import { PART_NOTES_INSTRUCTION, SummaryCancelledError, SummaryService } from '../SummaryService';
+import { SUMMARY_SYSTEM_PROMPT } from '../prompts';
 import { estimateTextTokens } from '../tokens';
 
 const SMALL: ModelBudget = { contextTokens: 2_048, maxOutputTokens: 256 };
@@ -163,6 +164,25 @@ describe('SummaryService', () => {
 
     expect(summary.content.length).toBeGreaterThan(0);
     expect(llm.requests.length).toBeLessThan(200);
+  });
+
+  it('saves nothing when the generation is stopped', async () => {
+    budget = SMALL;
+    await addConversation(60);
+    const stop = new AbortController();
+    llm = new (class extends RecordingLlm {
+      override async generate(request: LlmRequest): Promise<LlmResult> {
+        if (this.requests.length === 1) stop.abort();
+        return super.generate(request);
+      }
+    })();
+
+    await expect(
+      service.generate(topicId, { instruction: 'Notatka.', templateId: null }, stop.signal),
+    ).rejects.toBeInstanceOf(SummaryCancelledError);
+
+    expect(llm.requests).toHaveLength(2);
+    expect(await service.latest(topicId)).toBeNull();
   });
 
   it('removes the summaries together with their topic', async () => {

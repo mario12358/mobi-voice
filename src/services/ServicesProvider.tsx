@@ -18,6 +18,7 @@ import type { EngineRegistry } from '../engines/EngineRegistry';
 import { isCloudModel, resolveChatModel, type ChatModel } from '../models/chatModel';
 import { ModelDownloadService } from '../models/download/ModelDownloadService';
 import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
+import type { ShareSheet } from '../share/types';
 import { useLatencyStore } from '../state/latency';
 import type { CloudProvider } from '../state/SecretStore';
 import { useSettingsStore } from '../state/settings';
@@ -39,6 +40,7 @@ export interface AppServices {
   audio: AudioSessionService;
   voice: VoiceSessionController;
   deviceMemoryBytes(): number | null;
+  share: ShareSheet;
   cloud: { engines: Record<CloudProvider, CloudLlmEngine>; keys: ApiKeyStore };
   modelForTopic(topic: Topic | null): ChatModel;
   // Local models need their files on the phone, cloud models a saved API key.
@@ -54,6 +56,7 @@ export interface DevicePorts {
   // Cloud providers (MV-CLOUD-1): where API keys are kept and how requests reach the providers.
   apiKeys: ApiKeyStore;
   fetch: FetchLike;
+  share: ShareSheet;
 }
 
 export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: DevicePorts): AppServices {
@@ -118,6 +121,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     audio,
     voice,
     deviceMemoryBytes: ports.memoryBytes,
+    share: ports.share,
     cloud: { engines: cloudEngines, keys: ports.apiKeys },
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.

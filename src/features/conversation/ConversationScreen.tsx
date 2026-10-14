@@ -202,6 +202,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
       >
         <View style={styles.toolbar}>
           <TextButton
+            testID="conversation.open-summary"
             label={pl.conversation.openSummary}
             onPress={() => navigation.navigate('Summary', { topicId })}
           />
