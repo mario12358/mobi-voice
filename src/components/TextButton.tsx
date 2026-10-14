@@ -6,18 +6,28 @@ interface Props {
   label: string;
   onPress: () => void;
   testID?: string;
+  // Set for one-of-many choices: the chosen option is filled.
+  selected?: boolean;
 }
 
-export function TextButton({ label, onPress, testID }: Props) {
+export function TextButton({ label, onPress, testID, selected }: Props) {
   const palette = usePalette();
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityState={selected === undefined ? undefined : { selected }}
       testID={testID}
       onPress={onPress}
-      style={({ pressed }) => [styles.button, { borderColor: palette.border, opacity: pressed ? 0.6 : 1 }]}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          borderColor: selected ? palette.accent : palette.border,
+          backgroundColor: selected ? palette.accent : 'transparent',
+          opacity: pressed ? 0.6 : 1,
+        },
+      ]}
     >
-      <Text style={[styles.label, { color: palette.accent }]}>{label}</Text>
+      <Text style={[styles.label, { color: selected ? palette.background : palette.accent }]}>{label}</Text>
     </Pressable>
   );
 }

@@ -21,6 +21,8 @@ export interface SttEngine {
 }
 
 export interface TtsEngine {
+  // Starts a new answer: the voice chosen in settings applies from here on.
+  beginAnswer(): void;
   // Resolves when the text has been played or playback was stopped.
   speak(text: string): Promise<void>;
   stop(): Promise<void>;

@@ -73,6 +73,7 @@ Konwencje:
 | 2026-10-14 | 📌 Audio natywne: lokalny moduł Expo `modules/mobi-audio` (mikrofon 16 kHz PCM16 base64 z systemowym AEC, przerwania, uprawnienie); `AudioSessionService` (src/audio) — przerwanie zatrzymuje nasłuch i TTS, po nim nasłuch bez wznawiania odczytu, keep-awake przez całą sesję; porty audio w `DevicePorts` (atrapa `FakeAudioPorts` w Jest i e2e) | 3.1, MV-VOICE-7 |
 | 2026-10-14 | 📌 sherpa-onnx v1.13.8 oficjalne binarki (AAR / xcframework + onnxruntime 1.28.2) przez `modules/mobi-audio/scripts/fetch-sherpa.sh` z SHA-256; VAD = `EndpointingVad` (cięcie wypowiedzi w TS, próg zatrzaskiwany na starcie) + `SpeechDetector` (Silero przez synchroniczne `vadAccept` JSI, energia w atrapie) | 3.2, MV-VOICE-1 |
 | 2026-10-14 | 📌 STT: `WhisperSttEngine` (whisper.rn 0.7.4, import `whisper.rn/index`), język wymuszony `pl`, wariant z `settings.whisperVariant` (small/base), jeden model w pamięci, PCM16 ArrayBuffer; brak pliku → `model_missing` | 3.3, MV-VOICE-5 |
+| 2026-10-14 | 📌 TTS: `PiperTtsEngine` — kolejka zdań w TS, synteza i odtwarzanie natywnie w mobi-audio tą samą ścieżką co mikrofon (AEC); głos z `settings.ttsVoice` zatrzaskiwany przez `beginAnswer()`; pliki: model+tokens głosu i katalog eSpeak z wpisu `espeak-ng-data-pl` | 3.4, MV-VOICE-6 |
 | 2026-10-13 | 📌 Kontekst LLM: `ContextBuilder` (`src/services`) — budżet = contextTokens − maxOutputTokens, tokeny z `services/tokens.ts` (3 znaki/token); mieści się → cała historia, inaczej najnowsze wiadomości + streszczenie starszej części (`context_summaries`, `LlmSummarizer`, ~25% budżetu); ostatnia wiadomość zawsze, w razie potrzeby obcięta od początku; prompty dla modelu w `services/prompts.ts` | S1, MV-CHAT-2 |
 | 2026-10-13 | 📌 `ConversationService.send(topicId, text, {onToken, signal})`: zapis pytania → ContextBuilder → `llm().generate` → zapis odpowiedzi (przerwana z `interrupted`, pusta pomijana); zależności wstrzykiwane (budżet i prompt per temat) | 2.5 |
 | 2026-10-13 | 📌 `ServicesProvider`/`useServices()` (pod DatabaseProvider i EngineProvider): repozytoria, `conversation`, `downloads`, `modelForTopic`, `isModelReady`; testy ekranów przez `src/__tests__/support/TestProviders.tsx` | 2.7 |
@@ -119,5 +120,5 @@ Konwencje:
 <!-- sekcję w drugi, nieograniczony raport w prompcie każdej sesji.                        -->
 
 - Ostatnie ukończone zadanie: 2.10 — Faza 2 ukończona, tag `ralph/faza-2` (main 0f60d41)
-- Następne zadanie: 3.4 PiperTtsEngine (sherpa-onnx OfflineTts w module mobi-audio, odtwarzanie przez tę samą ścieżkę audio co mikrofon — AEC)
+- Następne zadanie: 3.5 SpeechText — czyszczenie markdown/emoji i podział strumienia tokenów na zdania
 - Blokery: brak; czeka na człowieka: decyzja iOS 16.4 w Specky (01M4TTARHWPFRM2N8PZPGMZDNV), decyzja bibliotek audio (01M4WKFKSXWNW7ZJ71XBMQCR7V), licencja GPL eSpeak NG przed dystrybucją zewnętrzną. Lokalnie iOS tylko przez CI (Xcode bez platformy iOS 26.5)
