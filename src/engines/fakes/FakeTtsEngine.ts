@@ -1,32 +1,52 @@
 import type { TtsEngine } from '../types';
 
+interface Utterance {
+  text: string;
+  finish: () => void;
+  onStart?: () => void;
+}
+
+// Speaks queued sentences one after another, each for a fixed duration, like the real voice.
 export class FakeTtsEngine implements TtsEngine {
   readonly spoken: string[] = [];
-  private finishCurrent: (() => void) | null = null;
+  private readonly queue: Utterance[] = [];
+  private current: Utterance | null = null;
   private timer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(private readonly speechDurationMs = 0) {}
 
   get isSpeaking(): boolean {
-    return this.finishCurrent !== null;
+    return this.current !== null;
   }
 
   beginAnswer(): void {}
 
-  speak(text: string): Promise<void> {
+  speak(text: string, onStart?: () => void): Promise<void> {
     this.spoken.push(text);
     return new Promise((resolve) => {
-      this.finishCurrent = () => {
-        this.finishCurrent = null;
-        resolve();
-      };
-      this.timer = setTimeout(() => this.finishCurrent?.(), this.speechDurationMs);
+      this.queue.push({ text, finish: resolve, onStart });
+      if (this.current === null) this.playNext();
     });
   }
 
   async stop(): Promise<void> {
     if (this.timer !== null) clearTimeout(this.timer);
     this.timer = null;
-    this.finishCurrent?.();
+    const dropped = [this.current, ...this.queue.splice(0)];
+    this.current = null;
+    for (const utterance of dropped) utterance?.finish();
+  }
+
+  private playNext(): void {
+    const next = this.queue.shift() ?? null;
+    this.current = next;
+    if (next === null) return;
+    next.onStart?.();
+    this.timer = setTimeout(() => {
+      this.timer = null;
+      this.current = null;
+      next.finish();
+      this.playNext();
+    }, this.speechDurationMs);
   }
 }

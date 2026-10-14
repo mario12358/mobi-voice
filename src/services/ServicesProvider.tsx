@@ -13,11 +13,13 @@ import { selectedLocalModel } from '../engines/llm/createLocalLlmEngine';
 import type { LlmEntry } from '../models/catalog';
 import { ModelDownloadService } from '../models/download/ModelDownloadService';
 import type { ModelFileSystem, NetworkInfo } from '../models/download/types';
+import { useLatencyStore } from '../state/latency';
 import { useSettingsStore } from '../state/settings';
 import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
 import { resolveSystemPrompt } from './prompts';
 import { TopicTitler } from './TopicTitler';
+import { VoiceSessionController } from './voice/VoiceSessionController';
 
 export interface AppServices {
   topics: TopicRepository;
@@ -25,6 +27,7 @@ export interface AppServices {
   conversation: ConversationService;
   downloads: ModelDownloadService;
   audio: AudioSessionService;
+  voice: VoiceSessionController;
   modelForTopic(topic: Topic | null): LlmEntry;
   isModelReady(model: LlmEntry): Promise<boolean>;
 }
@@ -63,12 +66,22 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     source: () => engines.audioSource(),
     tts: () => engines.tts(),
   });
+  const voice = new VoiceSessionController({
+    audio,
+    vad: () => engines.vad(),
+    stt: () => engines.stt(),
+    tts: () => engines.tts(),
+    conversation,
+    silenceThresholdMs: () => useSettingsStore.getState().silenceThresholdMs,
+    recordLatency: (sample) => useLatencyStore.getState().record(sample),
+  });
   return {
     topics,
     messages,
     conversation,
     downloads,
     audio,
+    voice,
     modelForTopic,
     // Test builds talk to the fake LLM, which needs no model file.
     isModelReady: async (model) =>

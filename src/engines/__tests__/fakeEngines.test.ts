@@ -66,6 +66,29 @@ describe('FakeTtsEngine', () => {
     expect(tts.isSpeaking).toBe(false);
   });
 
+  it('speaks queued sentences one after another', async () => {
+    const tts = new FakeTtsEngine(1_000);
+    const finished: string[] = [];
+    const first = tts.speak('Pierwsze.').then(() => finished.push('Pierwsze.'));
+    const second = tts.speak('Drugie.').then(() => finished.push('Drugie.'));
+
+    await jest.advanceTimersByTimeAsync(1_000);
+    expect(finished).toEqual(['Pierwsze.']);
+    await jest.advanceTimersByTimeAsync(1_000);
+    await Promise.all([first, second]);
+    expect(finished).toEqual(['Pierwsze.', 'Drugie.']);
+  });
+
+  it('stop ends playback immediately and drops the queue', async () => {
+    const tts = new FakeTtsEngine(60_000);
+    const speaking = Promise.all([tts.speak('Długi wywód.'), tts.speak('I jeszcze więcej.')]);
+
+    await tts.stop();
+    await speaking;
+
+    expect(tts.isSpeaking).toBe(false);
+  });
+
   it('stop ends playback immediately', async () => {
     const tts = new FakeTtsEngine(60_000);
     const speaking = tts.speak('Długi wywód.');

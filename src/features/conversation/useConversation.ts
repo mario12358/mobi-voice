@@ -14,6 +14,8 @@ export interface ConversationState {
   send(text: string): Promise<void>;
   stop(): void;
   setTopicPrompt(prompt: string): Promise<void>;
+  // Re-reads the topic history, e.g. after a voice exchange stored new messages.
+  reload(): Promise<void>;
 }
 
 function toDomainError(error: unknown): DomainError {
@@ -84,5 +86,5 @@ export function useConversation(topicId: number): ConversationState {
     [services, topicId],
   );
 
-  return { topic, messages, streaming, error, send, stop, setTopicPrompt };
+  return { topic, messages, streaming, error, send, stop, setTopicPrompt, reload };
 }

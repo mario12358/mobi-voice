@@ -145,35 +145,35 @@
   - Specky: (req: 01M4TPSC9XQS0B0N608Z41T867 v1.0 @efdc982)
   - Specky kryteria: (crit: 01M4TPSCA6KQW1NH3DSRYASVF3) (crit: 01M4TPSCA6EWAV8RB7HWB6XR17)
 - [x] Test: 3.3 — adapter z atrapą modułu natywnego, wybór wariantu (pr: #25)
-- [ ] Zadanie 3.4: PiperTtsEngine na sherpa-onnx — głosy pl_PL-darkman-medium i pl_PL-gosia-medium, kolejka odtwarzania zdań, natychmiastowe zatrzymanie (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #26)
+- [x] Zadanie 3.4: PiperTtsEngine na sherpa-onnx — głosy pl_PL-darkman-medium i pl_PL-gosia-medium, kolejka odtwarzania zdań, natychmiastowe zatrzymanie (wymaga: 1.6, 2.2) (spec: spec.md) (tech: react-native, typescript) (pr: #26)
   - AC: user wybiera jeden z dwóch głosów; stop() przerywa odtwarzanie i czyści kolejkę
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
   - Specky kryteria: (crit: 01M4TPSCC9WQ6ZKBQT91ANM77J)
-- [ ] Test: 3.4 — kolejka zdań, stop, zmiana głosu (pr: #26)
+- [x] Test: 3.4 — kolejka zdań, stop, zmiana głosu (pr: #26)
 - [x] Zadanie 3.5: SpeechText — usuwanie markdown i emoji przed TTS (w czacie zostają) i podział strumienia tokenów na pełne zdania (wymaga: 1.1) (tech: typescript) (pr: #27)
   - AC: pierwsze pełne zdanie trafia do TTS przed końcem generowania
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDA2ZHEJR7GGB3Z4DX)
 - [x] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki) (pr: #27)
-- [ ] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript) (pr: #28)
   - AC: po ciszy ≥ progu wypowiedź wysyłana z kontekstem tematu; odpowiedź pisemnie i głosowo
   - AC: wejście — przycisk mikrofonu na ekranie Rozmowa (3.7)
   - Specky: (req: 01M4TPSBZZJG8NWC1W3NMD6C9W v1.0 @87b9583)
   - Specky kryteria: (crit: 01M4TPSC0B8HYJGGA7VFMDNQMS) (crit: 01M4TPSC0B4E53VDY3GZ4AXK4A) (crit: 01M4TPSC0BAH62JP9VCR54D90J)
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDRJ1KPTAXYXJAQKVQ)
-- [ ] Test: 3.6 — przejścia stanów z atrapami silników
-- [ ] Zadanie 3.7: Ekran Rozmowa — tryb głosowy: duży przycisk mikrofonu, wskaźnik stanu (słucham / przetwarzam / mówię), transkrypcja na żywo, przełącznik trybu ciągły/przerywany (wymaga: 2.7, 3.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 3.6 — przejścia stanów z atrapami silników (pr: #28)
+- [ ] Zadanie 3.7: Ekran Rozmowa — tryb głosowy: duży przycisk mikrofonu, wskaźnik stanu (słucham / przetwarzam / mówię), transkrypcja na żywo, przełącznik trybu ciągły/przerywany (wymaga: 2.7, 3.6) (spec: spec.md) (tech: react-native, typescript) (pr: #28)
   - AC: wskaźnik pokazuje bieżący stan sesji; tryb przełączany jednym dotknięciem (ustawienie globalne)
   - Specky: (req: 01M4TPSC7RSRB8XX9FM7EHZSXS v1.0 @990c4e5)
   - Specky kryteria: (crit: 01M4TPSC85Q9KY04JF3KEEC2XM) (crit: 01M4TPSC85FNP5ZTJ00E05C140)
-- [ ] Test: 3.7 — render stanów i przełącznik trybu
-- [ ] Zadanie 3.8: Metryki opóźnień — czas STT, czas do pierwszego tokenu, czas do pierwszego audio, zapisywane lokalnie i widoczne w trybie diagnostycznym (wymaga: 3.6) (tech: react-native, typescript)
+- [ ] Test: 3.7 — render stanów i przełącznik trybu (pr: #28)
+- [ ] Zadanie 3.8: Metryki opóźnień — czas STT, czas do pierwszego tokenu, czas do pierwszego audio, zapisywane lokalnie i widoczne w trybie diagnostycznym (wymaga: 3.6) (tech: react-native, typescript) (pr: #28)
   - AC: wejście — przełącznik „Tryb diagnostyczny" w Ustawieniach
   - Specky: (req: 01M4TPSCJAAVY8EMNC2X7SAZ3Y v1.0 @32b1379)
   - Specky kryteria: (crit: 01M4TPSCJV5Y6488ZMZ28DRVZT)
-- [ ] Test: 3.8 — pomiar z atrapami o zadanych opóźnieniach
-- [ ] Zadanie 3.9: Test e2e — tryb ciągły: wstrzyknięty WAV → transkrypcja → odpowiedź atrapy LLM tekstem i (atrapą) TTS → powrót do nasłuchu; odmowa mikrofonu → rozmowa tekstem (wymaga: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8) (spec: spec.md) (tech: detox, typescript)
+- [ ] Test: 3.8 — pomiar z atrapami o zadanych opóźnieniach (pr: #28)
+- [ ] Zadanie 3.9: Test e2e — tryb ciągły: wstrzyknięty WAV → transkrypcja → odpowiedź atrapy LLM tekstem i (atrapą) TTS → powrót do nasłuchu; odmowa mikrofonu → rozmowa tekstem (wymaga: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8) (spec: spec.md) (tech: detox, typescript) (pr: #28)
 
 ### Faza 4: Tryb przerywany i przerwanie STOP
 

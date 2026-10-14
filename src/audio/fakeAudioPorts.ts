@@ -40,6 +40,10 @@ export class FakeAudioPorts implements AudioPorts {
     },
   };
 
+  setPermission(status: MicPermissionStatus): void {
+    this.permissionStatus = status;
+  }
+
   interrupt(phase: InterruptionPhase): void {
     for (const listener of this.interruptionListeners) listener(phase);
   }

@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { deviceAudioPorts } from './audio/deviceAudio';
-import { FakeAudioPorts } from './audio/fakeAudioPorts';
 import { DatabaseProvider } from './db/DatabaseProvider';
+import { e2eAudioPorts } from './e2e/testHooks';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
 import { resolveEngineMode } from './engines/EngineRegistry';
@@ -19,7 +19,7 @@ const devicePorts = (): DevicePorts => ({
   fileSystem: blobUtilFileSystem,
   network: expoNetworkInfo,
   // e2e builds feed WAV files instead of the microphone, so no system permission prompt may appear.
-  audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? new FakeAudioPorts() : deviceAudioPorts,
+  audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eAudioPorts : deviceAudioPorts,
 });
 
 // e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.

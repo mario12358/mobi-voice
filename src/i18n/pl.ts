@@ -3,6 +3,8 @@ export const pl = {
   common: {
     loadingData: 'Ładowanie danych',
     testMode: 'Tryb testowy',
+    e2eSpeak: 'Test: wypowiedź',
+    e2eDenyMic: 'Test: odmowa mikrofonu',
     back: 'Wstecz',
   },
   topicList: {
@@ -44,6 +46,20 @@ export const pl = {
     cancel: 'Anuluj',
     micDenied: 'Brak dostępu do mikrofonu, więc rozmowa głosowa jest wyłączona. Nadal możesz pisać.',
     openSystemSettings: 'Otwórz ustawienia systemu',
+    voiceStart: 'Rozmawiaj głosem',
+    voiceStop: 'Zakończ rozmowę głosową',
+    voiceState: {
+      idle: 'Mikrofon wyłączony',
+      listening: 'Słucham…',
+      processing: 'Przetwarzam…',
+      speaking: 'Mówię…',
+    },
+    youSaid: (text: string) => `Ty: ${text}`,
+    modeContinuous: 'Tryb: ciągły',
+    modeInterrupted: 'Tryb: przerywany',
+    latency: (stt: string, firstToken: string, firstAudio: string) =>
+      `STT ${stt} · pierwszy token ${firstToken} · pierwsze audio ${firstAudio}`,
+    latencyMissing: '—',
   },
   summary: {
     title: 'Podsumowanie',
@@ -56,6 +72,8 @@ export const pl = {
     systemPromptHint: 'Instrukcja dla modelu we wszystkich tematach, które nie mają własnej.',
     voiceTitle: 'Głos asystenta',
     voiceHint: 'Nowy głos usłyszysz od następnej odpowiedzi.',
+    diagnostics: 'Tryb diagnostyczny',
+    diagnosticsHint: 'Pokazuje na ekranie rozmowy czasy rozpoznawania mowy i odpowiedzi.',
   },
   promptEditor: {
     save: 'Zapisz',

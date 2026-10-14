@@ -3,7 +3,7 @@ import { CAPTURE_SAMPLE_RATE, NativeMicrophone } from './audio/NativeMicrophone'
 import { EnergyVadEngine } from './fakes/EnergyVadEngine';
 import { FakeKeywordSpotter } from './fakes/FakeKeywordSpotter';
 import { E2E_SCRIPT, FakeLlmEngine } from './fakes/FakeLlmEngine';
-import { FakeSttEngine } from './fakes/FakeSttEngine';
+import { E2E_TRANSCRIPT, FakeSttEngine } from './fakes/FakeSttEngine';
 import { FakeTtsEngine } from './fakes/FakeTtsEngine';
 import { WavAudioSource } from './fakes/WavAudioSource';
 import { createLocalLlmEngine } from './llm/createLocalLlmEngine';
@@ -35,7 +35,7 @@ export function resolveEngineMode(flag: string | undefined): EngineMode {
 export function createTestFactories(): EngineFactories {
   return {
     llm: () => new FakeLlmEngine(E2E_SCRIPT, 60),
-    stt: () => new FakeSttEngine(),
+    stt: () => new FakeSttEngine([], E2E_TRANSCRIPT),
     tts: () => new FakeTtsEngine(500),
     vad: () => new EnergyVadEngine(),
     keywordSpotter: () => new FakeKeywordSpotter(),

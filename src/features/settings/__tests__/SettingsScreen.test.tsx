@@ -51,4 +51,14 @@ describe('SettingsScreen', () => {
     expect(screen.getByTestId('settings.voice-darkman')).toBeSelected();
     expect(screen.getByTestId('settings.voice-gosia')).not.toBeSelected();
   });
+
+  it('turns the diagnostic mode on and off', async () => {
+    await renderSettings();
+
+    await fireEvent(screen.getByTestId('settings.diagnostics'), 'valueChange', true);
+    expect(useSettingsStore.getState().diagnosticsEnabled).toBe(true);
+
+    await fireEvent(screen.getByTestId('settings.diagnostics'), 'valueChange', false);
+    expect(useSettingsStore.getState().diagnosticsEnabled).toBe(false);
+  });
 });
