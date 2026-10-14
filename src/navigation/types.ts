@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Settings: undefined;
   Models: undefined;
   Onboarding: undefined;
+  Licenses: undefined;
 };
 
 export type RootScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
