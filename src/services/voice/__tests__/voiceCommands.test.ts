@@ -13,11 +13,21 @@ import { FakeLlmEngine } from '../../../engines/fakes/FakeLlmEngine';
 import { FakeSttEngine } from '../../../engines/fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../../../engines/fakes/FakeTtsEngine';
 import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
+import { SummaryRepository } from '../../../db/repositories/SummaryRepository';
+import { SummaryTemplateRepository } from '../../../db/repositories/SummaryTemplateRepository';
+import type { LlmScript } from '../../../engines/fakes/FakeLlmEngine';
 import { ContextBuilder } from '../../ContextBuilder';
 import { ConversationService } from '../../ConversationService';
+import { SUMMARY_SYSTEM_PROMPT } from '../../prompts';
+import { SummaryService } from '../../SummaryService';
 import { COMMAND_REPLIES, LISTED_TOPICS, TopicCommands } from '../TopicCommands';
 import { VoiceSessionController } from '../VoiceSessionController';
 import { until } from './support/until';
+
+// The model writes summaries in Markdown; everything else gets a one-sentence answer.
+const SUMMARY_MARKDOWN = '**Ustalenia:**\n- Jedziemy na Mazury.\n- Nocleg w Giżycku.';
+const SCRIPT: LlmScript = (request) =>
+  request.systemPrompt === SUMMARY_SYSTEM_PROMPT ? SUMMARY_MARKDOWN : 'Odpowiedź modelu.';
 
 describe('voice commands in a voice session', () => {
   let db: SqlDatabase;
@@ -30,6 +40,8 @@ describe('voice commands in a voice session', () => {
   let controller: VoiceSessionController;
   let changes: Topic[];
   let lists: Topic[][];
+  let spotter: FakeKeywordSpotter;
+  let summaries: SummaryService;
   let startTopic: Topic;
 
   beforeEach(async () => {
@@ -39,12 +51,21 @@ describe('voice commands in a voice session', () => {
     const clock = () => (now += 1_000);
     topics = new TopicRepository(db, clock);
     messages = new MessageRepository(db, clock);
-    llm = new FakeLlmEngine(() => 'Odpowiedź modelu.');
+    llm = new FakeLlmEngine(SCRIPT);
     source = new WavAudioSource();
     stt = new FakeSttEngine();
     tts = new FakeTtsEngine(0);
     const vad = new EnergyVadEngine();
-    const spotter = new FakeKeywordSpotter();
+    spotter = new FakeKeywordSpotter();
+    summaries = new SummaryService({
+      topics,
+      messages,
+      summaries: new SummaryRepository(db, clock),
+      templates: new SummaryTemplateRepository(db, clock),
+      llm: () => llm,
+      budget: () => ({ contextTokens: 4_096, maxOutputTokens: 512 }),
+      model: () => 'test',
+    });
     controller = new VoiceSessionController({
       audio: new AudioSessionService({ ...new FakeAudioPorts(), source: () => source, tts: () => tts }),
       vad: () => vad,
@@ -63,7 +84,9 @@ describe('voice commands in a voice session', () => {
       }),
       silenceThresholdMs: () => 1_500,
       mode: () => 'continuous',
-      commands: new TopicCommands(topics),
+      commands: new TopicCommands(topics, (topicId, signal) =>
+        summaries.generateInLastForm(topicId, signal).then((summary) => summary.content),
+      ),
     });
     changes = [];
     lists = [];
@@ -151,5 +174,40 @@ describe('voice commands in a voice session', () => {
     await say('Ile kosztuje bilet do Gdańska?');
     expect(llm.requests).toHaveLength(1);
     expect(tts.spoken.at(-1)).toBe('Odpowiedź modelu.');
+  });
+
+  it('"podsumuj rozmowę" saves a summary with the topic in the form used last and reads it aloud', async () => {
+    await say('Gdzie nocować na Mazurach?');
+    const templates = await new SummaryTemplateRepository(db).list();
+    const tasks = templates.find((template) => template.name === 'Lista zadań')!;
+    await summaries.generate(startTopic.id, { instruction: tasks.instruction, templateId: tasks.id });
+
+    await say('Podsumuj rozmowę');
+
+    const saved = await summaries.latest(startTopic.id);
+    expect(saved).toMatchObject({ templateId: tasks.id, content: SUMMARY_MARKDOWN });
+    expect(llm.requests.at(-1)!.messages[0]!.content.startsWith(tasks.instruction)).toBe(true);
+    // Read sentence by sentence without the Markdown marks; not added to the conversation.
+    expect(tts.spoken.slice(-3)).toEqual(['Ustalenia:', 'Jedziemy na Mazury.', 'Nocleg w Giżycku.']);
+    expect((await messages.listByTopic(startTopic.id)).map((message) => message.content)).toEqual([
+      'Gdzie nocować na Mazurach?',
+      'Odpowiedź modelu.',
+    ]);
+  });
+
+  it('"stop" while the summary is prepared saves nothing and listens again', async () => {
+    llm = new FakeLlmEngine(SCRIPT, 40);
+    const spoken = tts.spoken.length;
+    stt.enqueue('Podsumuj rozmowę');
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    await until(() => llm.requests.length > 0);
+
+    spotter.trigger('stop');
+
+    await until(() => controller.current === 'listening');
+    // Longer than the whole summary would take (9 tokens × 40 ms) had it not been stopped.
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    expect(await summaries.latest(startTopic.id)).toBeNull();
+    expect(tts.spoken.length).toBe(spoken);
   });
 });

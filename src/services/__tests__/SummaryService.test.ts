@@ -65,6 +65,7 @@ describe('SummaryService', () => {
       topics,
       messages,
       summaries: new SummaryRepository(db, clock),
+      templates,
       llm: () => llm,
       budget: () => budget,
       model: () => 'cloud:openai:gpt-4o-mini',
@@ -147,6 +148,20 @@ describe('SummaryService', () => {
     await summaries.add(topicId, null, 'c');
 
     expect(await summaries.lastUsedTemplateId()).toBe(tasks!.id);
+  });
+
+  it('summarizes in the form used last, or in the first built-in one before any summary', async () => {
+    await addConversation(2);
+    const [note, , tasks] = await templates.list();
+
+    const first = await service.generateInLastForm(topicId);
+    expect(first.templateId).toBe(note!.id);
+    expect(llm.requests.at(-1)!.messages[0]!.content.startsWith(note!.instruction)).toBe(true);
+
+    await service.generate(topicId, { instruction: tasks!.instruction, templateId: tasks!.id });
+    const again = await service.generateInLastForm(topicId);
+    expect(again.templateId).toBe(tasks!.id);
+    expect(llm.requests.at(-1)!.messages[0]!.content.startsWith(tasks!.instruction)).toBe(true);
   });
 
   it('refuses a topic that does not exist', async () => {
