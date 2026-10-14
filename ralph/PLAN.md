@@ -277,17 +277,17 @@
 
 ### Faza 7: Polecenia głosowe tematów
 
-- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript)
+- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript) (pr: #44)
   - AC: „przełącz na temat wakacje" dopasowuje temat „Wakacje 2026"; brak dopasowania → przekazanie do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD985J6R5DR64N3QGXJD) (crit: 01M4TPSD981M9JE8DH1AAHE29F)
-- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań
-- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript)
+- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
+- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #45)
   - AC: „jakie mam tematy" odczytuje głosem i pokazuje listę ostatnich tematów
   - AC: wejście — każda zakończona wypowiedź usera przechodzi przez parser przed wysłaniem do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD984YDF8YSTV0EF3KY4) (crit: 01M4TPSD987TH60PDGRVVP5CGS) (crit: 01M4TPSD98AJYHCJKQ4XRCQ8YT)
-- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność
+- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność (pr: #45)
 - [ ] Zadanie 7.3: Fallback function calling dla modeli chmurowych — narzędzia switch_topic, create_topic, list_topics, gdy gramatyka nie rozpoznała polecenia (wymaga: 7.2, 6.7) (spec: spec.md) (tech: typescript)
   - AC: model chmurowy wywołujący switch_topic przełącza temat; modele lokalne nie dostają narzędzi
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
@@ -296,11 +296,11 @@
 
 ### Faza 8: Podsumowania i eksport
 
-- [ ] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql)
+- [ ] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #46)
   - AC: własna instrukcja zapisana raz jest dostępna jako szablon w kolejnych tematach
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
   - Specky kryteria: (crit: 01M4TPSDBQ9JEYACQWXJW1SFEH)
-- [ ] Test: 8.1 — CRUD szablonów, obecność wbudowanych
+- [ ] Test: 8.1 — CRUD szablonów, obecność wbudowanych (pr: #46)
 - [ ] Zadanie 8.2: SummaryService — generowanie podsumowania całej historii tematu wg szablonu (dla małych kontekstów etapami: fragmenty → scalenie), zapis przy temacie, ponowne generowanie (wymaga: 2.4, 8.1) (spec: spec.md) (tech: typescript)
   - AC: podsumowanie obejmuje całą historię także przy budżecie mniejszym niż historia
   - AC: wejście — przycisk „Podsumuj" (8.3) i polecenie głosowe „podsumuj rozmowę" (8.5)

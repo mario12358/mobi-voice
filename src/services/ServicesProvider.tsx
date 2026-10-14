@@ -23,6 +23,7 @@ import { ContextBuilder, LlmSummarizer } from './ContextBuilder';
 import { ConversationService } from './ConversationService';
 import { resolveSystemPrompt } from './prompts';
 import { TopicTitler } from './TopicTitler';
+import { TopicCommands } from './voice/TopicCommands';
 import { VoiceSessionController } from './voice/VoiceSessionController';
 
 export interface AppServices {
@@ -90,6 +91,7 @@ export function createServices(db: SqlDatabase, engines: EngineRegistry, ports: 
     conversation,
     silenceThresholdMs: () => useSettingsStore.getState().silenceThresholdMs,
     mode: () => useSettingsStore.getState().conversationMode,
+    commands: new TopicCommands(topics),
     recordLatency: (sample) => useLatencyStore.getState().record(sample),
   });
   return {
