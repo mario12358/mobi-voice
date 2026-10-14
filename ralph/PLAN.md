@@ -246,10 +246,10 @@
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFMFSQRK8VYVJPNVEKR)
 - [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE (pr: #38)
-- [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
+- [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #39)
   - AC: implementuje LlmEngine (strumień, abort); lista modeli z /v1/models z fallbackiem na listę wbudowaną
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP
+- [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP (pr: #39)
 - [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript)
   - AC: implementuje LlmEngine; prompt systemowy przekazywany polem system
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
