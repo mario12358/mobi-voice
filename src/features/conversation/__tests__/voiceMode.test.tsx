@@ -119,6 +119,25 @@ describe('ConversationScreen voice mode', () => {
     expect(source.isRunning).toBe(false);
   });
 
+  // specky: crit 01M4TPSC5KZ6SEVP3V2QJ1JE61
+  it('the STOP button ends the answer being read, like saying "stop"', async () => {
+    await renderConversation();
+    await fireEvent.press(screen.getByTestId('conversation.mic'));
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+    expect(screen.queryByTestId('conversation.voice-stop')).toBeNull();
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    await waitFor(() => expect(llm.waiting).toBe(true));
+    llm.answer();
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.speaking));
+
+    await fireEvent.press(screen.getByTestId('conversation.voice-stop'));
+
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+    expect(tts.isSpeaking).toBe(false);
+    expect(screen.queryByTestId('conversation.voice-stop')).toBeNull();
+  });
+
   // specky: crit 01M4TPSC85Q9KY04JF3KEEC2XM
   it('switches the conversation mode globally with one tap', async () => {
     await renderConversation();
@@ -147,6 +166,24 @@ describe('ConversationScreen voice mode', () => {
     expect(await screen.findByTestId('conversation.latency')).toHaveTextContent(
       pl.conversation.latency('0,9 s', '1,2 s', pl.conversation.latencyMissing),
     );
+  });
+
+  it('in interrupted mode shows what was said so far and sends only after "odbiór"', async () => {
+    useSettingsStore.getState().update({ conversationMode: 'interrupted' });
+    stt = new FakeSttEngine(['Jadę nad morze', 'gdzie nocować? Odbiór.']);
+    await renderConversation();
+    await fireEvent.press(screen.getByTestId('conversation.mic'));
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    expect(await screen.findByText(pl.conversation.youSaid('Jadę nad morze'))).toBeTruthy();
+    await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));
+    expect(llm.waiting).toBe(false);
+
+    source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
+    expect(await screen.findByText(pl.conversation.youSaid('Jadę nad morze gdzie nocować?'))).toBeTruthy();
+    await waitFor(() => expect(llm.waiting).toBe(true));
+    llm.answer();
   });
 
   it('explains a denied microphone when voice is started and keeps typing', async () => {

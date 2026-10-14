@@ -8,6 +8,7 @@ import { TopicRepository } from '../../../db/repositories/TopicRepository';
 import type { SqlDatabase } from '../../../db/SqlDatabase';
 import { encodeWav, synthesize } from '../../../engines/__tests__/support/audio';
 import { EnergyVadEngine } from '../../../engines/fakes/EnergyVadEngine';
+import { FakeKeywordSpotter } from '../../../engines/fakes/FakeKeywordSpotter';
 import { WavAudioSource } from '../../../engines/fakes/WavAudioSource';
 import type { LlmEngine, SpeechSegment, SttEngine, TtsEngine } from '../../../engines/types';
 import type { LatencySample } from '../../../state/latency';
@@ -70,11 +71,13 @@ describe('voice latency metrics', () => {
     const recorded: LatencySample[] = [];
     const source = new WavAudioSource();
     const vad = new EnergyVadEngine();
+    const spotter = new FakeKeywordSpotter();
     const controller = new VoiceSessionController({
       audio: new AudioSessionService({ ...new FakeAudioPorts(), source: () => source, tts: () => tts }),
       vad: () => vad,
       stt: () => stt,
       tts: () => tts,
+      keywordSpotter: () => spotter,
       conversation: new ConversationService({
         topics,
         messages,
@@ -86,6 +89,7 @@ describe('voice latency metrics', () => {
         systemPrompt: () => null,
       }),
       silenceThresholdMs: () => 1_500,
+      mode: () => 'continuous',
       recordLatency: (sample) => recorded.push(sample),
       now: () => clock.now,
     });

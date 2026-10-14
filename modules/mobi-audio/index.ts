@@ -24,6 +24,10 @@ export interface MobiAudioNativeModule {
   // True while Silero VAD hears speech, after feeding it these samples.
   vadAccept(samples: Float32Array): boolean;
   vadReset(): void;
+  loadKws(sampleRate: number): Promise<void>;
+  // The keyword heard in these samples ("stop"), or null.
+  kwsAccept(samples: Float32Array, sampleRate: number): string | null;
+  kwsReset(): void;
   loadTts(modelPath: string, tokensPath: string, dataDir: string): Promise<void>;
   // 16-bit little-endian mono PCM, base64-encoded, like the microphone events.
   synthesize(text: string): Promise<NativeAudioEvent>;

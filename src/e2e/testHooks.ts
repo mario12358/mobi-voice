@@ -1,5 +1,7 @@
 import { FakeAudioPorts } from '../audio/fakeAudioPorts';
 import type { EngineRegistry } from '../engines/EngineRegistry';
+import { FakeKeywordSpotter } from '../engines/fakes/FakeKeywordSpotter';
+import { FakeSttEngine } from '../engines/fakes/FakeSttEngine';
 import { WavAudioSource } from '../engines/fakes/WavAudioSource';
 
 // e2e builds only: the microphone permission Detox tests can deny, and a spoken utterance they can inject.
@@ -16,7 +18,16 @@ function utterance(): Float32Array {
   );
 }
 
-export function injectUtterance(engines: EngineRegistry): void {
+// Interrupted mode: two parts of one utterance, the second closed with the end word.
+export const E2E_PART = 'Planuję wyjazd na Mazury';
+export const E2E_CLOSING = 'co polecasz? Odbiór.';
+// The fake model answers a question with "długo" at length — time to say "stop" while it is read.
+export const E2E_LONG_QUESTION = 'Opowiedz długo o Mazurach';
+
+// `transcript` is what the fake STT recognizes in this utterance (default: the fixed e2e sentence).
+export function injectUtterance(engines: EngineRegistry, transcript?: string): void {
+  const stt = engines.stt();
+  if (transcript !== undefined && stt instanceof FakeSttEngine) stt.enqueue(transcript);
   const source = engines.audioSource();
   if (source instanceof WavAudioSource) {
     source.enqueueAudio({ samples: utterance(), sampleRate: SAMPLE_RATE });
@@ -25,4 +36,10 @@ export function injectUtterance(engines: EngineRegistry): void {
 
 export function denyMicrophone(): void {
   e2eAudioPorts.setPermission('denied');
+}
+
+// The fake keyword spotter "hears" stop (only while it listens, like the real one).
+export function sayStop(engines: EngineRegistry): void {
+  const spotter = engines.keywordSpotter();
+  if (spotter instanceof FakeKeywordSpotter) spotter.trigger('stop');
 }
