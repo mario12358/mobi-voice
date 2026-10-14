@@ -7,6 +7,9 @@ import { WavAudioSource } from '../engines/fakes/WavAudioSource';
 // e2e builds only: the microphone permission Detox tests can deny, and a spoken utterance they can inject.
 export const e2eAudioPorts = new FakeAudioPorts();
 
+// A "4 GB" phone as it reports itself: 3B models are not recommended, 1–2B ones are fine.
+export const E2E_MEMORY_BYTES = 3_700_000_000;
+
 const SAMPLE_RATE = 16_000;
 
 // 0.8 s of a tone (speech for the energy VAD), then 3.2 s of silence — past the default 3 s threshold.

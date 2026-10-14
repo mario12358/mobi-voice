@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
 import { TestProviders } from '../../../__tests__/support/TestProviders';
-import { MemoryApiKeys } from '../../../cloud/__tests__/support/memoryApiKeys';
+import { MemoryApiKeys } from '../../../e2e/MemoryApiKeys';
 import { recordedServer, type Recording } from '../../../cloud/__tests__/support/recordedServer';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../../../db/migrate';

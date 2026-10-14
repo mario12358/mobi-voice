@@ -6,7 +6,7 @@ import { EngineProvider } from '../../engines/EngineProvider';
 import { createEngineRegistry, type EngineRegistry } from '../../engines/EngineRegistry';
 import { MemoryModelFileSystem } from '../../models/download/__tests__/support/memoryModelFileSystem';
 import { FakeAudioPorts } from '../../audio/fakeAudioPorts';
-import { MemoryApiKeys } from '../../cloud/__tests__/support/memoryApiKeys';
+import { MemoryApiKeys } from '../../e2e/MemoryApiKeys';
 import type { DevicePorts } from '../../services/ServicesProvider';
 import { ServicesProvider } from '../../services/ServicesProvider';
 

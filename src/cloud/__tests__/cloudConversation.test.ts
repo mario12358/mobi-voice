@@ -14,7 +14,7 @@ import { until } from '../../services/voice/__tests__/support/until';
 import type { CloudProvider } from '../../state/SecretStore';
 import { useSettingsStore } from '../../state/settings';
 import type { FetchLike } from '../CloudHttpClient';
-import { MemoryApiKeys } from './support/memoryApiKeys';
+import { MemoryApiKeys } from '../../e2e/MemoryApiKeys';
 import { recordedServer, sse } from './support/recordedServer';
 
 // Each provider's own streaming format, as recorded from its API.

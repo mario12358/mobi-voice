@@ -28,7 +28,7 @@ export function TopicModelDialog({ override, defaultModelName, onChoose, onClose
             {pl.conversation.topicModelTitle}
           </Text>
           <BodyText>{pl.conversation.topicModelHint}</BodyText>
-          <ScrollView contentContainerStyle={styles.options}>
+          <ScrollView testID="conversation.topic-model.scroll" contentContainerStyle={styles.options}>
             <TextButton
               testID="conversation.topic-model.default"
               label={pl.conversation.topicModelDefault(defaultModelName)}

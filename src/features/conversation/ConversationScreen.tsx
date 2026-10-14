@@ -1,5 +1,5 @@
 import { useHeaderHeight } from '@react-navigation/elements';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -14,7 +14,6 @@ import {
 import { BodyText } from '../../components/BodyText';
 import { Screen } from '../../components/Screen';
 import { TextButton } from '../../components/TextButton';
-import type { Message } from '../../db/repositories/MessageRepository';
 import { pl } from '../../i18n/pl';
 import { downloadSizeBytes } from '../../models/catalog';
 import type { RootScreenProps } from '../../navigation/types';
@@ -164,7 +163,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
   const [editingPrompt, setEditingPrompt] = useState(false);
   const [choosingModel, setChoosingModel] = useState(false);
   const services = useServices();
-  const list = useRef<FlatList<Message>>(null);
+  const newestFirst = useMemo(() => [...conversation.messages].reverse(), [conversation.messages]);
   const generating = conversation.streaming !== null;
   const streaming = conversation.streaming ?? voice.streaming;
   const title = conversation.topic?.title;
@@ -209,10 +208,13 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
         {/* e2e builds only; at the top, where small CI emulator screens still show it whole. */}
         <E2EVoiceControls />
         <FlatList
-          ref={list}
+          // Inverted, newest first: the latest message sits at the bottom without any scrolling, also when a
+          // topic is reopened on a small screen (scrollToEnd did not reach the end there).
+          inverted
+          testID="conversation.messages"
           style={styles.fill}
           contentContainerStyle={styles.messages}
-          data={conversation.messages}
+          data={newestFirst}
           keyExtractor={(message) => String(message.id)}
           // A tap on a row button must act even while the keyboard (search/message field) is open.
           keyboardShouldPersistTaps="handled"
@@ -225,7 +227,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
             />
           )}
           ListEmptyComponent={streaming !== null ? null : <BodyText>{pl.conversation.emptyHistory}</BodyText>}
-          ListFooterComponent={
+          ListHeaderComponent={
             streaming !== null ? (
               <MessageBubble
                 testID="conversation.streaming"
@@ -235,7 +237,6 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
               />
             ) : null
           }
-          onContentSizeChange={() => list.current?.scrollToEnd({ animated: true })}
         />
         {error !== null && (
           <Text accessibilityRole="alert" style={[styles.error, { color: palette.accent }]}>

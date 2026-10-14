@@ -49,8 +49,9 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await device.disableSynchronization();
     try {
       await send('Opowiedz długo o Mazurach');
+      // The long answer soon outgrows the screen, so it is never 75% visible: its presence is enough.
       await waitFor(element(by.id('conversation.streaming')))
-        .toBeVisible()
+        .toExist()
         .withTimeout(TIMEOUT);
       await element(by.id('conversation.stop')).tap();
       await waitFor(element(by.text('przerwano')))
@@ -106,9 +107,15 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await waitFor(element(by.id('conversation-screen')))
       .toExist()
       .withTimeout(30000);
-    await waitFor(element(by.text('Gdzie jechać nad jezioro?')))
+    // The latest, interrupted answer is in view; the first question is further up the history.
+    await waitFor(element(by.text('przerwano')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
+    await waitFor(element(by.text('Gdzie jechać nad jezioro?')))
+      .toExist()
+      .whileElement(by.id('conversation.messages'))
+      .scroll(200, 'up', NaN, 0.5);
+    await expect(element(by.text('Gdzie jechać nad jezioro?'))).toExist();
     await expect(element(by.text('przerwano'))).toExist();
   });
 });
