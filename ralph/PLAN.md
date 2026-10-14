@@ -150,11 +150,11 @@
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
   - Specky kryteria: (crit: 01M4TPSCC9WQ6ZKBQT91ANM77J)
 - [ ] Test: 3.4 — kolejka zdań, stop, zmiana głosu
-- [ ] Zadanie 3.5: SpeechText — usuwanie markdown i emoji przed TTS (w czacie zostają) i podział strumienia tokenów na pełne zdania (wymaga: 1.1) (tech: typescript)
+- [ ] Zadanie 3.5: SpeechText — usuwanie markdown i emoji przed TTS (w czacie zostają) i podział strumienia tokenów na pełne zdania (wymaga: 1.1) (tech: typescript) (pr: #27)
   - AC: pierwsze pełne zdanie trafia do TTS przed końcem generowania
   - Specky: (req: 01M4TPSBQ1QA9Z56Q3AQX604VT v1.0 @0a469e7)
   - Specky kryteria: (crit: 01M4TPSBQDA2ZHEJR7GGB3Z4DX)
-- [ ] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki)
+- [ ] Test: 3.5 — czyszczenie markdown, podział zdań (skróty, liczby, wielokropki) (pr: #27)
 - [ ] Zadanie 3.6: VoiceSessionController — maszyna stanów (bezczynny/słucham/przetwarzam/mówię), tryb ciągły: koniec wypowiedzi → STT → ConversationService → TTS zdaniami → powrót do nasłuchu (wymaga: 2.5, 3.2, 3.3, 3.4, 3.5) (spec: spec.md) (tech: typescript)
   - AC: po ciszy ≥ progu wypowiedź wysyłana z kontekstem tematu; odpowiedź pisemnie i głosowo
   - AC: wejście — przycisk mikrofonu na ekranie Rozmowa (3.7)
