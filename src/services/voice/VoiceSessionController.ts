@@ -1,5 +1,12 @@
 import type { AudioSessionService, StartResult } from '../../audio/AudioSessionService';
-import type { AudioChunk, SpeechSegment, SttEngine, TtsEngine, VadEngine } from '../../engines/types';
+import type {
+  AudioChunk,
+  KeywordSpotter,
+  SpeechSegment,
+  SttEngine,
+  TtsEngine,
+  VadEngine,
+} from '../../engines/types';
 import type { ConversationService } from '../ConversationService';
 import type { LatencySample } from '../../state/latency';
 import { SentenceSplitter } from '../speech/SpeechText';
@@ -24,6 +31,7 @@ interface Deps {
   vad: () => VadEngine;
   stt: () => SttEngine;
   tts: () => TtsEngine;
+  keywordSpotter: () => KeywordSpotter;
   conversation: ConversationService;
   silenceThresholdMs: () => number;
   recordLatency?: (sample: LatencySample) => void;
@@ -32,11 +40,14 @@ interface Deps {
 
 // Continuous voice mode (MV-VOICE-1): listen → end of utterance after the silence threshold → STT →
 // model with the topic's context → answer in the chat and read aloud sentence by sentence → listen again.
+// "Stop" (MV-VOICE-3), said or tapped while the answer is prepared or read, ends it and listens at once.
 export class VoiceSessionController {
   private state: VoiceState = 'idle';
   private topicId: number | null = null;
   private listener: VoiceListener = {};
   private abort: AbortController | null = null;
+  // Bumped by every new utterance and by an interruption: work of an older turn must not go on.
+  private turn = 0;
 
   constructor(private readonly deps: Deps) {}
 
@@ -52,6 +63,12 @@ export class VoiceSessionController {
     await vad.load();
     vad.reset();
     vad.setSilenceThresholdMs(this.deps.silenceThresholdMs());
+    try {
+      await this.deps.keywordSpotter().load();
+    } catch (error) {
+      // Voice still works without the spoken "stop"; the STOP button remains.
+      listener.onError?.(error);
+    }
     const result = await this.deps.audio.start((chunk) => this.onAudio(chunk));
     if (result === 'listening') this.setState('listening');
     return result;
@@ -59,14 +76,31 @@ export class VoiceSessionController {
 
   async stop(): Promise<void> {
     if (this.state === 'idle') return;
+    this.turn += 1;
     this.setState('idle');
     this.abort?.abort();
     this.abort = null;
-    await Promise.all([this.deps.audio.stop(), this.deps.tts().stop()]);
+    await Promise.all([this.deps.audio.stop(), this.deps.tts().stop(), this.deps.keywordSpotter().stop()]);
   }
 
-  // Microphone audio counts only while listening: the assistant's own answer is not an utterance.
+  // "Stop": the answer ends where it is (the part already generated stays in the chat, marked as
+  // interrupted) and the session listens again right away.
+  async interrupt(): Promise<void> {
+    if (this.state !== 'processing' && this.state !== 'speaking') return;
+    this.turn += 1;
+    this.abort?.abort();
+    this.abort = null;
+    this.listenAgain();
+    await this.deps.tts().stop();
+  }
+
+  // While the answer is prepared or read, the microphone only listens for "stop"; while listening, the
+  // assistant's own answer is not an utterance.
   private onAudio(chunk: AudioChunk): void {
+    if (this.state === 'processing' || this.state === 'speaking') {
+      this.deps.keywordSpotter().accept(chunk);
+      return;
+    }
     if (this.state !== 'listening') return;
     for (const event of this.deps.vad().process(chunk)) {
       if (event.type === 'speech_end') {
@@ -83,20 +117,29 @@ export class VoiceSessionController {
   private async handleUtterance(segment: SpeechSegment): Promise<void> {
     const topicId = this.topicId;
     if (topicId === null) return;
+    this.turn += 1;
+    const turn = this.turn;
     this.setState('processing');
+    void this.deps.keywordSpotter().start(() => void this.interrupt());
     const endedAt = this.now();
     try {
       const text = (await this.deps.stt().transcribe(segment)).trim();
       const sttMs = this.now() - endedAt;
-      if (text.length > 0 && this.isActive()) await this.answer(topicId, text, endedAt, sttMs);
+      if (text.length > 0 && this.isCurrent(turn)) await this.answer(topicId, text, turn, endedAt, sttMs);
     } catch (error) {
       this.listener.onError?.(error);
     } finally {
-      if (this.isActive()) this.listenAgain();
+      if (this.isCurrent(turn)) this.listenAgain();
     }
   }
 
-  private async answer(topicId: number, text: string, endedAt: number, sttMs: number): Promise<void> {
+  private async answer(
+    topicId: number,
+    text: string,
+    turn: number,
+    endedAt: number,
+    sttMs: number,
+  ): Promise<void> {
     this.listener.onTranscript?.(text);
     const tts = this.deps.tts();
     tts.beginAnswer();
@@ -113,7 +156,7 @@ export class VoiceSessionController {
     };
     const say = (sentences: string[]) => {
       for (const sentence of sentences) {
-        if (!this.isActive()) return;
+        if (!this.isCurrent(turn)) return;
         this.setState('speaking');
         reading.push(tts.speak(sentence, () => report(this.now() - endedAt)));
       }
@@ -139,6 +182,7 @@ export class VoiceSessionController {
   }
 
   private listenAgain(): void {
+    void this.deps.keywordSpotter().stop();
     const vad = this.deps.vad();
     vad.reset();
     // A threshold changed in settings applies from the next utterance.
@@ -146,8 +190,8 @@ export class VoiceSessionController {
     this.setState('listening');
   }
 
-  private isActive(): boolean {
-    return this.state !== 'idle';
+  private isCurrent(turn: number): boolean {
+    return this.state !== 'idle' && this.turn === turn;
   }
 
   private setState(state: VoiceState): void {
