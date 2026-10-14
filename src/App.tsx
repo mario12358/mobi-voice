@@ -11,6 +11,7 @@ import { resolveEngineMode } from './engines/EngineRegistry';
 import { pl } from './i18n/pl';
 import { blobUtilFileSystem } from './models/download/blobUtilFileSystem';
 import { expoNetworkInfo } from './models/download/expoNetworkInfo';
+import { deviceMemoryBytes } from './models/deviceMemory';
 import { RootNavigator } from './navigation/RootNavigator';
 import { ServicesProvider, type DevicePorts } from './services/ServicesProvider';
 import { usePalette } from './theme/theme';
@@ -18,6 +19,7 @@ import { usePalette } from './theme/theme';
 const devicePorts = (): DevicePorts => ({
   fileSystem: blobUtilFileSystem,
   network: expoNetworkInfo,
+  memoryBytes: deviceMemoryBytes,
   // e2e builds feed WAV files instead of the microphone, so no system permission prompt may appear.
   audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eAudioPorts : deviceAudioPorts,
 });

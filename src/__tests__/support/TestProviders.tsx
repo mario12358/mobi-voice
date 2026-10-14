@@ -23,6 +23,7 @@ export function TestProviders({ db, children, engines, ports }: Props) {
     fileSystem: new MemoryModelFileSystem(new Map()),
     network: { connection: async () => 'wifi' as const },
     audio: new FakeAudioPorts(),
+    memoryBytes: () => null,
     ...ports,
   };
   return (

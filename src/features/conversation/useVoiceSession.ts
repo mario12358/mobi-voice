@@ -13,6 +13,8 @@ export interface VoiceSessionView {
   micDenied: boolean;
   error: DomainError | null;
   toggle(): Promise<void>;
+  // Same as saying "stop": ends the answer being prepared or read and listens again.
+  interrupt(): void;
 }
 
 function toDomainError(error: unknown): DomainError {
@@ -39,6 +41,7 @@ export function useVoiceSession(topicId: number, onExchange: () => Promise<void>
     setError(null);
     const result = await voice.start(topicId, {
       onState: setState,
+      onHeard: setTranscript,
       onTranscript: (text) => {
         setTranscript(text);
         setStreaming('');
@@ -56,5 +59,7 @@ export function useVoiceSession(topicId: number, onExchange: () => Promise<void>
     setMicDenied(result === 'permission_denied');
   }, [onExchange, topicId, voice]);
 
-  return { state, transcript, streaming, micDenied, error, toggle };
+  const interrupt = useCallback(() => void voice.interrupt(), [voice]);
+
+  return { state, transcript, streaming, micDenied, error, toggle, interrupt };
 }

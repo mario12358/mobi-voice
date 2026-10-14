@@ -14,6 +14,14 @@ if (!new File(sherpaDir, 'classes.jar').exists()) {
   if (result.exitValue() != 0) throw new GradleException('MobiAudio: downloading sherpa-onnx failed')
 }
 
+// The "stop" keyword model, packed into the app assets next to silero_vad.onnx.
+def kwsDir = new File(buildDir, 'kws')
+if (!new File(kwsDir, 'kws-tokens.txt').exists()) {
+  def result = ['bash', file('../scripts/fetch-sherpa.sh').absolutePath, 'kws', kwsDir.absolutePath].execute()
+  result.waitForProcessOutput(System.out, System.err)
+  if (result.exitValue() != 0) throw new GradleException('MobiAudio: downloading the keyword model failed')
+}
+
 android {
   namespace "app.mobivoice.audio"
   defaultConfig {
@@ -22,7 +30,7 @@ android {
   }
   sourceSets {
     main {
-      assets.srcDirs += ['../assets']
+      assets.srcDirs += ['../assets', kwsDir]
       jniLibs.srcDirs += [new File(sherpaDir, 'jni')]
     }
   }

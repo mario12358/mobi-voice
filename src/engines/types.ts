@@ -39,6 +39,8 @@ export interface LlmRequest {
   systemPrompt: string | null;
   messages: ChatMessage[];
   maxTokens?: number;
+  // Catalog id of the model chosen for the topic; absent means the global choice (MV-MOD-5).
+  model?: string;
 }
 
 export interface LlmResult {
@@ -63,6 +65,9 @@ export interface VadEngine {
 export type Keyword = 'stop';
 
 export interface KeywordSpotter {
+  load(): Promise<void>;
   start(onKeyword: (keyword: Keyword) => void): Promise<void>;
+  // Microphone audio; heard only between start() and stop().
+  accept(chunk: AudioChunk): void;
   stop(): Promise<void>;
 }

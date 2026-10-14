@@ -33,6 +33,7 @@ class MobiAudioModule : Module() {
   private var focusRequest: AudioFocusRequest? = null
   private var vad: SileroVad? = null
   private var tts: PiperTts? = null
+  private var keywords: StopKeywordSpotter? = null
   private val player = SpeechPlayer()
 
   @Volatile private var capturing = false
@@ -64,6 +65,8 @@ class MobiAudioModule : Module() {
       vad = null
       tts?.release()
       tts = null
+      keywords?.release()
+      keywords = null
     }
 
     AsyncFunction("getPermission") { promise: Promise ->
@@ -97,6 +100,23 @@ class MobiAudioModule : Module() {
 
     Function("vadReset") {
       vad?.reset()
+    }
+
+    AsyncFunction("loadKws") { sampleRate: Int ->
+      if (keywords == null) {
+        val assets = appContext.reactContext?.assets ?: throw CodedException("kws_init", "No Android context", null)
+        keywords = StopKeywordSpotter(assets, sampleRate)
+      }
+    }
+
+    // Synchronous, like the VAD: once per audio chunk while the assistant answers.
+    Function("kwsAccept") { samples: Float32Array, _: Int ->
+      val spotter = keywords ?: return@Function null
+      spotter.accept(FloatArray(samples.length) { samples[it] })
+    }
+
+    Function("kwsReset") {
+      keywords?.reset()
     }
 
     AsyncFunction("loadTts") { modelPath: String, tokensPath: String, dataDir: String ->

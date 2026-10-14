@@ -187,6 +187,34 @@ describe('ConversationScreen', () => {
     expect(screen.getByText('Proponuję Mazury. Są piękne.')).toBeTruthy();
   });
 
+  // specky: crit 01M4TPSD05YJQ92GQ33KMKKNKM
+  it("talks to the topic's own model when one is chosen, to the global model otherwise", async () => {
+    await renderConversation(db, topicId, registryWith(llm));
+    expect(screen.getByTestId('conversation.open-topic-model')).toHaveTextContent(
+      pl.conversation.topicModel('Qwen 2.5 1.5B'),
+    );
+
+    await type('Pierwsze pytanie');
+    await waitFor(() => expect(llm.requests).toHaveLength(1));
+    await finishAnswer();
+    expect(llm.requests[0]?.model).toBe('qwen2.5-1.5b');
+
+    await fireEvent.press(screen.getByTestId('conversation.open-topic-model'));
+    await fireEvent.press(await screen.findByTestId('conversation.topic-model.llama3.2-1b'));
+    await waitFor(() =>
+      expect(screen.getByTestId('conversation.open-topic-model')).toHaveTextContent(
+        pl.conversation.topicModel('Llama 3.2 1B'),
+      ),
+    );
+
+    await type('Drugie pytanie');
+    await waitFor(() => expect(llm.requests).toHaveLength(2));
+    await finishAnswer();
+    expect(llm.requests[1]?.model).toBe('llama3.2-1b');
+    expect(llm.requests[1]?.messages[0]).toEqual({ role: 'user', content: 'Pierwsze pytanie' });
+    expect((await new TopicRepository(db).getById(topicId))?.modelOverride).toBe('llama3.2-1b');
+  });
+
   it('STOP ends the answer, which stays in the chat marked as interrupted', async () => {
     await renderConversation(db, topicId, registryWith(llm));
     await type('Gdzie jechać?');

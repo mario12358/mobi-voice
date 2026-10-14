@@ -7,6 +7,11 @@ export class FakeKeywordSpotter implements KeywordSpotter {
     return this.listener !== null;
   }
 
+  async load(): Promise<void> {}
+
+  // The fake hears nothing in audio; tests and e2e call trigger() instead.
+  accept(): void {}
+
   async start(onKeyword: (keyword: Keyword) => void): Promise<void> {
     this.listener = onKeyword;
   }

@@ -13,6 +13,7 @@ public class MobiAudioModule: Module {
   private var interruptionObserver: NSObjectProtocol?
   private var vad: SileroVad?
   private var tts: PiperTts?
+  private var keywords: StopKeywordSpotter?
   private var pendingPlayback: (id: Int, promise: Promise)?
   private var playbackCounter = 0
 
@@ -74,6 +75,23 @@ public class MobiAudioModule: Module {
 
     Function("vadReset") {
       self.vad?.reset()
+    }
+
+    AsyncFunction("loadKws") { (sampleRate: Int) in
+      if self.keywords == nil {
+        self.keywords = try StopKeywordSpotter(sampleRate: Int32(sampleRate))
+      }
+    }
+
+    // Synchronous, like the VAD: once per audio chunk while the assistant answers.
+    Function("kwsAccept") { (samples: Float32Array, sampleRate: Int) -> String? in
+      guard let keywords = self.keywords else { return nil }
+      let pointer = samples.rawPointer.assumingMemoryBound(to: Float.self)
+      return keywords.accept(pointer, count: samples.length, sampleRate: Int32(sampleRate))
+    }
+
+    Function("kwsReset") {
+      self.keywords?.reset()
     }
 
     AsyncFunction("loadTts") { (modelPath: String, tokensPath: String, dataDir: String) in

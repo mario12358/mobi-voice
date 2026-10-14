@@ -1,4 +1,3 @@
-import { DomainError } from '../../core/errors';
 import { NativeMicrophone } from '../audio/NativeMicrophone';
 import { createEngineRegistry, resolveEngineMode } from '../EngineRegistry';
 import { EnergyVadEngine } from '../fakes/EnergyVadEngine';
@@ -7,6 +6,7 @@ import { FakeLlmEngine } from '../fakes/FakeLlmEngine';
 import { FakeSttEngine } from '../fakes/FakeSttEngine';
 import { FakeTtsEngine } from '../fakes/FakeTtsEngine';
 import { WavAudioSource } from '../fakes/WavAudioSource';
+import { SherpaKeywordSpotter } from '../kws/SherpaKeywordSpotter';
 import { LocalLlmEngine } from '../llm/LocalLlmEngine';
 import { WhisperSttEngine } from '../stt/WhisperSttEngine';
 import { PiperTtsEngine } from '../tts/PiperTtsEngine';
@@ -40,7 +40,7 @@ describe('EngineRegistry', () => {
     expect(registry.audioSource()).toBeInstanceOf(NativeMicrophone);
     expect(registry.stt()).toBeInstanceOf(WhisperSttEngine);
     expect(registry.tts()).toBeInstanceOf(PiperTtsEngine);
-    expect(() => registry.keywordSpotter()).toThrow(DomainError);
-    expect(() => registry.keywordSpotter()).toThrow(expect.objectContaining({ code: 'engine_unavailable' }));
+    expect(registry.keywordSpotter()).toBeInstanceOf(SherpaKeywordSpotter);
+    expect(registry.vad()).not.toBeInstanceOf(EnergyVadEngine);
   });
 });
