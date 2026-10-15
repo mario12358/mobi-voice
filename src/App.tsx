@@ -17,8 +17,11 @@ import { expoNetworkInfo } from './models/download/expoNetworkInfo';
 import { deviceMemoryBytes } from './models/deviceMemory';
 import { RootNavigator } from './navigation/RootNavigator';
 import { deviceShareSheet } from './share/deviceShareSheet';
+import { CrashReporting } from './services/crash/CrashReporting';
+import { sentrySdk } from './services/crash/sentrySdk';
+import { useCrashReporting } from './services/crash/useCrashReporting';
 import { ServicesProvider, type DevicePorts } from './services/ServicesProvider';
-import { SecretStore } from './state/SecretStore';
+import { CLOUD_PROVIDERS, SecretStore } from './state/SecretStore';
 import { usePalette } from './theme/theme';
 
 const isE2E = resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test';
@@ -60,7 +63,16 @@ function TestModeBadge() {
   );
 }
 
+// Crash reports only with consent and only when the build names a Sentry project (EXPO_PUBLIC_SENTRY_DSN);
+// never from e2e builds. Saved API keys are loaded so they can be blanked out of reports.
+const crashReporting = isE2E
+  ? null
+  : new CrashReporting(sentrySdk, process.env.EXPO_PUBLIC_SENTRY_DSN, () =>
+      Promise.all(CLOUD_PROVIDERS.map((provider) => SecretStore.getApiKey(provider))),
+    );
+
 export default function App() {
+  useCrashReporting(crashReporting);
   return (
     <SafeAreaProvider>
       <EngineProvider>

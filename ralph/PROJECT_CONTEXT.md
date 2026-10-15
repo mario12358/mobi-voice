@@ -82,6 +82,7 @@ Konwencje:
 | 2026-10-13 | `DatabaseProvider` w App otwiera bazę i migruje przed pierwszym ekranem; `useDatabase()` dla ekranów | AC 1.3 wejście |
 | 2026-10-13 | Build natywny obu platform w CI (`native-build.yml`), tylko przy zmianie package.json/app.json | lokalny Xcode 26.6 bez platformy iOS 26.5 |
 | 2026-10-14 | 📌 Podsumowania: `SummaryService` (model tematu; historia ponad budżet → notatki z części przycinane do przydziału, potem forma z szablonu; przerwanie → `SummaryCancelledError`, nic nie zapisane), `SummaryRepository` (tabela `summaries`, ponowne generowanie dodaje nowsze, `lastUsedTemplateId` dla polecenia głosowego); wyjście tekstu przez port `ShareSheet` w `DevicePorts` (expo-clipboard + RN `Share`; `MemoryShareSheet` w Jest i e2e), udostępniany Markdown `# <temat>` | 8.2, 8.3, MV-SUM-1 |
+| 2026-10-15 | 📌 Raporty awarii: `@sentry/react-native` przez port `CrashSdk` (`src/services/crash`); start tylko przy zgodzie (`crashReportsConsent`, Ustawienia → Prywatność) i ustawionym `EXPO_PUBLIC_SENTRY_DSN` (bez DSN nic nie startuje; buildy e2e nigdy); `beforeSend` buduje zdarzenie z białej listy (typ błędu, ramki stosu, os/urządzenie/wersja) i zamazuje zapisane klucze API; bez breadcrumbs, sesji, tracingu, zrzutów. Bez wtyczki Expo Sentry (brak wysyłki source map) | 9.1, MV-SEC-2 |
 
 ## Znane problemy i rozwiązania
 

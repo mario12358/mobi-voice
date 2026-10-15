@@ -128,6 +128,9 @@ export const pl = {
       'Rozmowy, nagrania i transkrypcje zostają na tym telefonie. Model lokalny działa bez internetu. Gdy wybierzesz model w chmurze, treść rozmowy trafia tylko do jego dostawcy. Aplikacja nie zbiera analityki.',
     openLicenses: 'Licencje',
     openApiKeys: 'Klucze API',
+    crashReports: 'Wysyłaj raporty awarii',
+    crashReportsHint:
+      'Po awarii aplikacja wyśle jej typ, miejsce w kodzie i model telefonu — bez treści rozmów i kluczy API. Domyślnie wyłączone.',
     diagnostics: 'Tryb diagnostyczny',
     diagnosticsHint: 'Pokazuje na ekranie rozmowy czasy rozpoznawania mowy i odpowiedzi.',
   },
