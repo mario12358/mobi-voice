@@ -116,12 +116,24 @@ function SilenceThreshold() {
 
 function Privacy() {
   const palette = usePalette();
+  const consent = useSettingsStore((state) => state.crashReportsConsent);
+  const update = useSettingsStore((state) => state.update);
   return (
     <View testID="settings.privacy" style={styles.section}>
       <Text accessibilityRole="header" style={[styles.heading, { color: palette.textPrimary }]}>
         {pl.settings.privacyTitle}
       </Text>
       <BodyText>{pl.settings.privacyText}</BodyText>
+      <View style={styles.switchRow}>
+        <Text style={[styles.label, { color: palette.textPrimary }]}>{pl.settings.crashReports}</Text>
+        <Switch
+          testID="settings.crash-reports"
+          accessibilityLabel={pl.settings.crashReports}
+          value={consent}
+          onValueChange={(value) => update({ crashReportsConsent: value })}
+        />
+      </View>
+      <BodyText>{pl.settings.crashReportsHint}</BodyText>
     </View>
   );
 }
@@ -245,4 +257,5 @@ const styles = StyleSheet.create({
   choices: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: SPACING.md },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  label: { flex: 1, fontSize: 16 },
 });

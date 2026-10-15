@@ -42,3 +42,5 @@
 | host | huggingface.co | pobieranie modeli GGUF, whisper i głosów Piper (2.2) |
 | host | *.hf.co | CDN Hugging Face — cel przekierowania przy pobieraniu dużych plików (2.2) |
 | host | sentry.io | raporty awarii opt-in, bez treści rozmów i kluczy (9.1) |
+| host | *.ingest.sentry.io | odbiór raportów awarii (adres z DSN projektu Sentry), tylko za zgodą (9.1) |
+| env | EXPO_PUBLIC_SENTRY_DSN | DSN projektu Sentry wbudowany w build (publiczny identyfikator odbioru, nie sekret dostępowy); bez niego raporty awarii nie startują (9.1) |

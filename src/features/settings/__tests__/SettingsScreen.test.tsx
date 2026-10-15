@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 
 import { TestProviders } from '../../../__tests__/support/TestProviders';
 import { openNodeSqlDatabase } from '../../../db/__tests__/support/nodeSqlDatabase';
@@ -65,6 +65,20 @@ describe('SettingsScreen', () => {
 
     await fireEvent(screen.getByTestId('settings.diagnostics'), 'valueChange', false);
     expect(useSettingsStore.getState().diagnosticsEnabled).toBe(false);
+  });
+
+  it('asks before sending crash reports: off by default, switched on and off in Privacy', async () => {
+    await renderSettings();
+
+    expect(screen.getByTestId('settings.crash-reports')).toHaveProp('value', false);
+    expect(screen.getByText(pl.settings.crashReportsHint)).toBeOnTheScreen();
+
+    await fireEvent(screen.getByTestId('settings.crash-reports'), 'valueChange', true);
+    expect(useSettingsStore.getState().crashReportsConsent).toBe(true);
+    await waitFor(async () => expect((await stored()).crashReportsConsent).toBe(true));
+
+    await fireEvent(screen.getByTestId('settings.crash-reports'), 'valueChange', false);
+    expect(useSettingsStore.getState().crashReportsConsent).toBe(false);
   });
 
   async function stored(): Promise<Record<string, unknown>> {
