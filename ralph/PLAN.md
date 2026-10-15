@@ -177,50 +177,50 @@
 
 ### Faza 4: Tryb przerywany i przerwanie STOP
 
-- [ ] Zadanie 4.1: KeywordMatcher — normalizacja (wielkość liter, polskie znaki, interpunkcja), tolerancja wariantów („odbior", „odbiur"), „odbiór" tylko jako ostatnie słowo segmentu, wycinanie słowa z transkrypcji (wymaga: 1.1) (spec: spec.md) (tech: typescript)
+- [x] Zadanie 4.1: KeywordMatcher — normalizacja (wielkość liter, polskie znaki, interpunkcja), tolerancja wariantów („odbior", „odbiur"), „odbiór" tylko jako ostatnie słowo segmentu, wycinanie słowa z transkrypcji (wymaga: 1.1) (spec: spec.md) (tech: typescript) (pr: #31)
   - AC: „odbiór paczki jutro" nie wyzwala wysyłki; „to wszystko, odbiór." wyzwala
   - AC: słowo „odbiór" nie trafia do historii ani do LLM
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XEXCWD5H24XGWKY9M) (crit: 01M4TPSC2X3N2VSTTSH6ZVT7FM)
-- [ ] Test: 4.1 — tabela przypadków dopasowania
-- [ ] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript) (pr: #31)
+- [x] Test: 4.1 — tabela przypadków dopasowania (pr: #31)
+- [x] Zadanie 4.2: Tryb przerywany w VoiceSessionController — gromadzenie segmentów bez timeoutu, wysyłka całej wypowiedzi po końcowym „odbiór" (wymaga: 3.6, 4.1) (spec: spec.md) (tech: typescript) (pr: #31)
   - AC: pauzy w trybie przerywanym nie wysyłają wypowiedzi; „odbiór" wysyła całość
   - Specky: (req: 01M4TPSC2EFRVGNM2PKQFX8K6T v1.0 @f83d3f9)
   - Specky kryteria: (crit: 01M4TPSC2XBWSY7997NWZGCE5K) (crit: 01M4TPSC2XMDVW605VXF879XN8)
-- [ ] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego (pr: #31)
-- [ ] Zadanie 4.3: KeywordSpotter „stop" na sherpa-onnx KWS — aktywny w trakcie generowania i odtwarzania TTS, przy włączonym AEC (wymaga: 3.1, 1.6) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
+- [x] Test: 4.2 — sekwencje segmentów z i bez słowa kluczowego (pr: #31)
+- [x] Zadanie 4.3: KeywordSpotter „stop" na sherpa-onnx KWS — aktywny w trakcie generowania i odtwarzania TTS, przy włączonym AEC (wymaga: 3.1, 1.6) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
   - AC: wejście — VoiceSessionController włącza nasłuch KWS przy wejściu w stan „przetwarzam"/„mówię"
   - Specky: (req: 01M4TPSC52ZQ05FHN0CAWF2MYX v1.0 @4eb389f)
-- [ ] Test: 4.3 — adapter KWS z atrapą, włączanie/wyłączanie wg stanu (pr: #30)
-- [ ] Zadanie 4.4: Obsługa STOP (głosowego i przycisku) — przerwanie TTS i generowania, zapis odpowiedzi częściowej z oznaczeniem „przerwano", natychmiastowy powrót do nasłuchu (wymaga: 2.5, 4.3, 3.7) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
+- [x] Test: 4.3 — adapter KWS z atrapą, włączanie/wyłączanie wg stanu (pr: #30)
+- [x] Zadanie 4.4: Obsługa STOP (głosowego i przycisku) — przerwanie TTS i generowania, zapis odpowiedzi częściowej z oznaczeniem „przerwano", natychmiastowy powrót do nasłuchu (wymaga: 2.5, 4.3, 3.7) (spec: spec.md) (tech: react-native, typescript) (pr: #30)
   - AC: „STOP" w trakcie mowy zatrzymuje TTS i przechodzi w nasłuch
   - AC: „STOP" w trakcie generowania przerywa generowanie; tekst częściowy w historii
   - Specky: (req: 01M4TPSC52ZQ05FHN0CAWF2MYX v1.0 @4eb389f)
   - Specky kryteria: (crit: 01M4TPSC5K3QATGJG1DNDG5JWZ) (crit: 01M4TPSC5K6T07CB28MAEV4VWZ) (crit: 01M4TPSC5KA9NT3SHJ61SKQA26) (crit: 01M4TPSC5KZ6SEVP3V2QJ1JE61)
-- [ ] Test: 4.4 — STOP w stanach „przetwarzam" i „mówię" (pr: #30)
+- [x] Test: 4.4 — STOP w stanach „przetwarzam" i „mówię" (pr: #30)
 - [ ] ⛔ Test: 4.4 — ręcznie na urządzeniach referencyjnych: skuteczność „odbiór"/„STOP" przez głośnik i słuchawki (scenariusz w ralph/TEST_SCENARIOS)
-- [ ] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript) (pr: #31)
+- [x] Zadanie 4.5: Test e2e — tryb przerywany: WAV z pauzami bez „odbiór" (brak wysyłki), WAV z końcowym „odbiór" (wysyłka), STOP głosowy (zdarzenie atrapy KWS) i przyciskiem w trakcie mowy (wymaga: 4.1, 4.2, 4.3, 4.4) (spec: spec.md) (tech: detox, typescript) (pr: #31)
 
 ### Faza 5: Menedżer modeli i ustawienia
 
-- [ ] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript) (pr: #32)
+- [x] Zadanie 5.1: DeviceCapabilities — odczyt RAM urządzenia, oznaczenie modeli „niezalecane na tym urządzeniu" (3B < 6 GB, 1–2B < 4 GB) bez blokady (wymaga: 2.1) (tech: react-native, typescript) (pr: #32)
   - AC: model niezalecany nadal można pobrać po potwierdzeniu
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRZQ1S7977M866Q4DY)
-- [ ] Test: 5.1 — klasyfikacja dla różnych ilości RAM (pr: #32)
-- [ ] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #33)
+- [x] Test: 5.1 — klasyfikacja dla różnych ilości RAM (pr: #32)
+- [x] Zadanie 5.2: Ekran Menedżer modeli — LLM, whisper, głosy: rozmiar, stan, pobierz/usuń, postęp, wznowienie, „tylko Wi-Fi" ze zgodą na sieć komórkową, oznaczenie „niezalecane" (wymaga: 2.2, 5.1, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #33)
   - AC: user pobiera wybrany model lokalny na urządzenie i może go usunąć
   - Specky: (req: 01M4TPSCQHCPGKAQAJ8E6QGB2M v1.0 @aeb1edd)
   - Specky kryteria: (crit: 01M4TPSCQVTNAKJ3XXG6PS1DZF)
   - Specky: (req: 01M4TPSCXEM39JMQZK36SNGGPN v1.0 @10581f5)
   - Specky kryteria: (crit: 01M4TPSCXRQYNMQH707Z7NFVT5)
-- [ ] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową (pr: #33)
-- [ ] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #34)
+- [x] Test: 5.2 — render stanów pobierania, usuwanie, zgoda na sieć komórkową (pr: #33)
+- [x] Zadanie 5.3: Kreator pierwszego uruchomienia — pobranie whisper, jednego głosu i jednego modelu LLM (domyślnie Qwen 2.5 1.5B) (wymaga: 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #34)
   - AC: wejście — pierwsze uruchomienie aplikacji bez pobranych modeli
   - Specky: (req: 01M4TPSCT6VW2MN48Y3MP3WBXC v1.0 @aab204b)
   - Specky kryteria: (crit: 01M4TPSCTRFJVN1RZX3P717BYQ) (crit: 01M4TPSCTRC2WYRFBHHV417XND)
-- [ ] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie (pr: #34)
-- [ ] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #35)
+- [x] Test: 5.3 — przejście kreatora i pominięcie go przy kolejnym starcie (pr: #34)
+- [x] Zadanie 5.4: Ekran Ustawienia — domyślny model LLM, głos TTS, tryb ciągły/przerywany, próg ciszy (1,5–6 s), wariant whisper, prompt globalny, tryb diagnostyczny, informacja o prywatności, licencje modeli (wymaga: 1.5, 2.9, 3.8, 5.2) (spec: spec.md) (tech: react-native, typescript) (pr: #35)
   - AC: zmiana głosu, trybu i progu działa od następnej wypowiedzi
   - AC: ekran licencji wymienia Llama 3.2 Community License, Gemma Terms of Use, Apache 2.0 (Qwen), licencje głosów Piper
   - Specky: (req: 01M4TPSCBZ4Q3DS9SXE5RGS8DA v1.0 @ee2f323)
@@ -229,99 +229,99 @@
   - Specky kryteria: (crit: 01M4TPSDJ62M6TE9A5F0JVH4E3)
   - Specky: (req: 01M4TPSDPBEDTZZQQMS63N2YES v1.0 @5f3694f)
   - Specky kryteria: (crit: 01M4TPSDPP4W0NEMR8EHA2PQQP)
-- [ ] Test: 5.4 — zmiana każdego ustawienia i jego persystencja (pr: #35)
-- [ ] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript) (pr: #36)
+- [x] Test: 5.4 — zmiana każdego ustawienia i jego persystencja (pr: #35)
+- [x] Zadanie 5.5: Wybór modelu per temat — nadpisanie domyślnego modelu z ekranu Rozmowa; zmiana w trakcie tematu zachowuje historię, kontekst przycinany do budżetu nowego modelu (wymaga: 2.4, 5.4) (spec: spec.md) (tech: react-native, typescript) (pr: #36)
   - AC: temat z nadpisanym modelem używa go; bez nadpisania — modelu globalnego
   - Specky: (req: 01M4TPSCZHV54NDW1AVW7EMMWZ v1.0 @b9ecbc6)
   - Specky kryteria: (crit: 01M4TPSD05YJQ92GQ33KMKKNKM) (crit: 01M4TPSD05K5NH3VE5Q66NVXJM)
-- [ ] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie (pr: #36)
-- [ ] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript) (pr: #37)
+- [x] Test: 5.5 — wybór modelu i budżet kontekstu po zmianie (pr: #36)
+- [x] Zadanie 5.6: Test e2e — kreator pierwszego uruchomienia (atrapa pobierania), Menedżer modeli: pobranie, usunięcie, „niezalecane"; Ustawienia: głos, tryb, próg; model per temat (wymaga: 5.1, 5.2, 5.3, 5.4, 5.5) (spec: spec.md) (tech: detox, typescript) (pr: #37)
 
 ### Faza 6: Dostawcy chmurowi LLM
 
-- [ ] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #38)
+- [x] Zadanie 6.1: Wspólny klient HTTP dostawców — timeout 60 s, do 2 ponowień z backoffem dla 5xx/sieci, mapowanie błędów na komunikaty PL („Nieprawidłowy klucz API", „Przekroczony limit"), parser strumienia SSE, zero treści rozmów w logach (wymaga: 1.1) (spec: WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #38)
   - AC: 401 → „Nieprawidłowy klucz API"; 429 → „Przekroczony limit"; brak automatycznego przełączenia na model lokalny
   - Specky: (req: 01M4TPSD5ZN6JEWY5Q25XPBFH1 v1.0 @dd8d9cc)
   - Specky kryteria: (crit: 01M4TPSD6AM5PRHDF9YP515MSQ) (crit: 01M4TPSD6AE4BW0DRNTTNKD58N) (crit: 01M4TPSD6AB72A3G4V786PZ9KZ)
   - Specky: (req: 01M4TPSDF9ATEYND8AHKATHQM2 v1.0 @4019d77)
   - Specky kryteria: (crit: 01M4TPSDFMFSQRK8VYVJPNVEKR)
-- [ ] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE (pr: #38)
-- [ ] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #39)
+- [x] Test: 6.1 — ponowienia, timeout, mapowanie błędów, parser SSE (pr: #38)
+- [x] Zadanie 6.2: Adapter OpenAI — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #39)
   - AC: implementuje LlmEngine (strumień, abort); lista modeli z /v1/models z fallbackiem na listę wbudowaną
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.2 — adapter na nagranych odpowiedziach HTTP (pr: #39)
-- [ ] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
+- [x] Test: 6.2 — adapter na nagranych odpowiedziach HTTP (pr: #39)
+- [x] Zadanie 6.3: Adapter Anthropic — strumieniowe Messages API, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; prompt systemowy przekazywany polem system
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.3 — adapter na nagranych odpowiedziach HTTP (pr: #40)
-- [ ] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
+- [x] Test: 6.3 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [x] Zadanie 6.4: Adapter Google Gemini — strumieniowe generateContent, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; mapowanie ról user/assistant na user/model
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.4 — adapter na nagranych odpowiedziach HTTP (pr: #40)
-- [ ] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
+- [x] Test: 6.4 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [x] Zadanie 6.5: Adapter Meta Llama API (api.llama.com) — strumieniowe chat completions, lista modeli, abort (wymaga: 6.1, 1.6) (spec: spec.md, WYTYCZNE_TECHNICZNE.md) (tech: typescript) (pr: #40)
   - AC: implementuje LlmEngine; „Facebook" ze spec = Meta Llama API
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
-- [ ] Test: 6.5 — adapter na nagranych odpowiedziach HTTP (pr: #40)
-- [ ] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript) (pr: #41)
+- [x] Test: 6.5 — adapter na nagranych odpowiedziach HTTP (pr: #40)
+- [x] Zadanie 6.6: Ekran Klucze API — per dostawca: wpisanie klucza, walidacja testowym zapytaniem przy zapisie, zapis w SecretStore, usunięcie, lista dostępnych modeli (wymaga: 1.5, 5.4, 6.2, 6.3, 6.4, 6.5) (spec: spec.md) (tech: react-native, typescript) (pr: #41)
   - AC: nieprawidłowy klucz nie zostaje zapisany i pokazuje komunikat
   - AC: modele chmurowe dostawcy z poprawnym kluczem pojawiają się w wyborze modelu (globalnym i per temat)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NM3BC0R81WPKKS9GV) (crit: 01M4TPSD3NCRZBYB6MHAVGWTCR)
-- [ ] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli (pr: #41)
-- [ ] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript) (pr: #42)
+- [x] Test: 6.6 — zapis, walidacja, usunięcie klucza, lista modeli (pr: #41)
+- [x] Zadanie 6.7: Rozmowa na modelu chmurowym — EngineRegistry zwraca adapter dostawcy dla wybranego modelu, duży budżet kontekstu (cała historia), STT/TTS nadal lokalne (wymaga: 5.5, 6.6) (spec: spec.md) (tech: typescript) (pr: #42)
   - AC: z modelem chmurowym rozmowa głosowa działa tak samo jak z lokalnym (oba tryby, STOP)
   - Specky: (req: 01M4TPSD35MNH049EAZG93F7GG v1.0 @6affb18)
   - Specky kryteria: (crit: 01M4TPSD3NTQ77B4DZMD45444S)
-- [ ] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP (pr: #42)
-- [ ] Zadanie 6.8: Test e2e — dodanie klucza (atrapa serwera dostawcy), błędny klucz, wybór modelu chmurowego w temacie, rozmowa tekstowa i głosowa, błąd sieci z komunikatem (wymaga: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7) (spec: spec.md) (tech: detox, typescript) (pr: #43)
+- [x] Test: 6.7 — wybór silnika per model, przerwanie żądania HTTP przy STOP (pr: #42)
+- [x] Zadanie 6.8: Test e2e — dodanie klucza (atrapa serwera dostawcy), błędny klucz, wybór modelu chmurowego w temacie, rozmowa tekstowa i głosowa, błąd sieci z komunikatem (wymaga: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7) (spec: spec.md) (tech: detox, typescript) (pr: #43)
 
 ### Faza 7: Polecenia głosowe tematów
 
-- [ ] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript) (pr: #44)
+- [x] Zadanie 7.1: VoiceCommandParser — gramatyka fraz na transkrypcji przed LLM: „przełącz na/otwórz temat X", „nowy temat X", „jakie mam tematy", „podsumuj rozmowę"; rozmyte dopasowanie nazwy tematu (wymaga: 1.4, 4.1) (spec: spec.md) (tech: typescript) (pr: #44)
   - AC: „przełącz na temat wakacje" dopasowuje temat „Wakacje 2026"; brak dopasowania → przekazanie do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD985J6R5DR64N3QGXJD) (crit: 01M4TPSD981M9JE8DH1AAHE29F)
-- [ ] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
-- [ ] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #45)
+- [x] Test: 7.1 — tabela fraz, wariantów i dopasowań (pr: #44)
+- [x] Zadanie 7.2: Wykonanie poleceń w VoiceSessionController — przełączenie/utworzenie tematu, odczyt TTS listy 5–10 ostatnich tematów, dopytanie głosem przy niejednoznaczności (wymaga: 7.1, 3.6, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #45)
   - AC: „jakie mam tematy" odczytuje głosem i pokazuje listę ostatnich tematów
   - AC: wejście — każda zakończona wypowiedź usera przechodzi przez parser przed wysłaniem do LLM
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
   - Specky kryteria: (crit: 01M4TPSD984YDF8YSTV0EF3KY4) (crit: 01M4TPSD987TH60PDGRVVP5CGS) (crit: 01M4TPSD98AJYHCJKQ4XRCQ8YT)
-- [ ] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność (pr: #45)
-- [ ] Zadanie 7.3: Fallback function calling dla modeli chmurowych — narzędzia switch_topic, create_topic, list_topics, gdy gramatyka nie rozpoznała polecenia (wymaga: 7.2, 6.7) (spec: spec.md) (tech: typescript)
+- [x] Test: 7.2 — przełączenie, utworzenie, lista, niejednoznaczność (pr: #45)
+- [x] Zadanie 7.3: Fallback function calling dla modeli chmurowych — narzędzia switch_topic, create_topic, list_topics, gdy gramatyka nie rozpoznała polecenia (wymaga: 7.2, 6.7) (spec: spec.md) (tech: typescript) (pr: #52)
   - AC: model chmurowy wywołujący switch_topic przełącza temat; modele lokalne nie dostają narzędzi
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
-- [ ] Test: 7.3 — obsługa wywołań narzędzi w adapterach (nagrane odpowiedzi)
-- [ ] Zadanie 7.4: Test e2e — polecenia głosowe (WAV): nowy temat, przełączenie, lista tematów, niejednoznaczna nazwa z dopytaniem (wymaga: 7.1, 7.2, 7.3) (spec: spec.md) (tech: detox, typescript)
+- [x] Test: 7.3 — obsługa wywołań narzędzi w adapterach (nagrane odpowiedzi) (pr: #52)
+- [ ] Zadanie 7.4: Test e2e — polecenia głosowe (WAV): nowy temat, przełączenie, lista tematów, niejednoznaczna nazwa z dopytaniem (wymaga: 7.1, 7.2, 7.3) (spec: spec.md) (tech: detox, typescript) (pr: #51)
 
 ### Faza 8: Podsumowania i eksport
 
-- [ ] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #46)
+- [x] Zadanie 8.1: Szablony podsumowań — wbudowane (notatka, lista punktów/decyzji, lista zadań, e-mail) + własne instrukcje usera zapisywane jako szablony (wymaga: 1.3) (spec: spec.md) (tech: typescript, sql) (pr: #46)
   - AC: własna instrukcja zapisana raz jest dostępna jako szablon w kolejnych tematach
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
   - Specky kryteria: (crit: 01M4TPSDBQ9JEYACQWXJW1SFEH)
-- [ ] Test: 8.1 — CRUD szablonów, obecność wbudowanych (pr: #46)
-- [ ] Zadanie 8.2: SummaryService — generowanie podsumowania całej historii tematu wg szablonu (dla małych kontekstów etapami: fragmenty → scalenie), zapis przy temacie, ponowne generowanie (wymaga: 2.4, 8.1) (spec: spec.md) (tech: typescript)
+- [x] Test: 8.1 — CRUD szablonów, obecność wbudowanych (pr: #46)
+- [x] Zadanie 8.2: SummaryService — generowanie podsumowania całej historii tematu wg szablonu (dla małych kontekstów etapami: fragmenty → scalenie), zapis przy temacie, ponowne generowanie (wymaga: 2.4, 8.1) (spec: spec.md) (tech: typescript) (pr: #47)
   - AC: podsumowanie obejmuje całą historię także przy budżecie mniejszym niż historia
   - AC: wejście — przycisk „Podsumuj" (8.3) i polecenie głosowe „podsumuj rozmowę" (8.5)
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
   - Specky kryteria: (crit: 01M4TPSDBQ5F5ZY4NE2YVGSA2C) (crit: 01M4TPSDBQ2SFHKYMWB8NQJ2MT)
-- [ ] Test: 8.2 — podsumowanie jednoetapowe i etapowe z atrapą LLM
-- [ ] Zadanie 8.3: Ekran Podsumowanie — wybór szablonu lub własna instrukcja, generowanie, podgląd, kopiowanie, „Udostępnij" (tekst/Markdown), odczyt głosowy (wymaga: 8.2, 3.4, 1.7) (spec: spec.md) (tech: react-native, typescript)
+- [x] Test: 8.2 — podsumowanie jednoetapowe i etapowe z atrapą LLM (pr: #47)
+- [x] Zadanie 8.3: Ekran Podsumowanie — wybór szablonu lub własna instrukcja, generowanie, podgląd, kopiowanie, „Udostępnij" (tekst/Markdown), odczyt głosowy (wymaga: 8.2, 3.4, 1.7) (spec: spec.md) (tech: react-native, typescript) (pr: #48)
   - AC: podsumowanie w wybranej formie zapisane przy temacie i dostępne po ponownym wejściu
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
   - Specky kryteria: (crit: 01M4TPSDBQC02027MG5MRTHCP4)
-- [ ] Test: 8.3 — generowanie, ponowne generowanie, udostępnianie
-- [ ] Zadanie 8.4: Eksport tematu (historia rozmowy) do tekstu/Markdown przez systemowe „Udostępnij" — bez kluczy API (wymaga: 1.4, 2.6) (spec: spec.md) (tech: react-native, typescript)
+- [x] Test: 8.3 — generowanie, ponowne generowanie, udostępnianie (pr: #48)
+- [x] Zadanie 8.4: Eksport tematu (historia rozmowy) do tekstu/Markdown przez systemowe „Udostępnij" — bez kluczy API (wymaga: 1.4, 2.6) (spec: spec.md) (tech: react-native, typescript) (pr: #49)
   - AC: wejście — akcja „Eksportuj" w menu tematu na Liście tematów i w Rozmowie
   - Specky: (req: 01M4TPSDDANXP2VV3MH759N7PA v1.0 @ba61374)
   - Specky kryteria: (crit: 01M4TPSDDKNPG4W9S9AY939Y4S) (crit: 01M4TPSDDKNG7GAK3ZAKTFG5W3)
-- [ ] Test: 8.4 — format Markdown eksportu
-- [ ] Zadanie 8.5: Polecenie głosowe „podsumuj rozmowę" — generuje podsumowanie ostatnio użytym szablonem i odczytuje je (wymaga: 7.2, 8.2) (spec: spec.md) (tech: typescript)
+- [x] Test: 8.4 — format Markdown eksportu (pr: #49)
+- [x] Zadanie 8.5: Polecenie głosowe „podsumuj rozmowę" — generuje podsumowanie ostatnio użytym szablonem i odczytuje je (wymaga: 7.2, 8.2) (spec: spec.md) (tech: typescript) (pr: #50)
   - AC: polecenie zapisuje podsumowanie przy temacie i odtwarza je przez TTS
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
-- [ ] Test: 8.5 — obsługa polecenia z atrapami
-- [ ] Zadanie 8.6: Test e2e — podsumowanie wbudowanym szablonem, własną instrukcją, ponowne generowanie, udostępnienie, polecenie głosowe, eksport tematu (wymaga: 8.1, 8.2, 8.3, 8.4, 8.5) (spec: spec.md) (tech: detox, typescript)
+- [x] Test: 8.5 — obsługa polecenia z atrapami (pr: #50)
+- [ ] Zadanie 8.6: Test e2e — podsumowanie wbudowanym szablonem, własną instrukcją, ponowne generowanie, udostępnienie, polecenie głosowe, eksport tematu (wymaga: 8.1, 8.2, 8.3, 8.4, 8.5) (spec: spec.md) (tech: detox, typescript) (pr: #51)
 
 ### Faza 9: Wydanie wewnętrzne
 
