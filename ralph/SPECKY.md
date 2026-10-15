@@ -1,8 +1,8 @@
 # ralph/SPECKY.md — synchronizacja ze Specky
 
 - **Projekt**: 01M4TJBZFPYV3AFM4CN0P3HNQ1 (MobiVoice)
-- **Kursor since_seq**: 810
-- **Ostatnia synchronizacja**: 2026-10-13 (sesja implementacji: 0 pozycji w kolejce, 33 wymagania to_build) — wcześniej: zaproponowano wsad 33 wymagań (batch 01M4TP4PE3J84T7AGZAX2R73BZ), zaakceptowane 2026-10-13 (33/33); kotwice dopisane w PLAN.md
+- **Kursor since_seq**: 816
+- **Ostatnia synchronizacja**: 2026-10-15 (sesja implementacji: to_fix 0; code_ready 17 wymagań; w toku MV-CMD-1, MV-SUM-1, MV-SUM-2, MV-SEC-2) — wcześniej: 2026-10-13 (0 pozycji w kolejce, 33 wymagania to_build); zaproponowano wsad 33 wymagań (batch 01M4TP4PE3J84T7AGZAX2R73BZ), zaakceptowane 2026-10-13 (33/33); kotwice dopisane w PLAN.md
 - **Przegląd wsadu**: https://app.specky.app/projects/01M4TJBZFPYV3AFM4CN0P3HNQ1?batch=01M4TP4PE3J84T7AGZAX2R73BZ
 
 ## Mapa wymagań → zadania

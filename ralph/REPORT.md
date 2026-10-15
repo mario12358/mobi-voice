@@ -15,9 +15,9 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Fazy 1–2 ukończone (33 pozycje planu zmergowane); Faza 1 wydana jako v0.1.0; v0.2.0 odłożona przez człowieka; w toku: 3.1
+- **Postęp**: Fazy 1–6 ukończone (tagi `ralph/faza-1` … `ralph/faza-6`); Fazy 7–8: kod zmergowany (7.1–7.3, 8.1–8.5), e2e 7.4 + 8.6 w PR #51; Faza 1 wydana jako v0.1.0; v0.2.0 odłożona przez człowieka; dalej Faza 9
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
-- Specky 2026-10-13: synchronizacja — 0 pozycji w kolejce (to_fix 0), kursor 810
+- Specky 2026-10-15: kursor what_changed 816; w toku: MV-CMD-1, MV-SUM-1, MV-SUM-2 (czekają na e2e #51), MV-SEC-2 (raporty awarii — Faza 9)
 
 ## Stan testów
 
@@ -38,13 +38,15 @@ na zawsze i rośnie w prompcie każdej sesji.
 
 **Regresja po Fazie 2 (2026-10-13) — ZIELONA:** main `0f60d41`: `npx tsc --noEmit`, `npm run lint`, `npm test` 165/165 (28 zestawów); e2e Detox 7/7 na Androidzie (lokalnie API 36, CI API 34) i iOS (CI). Kontrole fazowe bez blokad: te same 5 ostrzeżeń audytu zależności co po Fazie 1, `martwe-wejscie` tylko `validateCatalog` (przeniesiony do pomocników testów). Tag `ralph/faza-2`. Po drodze e2e iOS ujawnił 2 błędy produktu z 2.7/2.6 (klawiatura zasłaniała pole wiadomości; pierwsze dotknięcie przy otwartej klawiaturze tylko ją chowało) — naprawione w PR #20.
 
+**Regresja po Fazach 3–6 (2026-10-15) — ZIELONA:** main `96817c0` (merge #43): CI `test` (tsc, lint, jest) i e2e Detox 18/18 na Androidzie (API 34, ekran 320×640) i iOS. Lokalnie `npm test` 392/392 na main po #52. Kontrole przy tagach bez blokad: 5 ostrzeżeń audytu zależności (te same co po Fazie 1: braces, node-forge, sprintf-js bez poprawek; stream-json dev; uuid 7.0.3 medium) i `martwe-wejscie` dla `MemoryShareSheet`/`FakeAudioPorts` — fałszywy alarm, używane przez buildy e2e w `App.tsx`. Tagi `ralph/faza-3` (c9eeba8), `ralph/faza-4` (4d240aa), `ralph/faza-5` i `ralph/faza-6` (96817c0).
+
 | Metryka | Wartość |
 |---------|---------|
-| Łącznie testów | 165 |
-| Pass | 165 |
+| Łącznie testów | 392 |
+| Pass | 392 |
 | Fail | 0 |
 | Skip | 0 |
-| Ostatnie uruchomienie | 2026-10-13 (main 0f60d41; e2e 7/7 Android i iOS) |
+| Ostatnie uruchomienie | 2026-10-15 (main 12d7223; e2e 18/18 Android i iOS na 96817c0) |
 
 ## Historia realizacji
 
@@ -75,6 +77,28 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 3.3 WhisperSttEngine + Test 3.3 | ✅ zmergowane (PR #25) | 216/216 | 2 | 6c8351b | 2026-10-14 |
 | 3.4 PiperTtsEngine + Test 3.4 | ✅ zmergowane (PR #26) | 222/222 | 1 | 38fb5a7 | 2026-10-14 |
 | 3.6–3.9 Sesja głosowa, ekran, metryki, e2e | ✅ zmergowane (PR #28) | 238/238 + e2e 9/9 Android i iOS | 4 | c9eeba8 | 2026-10-14 |
+| 4.3–4.4 „STOP" głosem i przyciskiem | ✅ zmergowane (PR #30) | zielone | 1 | 02e5785 | 2026-10-14 |
+| 4.1–4.2 + 4.5 tryb przerywany, e2e Fazy 4 | ✅ zmergowane (PR #31) | zielone + e2e Android i iOS | 2 | 4d240aa | 2026-10-14 |
+| 5.1 RAM urządzenia, „niezalecane" | ✅ zmergowane (PR #32) | zielone | 1 | a9bb0b0 | 2026-10-14 |
+| 5.2 Menedżer modeli | ✅ zmergowane (PR #33) | zielone | 1 | e35e501 | 2026-10-14 |
+| 5.3 Kreator pierwszego uruchomienia | ✅ zmergowane (PR #34) | zielone | 2 | 9e316d1 | 2026-10-14 |
+| 5.4 Ustawienia, prywatność, licencje | ✅ zmergowane (PR #35) | zielone | 1 | 25de3f9 | 2026-10-14 |
+| 5.5 Model per temat | ✅ zmergowane (PR #36) | zielone | 1 | 9c363ff | 2026-10-14 |
+| 6.1 CloudHttpClient + SSE | ✅ zmergowane (PR #38) | zielone | 1 | ec35fdc | 2026-10-14 |
+| 6.2 Adapter OpenAI | ✅ zmergowane (PR #39) | zielone | 1 | c5c2780 | 2026-10-14 |
+| 6.3–6.5 Adaptery Anthropic, Gemini, Meta Llama | ✅ zmergowane (PR #40) | zielone | 1 | 35c9687 | 2026-10-14 |
+| 6.6 Ekran Klucze API | ✅ zmergowane (PR #41) | zielone | 1 | bf2edb7 | 2026-10-14 |
+| 6.7 Rozmowa na modelu chmurowym | ✅ zmergowane (PR #42) | zielone | 1 | 63dceae | 2026-10-14 |
+| 5.6 + 6.8 e2e Faz 5 i 6 | ✅ zmergowane (PR #43) | e2e 18/18 Android i iOS | 5 | 96817c0 | 2026-10-15 |
+| 7.1 Parser poleceń głosowych | ✅ zmergowane (PR #44) | zielone | 1 | b3db90e | 2026-10-14 |
+| 7.2 Polecenia głosowe w sesji | ✅ zmergowane (PR #45) | zielone | 1 | bcdebb6 | 2026-10-14 |
+| 8.1 Szablony podsumowań | ✅ zmergowane (PR #46) | zielone | 1 | a958b3b | 2026-10-14 |
+| 8.2 SummaryService | ✅ zmergowane (PR #47) | 371/371 | 1 | 76fd2da | 2026-10-14 |
+| 8.3 Ekran Podsumowanie | ✅ zmergowane (PR #48) | 377/377 | 1 | 8c6e384 | 2026-10-14 |
+| 8.4 Eksport tematu do Markdown | ✅ zmergowane (PR #49) | 382/382 | 1 | b9fcb12 | 2026-10-14 |
+| 8.5 Polecenie „podsumuj rozmowę" | ✅ zmergowane (PR #50) | 385/385 | 1 | 6c52bf7 | 2026-10-14 |
+| 7.3 Function calling dla modeli chmurowych | ✅ zmergowane (PR #52) | 392/392 | 1 | 12d7223 | 2026-10-14 |
+| 7.4 + 8.6 e2e poleceń głosowych i Fazy 8 | 🔄 PR #51 (CI) | lokalnie Fazy 1–4, 7, 8 zielone | 4 | 4c3de63 | 2026-10-15 |
 
 ## Historia zmian
 
@@ -205,3 +229,13 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-14] Zadanie 7.1: `parseVoiceCommand` (src/services/speech/VoiceCommandParser) — gramatyka na znormalizowanych słowach (bez polskich znaków, wielkości liter i interpunkcji): przełączenie (przełącz [się] na [temat], przejdź do tematu, otwórz temat, wróć do tematu, zmień temat na), nowy temat (nowy temat [o], utwórz/załóż/zacznij [nowy] temat), lista tematów, podsumowanie; nazwa tematu z oryginalnej transkrypcji. `matchTopic` — zawieranie słowa na początku słowa tytułu (0,9) albo współczynnik Dice na parach liter (odmiany, literówki), próg 0,5, niejednoznaczność gdy dwa wyniki różnią się o ≤ 0,05. Wypowiedzi niebędące poleceniem (także „Jaki temat wybrać…", „Pokaż mi przepis…") zostają dla modelu. Pierwsza mutacja (bez zawierania) przeżyła — dopisany przypadek „nauka" → „Nauka hiszpańskiego", mutant zabity.
 - [2026-10-14] Zadanie 7.2: `TopicCommands` + `VoiceSessionController` — każda zakończona wypowiedź (po „odbiór" w trybie przerywanym) przechodzi przez gramatykę przed modelem; polecenie dostaje odpowiedź głosową (nie trafia do historii tematu): przełączenie/nowy temat przenosi trwającą sesję do tematu (`onTopicChange` → `navigation.setParams`, ten sam ekran — podmiana ekranu zatrzymałaby sesję), lista 8 ostatnich tematów odczytana i pokazana w panelu, dwa podobne tematy → pytanie „Który wybierasz?", a następna wypowiedź wybiera spośród nich. „Podsumuj rozmowę" do Fazy 8 trafia do modelu jak zwykłe pytanie. Mutacja pominięcia gramatyki → 5 testów czerwonych.
 - [2026-10-14] [check] PR #37 — e2e iOS: STOP w teście fazy 2 trafiał w pusty jeszcze dymek (po zmianie na `toExist` dymek istnieje od razu), a pusta odpowiedź nie jest zapisywana — test czeka 1,5 s na pierwsze tokeny. #37 zamknięty jako zawarty w #43 (gałąź 6.8 ma 5.6 + scalony main) — jeden przebieg e2e zamiast dwóch. Lokalnie na odtworzonym ekranie CI 18/18 (po restarcie emulatora, który zawieszał `launchApp`); test fazy 6 nie szuka już starszej odpowiedzi poza ekranem (Android odłącza przycięte widoki), test „po restarcie" sprawdza tytuł tematu i widoczną ostatnią odpowiedź.
+- [2026-10-14] Zadanie 8.2: `SummaryService` — historia większa niż kontekst modelu podsumowywana etapami (notatki z kolejnych części, potem forma z szablonu); test z gadatliwą atrapą ujawnił zapętlenie (notatki nie malały, 4203 zapytania) — notatka części przycinana do przydziału, plus limit 4 przejść. Przerwanie → `SummaryCancelledError`, nic nie zapisane. Mutacje (brak etapowania, brak zapisu) zabite.
+- [2026-10-14] Zadanie 8.3: port `ShareSheet` w `DevicePorts` (expo-clipboard + RN `Share`; `MemoryShareSheet` w Jest i e2e) — nowa zależność natywna expo-clipboard, native-build zielony na obu platformach. Udostępniany Markdown z nagłówkiem `# <temat>`.
+- [2026-10-14] Zadanie 8.4: akcje wiersza tematu przeniesione pod tytuł (trzy przyciski nie mieściły się obok tytułu na 320 dp); zapisany klucz API wklejony do rozmowy jest w eksporcie zamazany.
+- [2026-10-14] Zadanie 8.5: pierwsza mutacja (sygnał przerwania nieprzekazany) przeżyła — test czekał krócej niż trwało całe generowanie; wydłużony, mutant zabity. Polecenia dostały kontekst (bieżący temat, sygnał przerwania).
+- [2026-10-14] Zadanie 7.3: adaptery składają pierwsze wywołanie narzędzia ze strumienia (OpenAI `tool_calls` w kawałkach, Anthropic `tool_use` + `input_json_delta`, Gemini `functionCall`); wypowiedź-polecenie rozpoznana przez model jest usuwana z historii (`MessageRepository.delete`). Kryterium MV-CMD-1 K5 dostało znacznik testu. Mutacje zabite.
+- [2026-10-14] [check] PR #43 — e2e android: `Java heap space` w `:app:mergeDexRelease` (release + APK instrumentacji przy domyślnych 2 GiB Gradle) — wtyczka Detox ustawia `org.gradle.jvmargs=-Xmx4g` (tylko buildy e2e).
+- [2026-10-15] [check] PR #43 — e2e ios: pierwszy plik e2e (instalacja i zimny start na świeżym symulatorze) przekraczał 120 s w `beforeAll` — limit testów e2e 300 s.
+- [2026-10-15] [check] PR #51 — e2e: każda dodatkowa linia haków e2e zabierała wysokość liście rozmowy na 320×640 i testy STOP padały powtarzalnie (potwierdzone eksperymentem: bez jednego przycisku zielone). Haki zredukowane do pola transkryptu (bez klawiatury ekranowej — `showSoftInputOnFocus={false}`; klawiatura zasłaniała przyciski) i przycisku „powiedz"; podglądy udostępnienia i mowy w absolutnej plakietce trybu testowego. Na wolnym symulatorze iOS testy nie łapały krótkiego stanu „Mówię…" — czekają na zdanie podane atrapie głosu (`E2ESpokenLog`).
+- [2026-10-15] PR #53 (7.4) zamknięty jako włączony do #51 — oba zestawy e2e potrzebowały wspólnych zmian haków. Gałąź #51 odtworzona jednym commitem na aktualnym main (force push), bo commit zrobiony w złożonym poleceniu nie miał dowodu kontroli hooka.
+- [2026-10-15] e2e lokalnie niestabilne: Faza 5 (przycisk usuwania modelu po pobraniu bywa niewidoczny w 75%), Faza 4 (pojedynczy przebieg STOP), Faza 7 po Fazie 4 (raz). Po restarcie lokalnego emulatora Fazy 5–6 padają także na czystym main (na CI zielone) — środowisko, nie kod; do obserwacji.
