@@ -5,7 +5,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { deviceAudioPorts } from './audio/deviceAudio';
 import { expoFetch } from './cloud/expoFetch';
 import { DatabaseProvider } from './db/DatabaseProvider';
-import { e2eAudioPorts, e2eShareSheet } from './e2e/testHooks';
+import { CatalogFileSystem } from './e2e/CatalogFileSystem';
+import { e2eApiKeys, e2eProviderFetch } from './e2e/fakeProvider';
+import { E2E_MEMORY_BYTES, e2eAudioPorts, e2eShareSheet } from './e2e/testHooks';
 import { openAppDatabase } from './db/openDatabase';
 import { EngineProvider, useEngines } from './engines/EngineProvider';
 import { resolveEngineMode } from './engines/EngineRegistry';
@@ -19,16 +21,31 @@ import { ServicesProvider, type DevicePorts } from './services/ServicesProvider'
 import { SecretStore } from './state/SecretStore';
 import { usePalette } from './theme/theme';
 
-const devicePorts = (): DevicePorts => ({
-  fileSystem: blobUtilFileSystem,
-  network: expoNetworkInfo,
-  memoryBytes: deviceMemoryBytes,
-  // e2e builds feed WAV files instead of the microphone, so no system permission prompt may appear.
-  audio: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eAudioPorts : deviceAudioPorts,
-  apiKeys: SecretStore,
-  fetch: expoFetch,
-  share: resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test' ? e2eShareSheet : deviceShareSheet,
-});
+const isE2E = resolveEngineMode(process.env.EXPO_PUBLIC_E2E) === 'test';
+
+// e2e builds: WAV files instead of the microphone (no system permission prompt), pretend downloads instead of
+// gigabytes from the internet, a 3.7 GB phone so that the 3B models show as not recommended, and a pretend
+// cloud provider (keys kept in memory) instead of real API calls, and shared text kept for the tests to read.
+const devicePorts = (): DevicePorts =>
+  isE2E
+    ? {
+        fileSystem: new CatalogFileSystem(),
+        network: { connection: async () => 'wifi' },
+        memoryBytes: () => E2E_MEMORY_BYTES,
+        audio: e2eAudioPorts,
+        apiKeys: e2eApiKeys,
+        fetch: e2eProviderFetch,
+        share: e2eShareSheet,
+      }
+    : {
+        fileSystem: blobUtilFileSystem,
+        network: expoNetworkInfo,
+        memoryBytes: deviceMemoryBytes,
+        audio: deviceAudioPorts,
+        apiKeys: SecretStore,
+        fetch: expoFetch,
+        share: deviceShareSheet,
+      };
 
 // e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.
 function TestModeBadge() {

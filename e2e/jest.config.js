@@ -2,7 +2,8 @@
 module.exports = {
   rootDir: '..',
   testMatch: ['<rootDir>/e2e/**/*.e2e.ts'],
-  testTimeout: 120000,
+  // The first file installs and cold-starts the app on a fresh CI simulator: iOS needs well over 2 min.
+  testTimeout: 300000,
   maxWorkers: 1,
   globalSetup: 'detox/runners/jest/globalSetup',
   globalTeardown: 'detox/runners/jest/globalTeardown',

@@ -1,11 +1,11 @@
-import { MODEL_CATALOG, type ModelFile } from '../../../../models/catalog';
-import type { AppendDownloadRequest, ModelFileSystem } from '../../../../models/download/types';
+import { MODEL_CATALOG, type ModelFile } from '../models/catalog';
+import type { AppendDownloadRequest, ModelFileSystem } from '../models/download/types';
 
 const FILES_BY_URL = new Map<string, ModelFile>(
   MODEL_CATALOG.flatMap((entry) => entry.files.map((file) => [file.url, file] as const)),
 );
 
-// Pretends to download catalog files without holding gigabytes: only sizes and checksums are tracked.
+// e2e builds and Jest: pretends to download catalog files without holding gigabytes: only sizes and checksums are tracked.
 // With `holdDownloads` a download stays open half-way until the test calls release().
 export class CatalogFileSystem implements ModelFileSystem {
   readonly modelsRoot = '/docs/models';

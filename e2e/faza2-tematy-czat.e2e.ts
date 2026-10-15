@@ -49,9 +49,12 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await device.disableSynchronization();
     try {
       await send('Opowiedz długo o Mazurach');
+      // The long answer soon outgrows the screen, so it is never 75% visible: its presence is enough.
       await waitFor(element(by.id('conversation.streaming')))
-        .toBeVisible()
+        .toExist()
         .withTimeout(TIMEOUT);
+      // The bubble appears empty; let the first tokens arrive (60 ms each), or there is nothing to keep.
+      await new Promise((resolve) => setTimeout(resolve, 1_500));
       await element(by.id('conversation.stop')).tap();
       await waitFor(element(by.text('przerwano')))
         .toExist()
@@ -106,9 +109,11 @@ describe('Faza 2: tematy i czat tekstowy', () => {
     await waitFor(element(by.id('conversation-screen')))
       .toExist()
       .withTimeout(30000);
-    await waitFor(element(by.text('Gdzie jechać nad jezioro?')))
+    // The last topic reopens with its latest, interrupted answer in view.
+    await waitFor(element(by.text('przerwano')))
       .toBeVisible()
       .withTimeout(TIMEOUT);
-    await expect(element(by.text('przerwano'))).toExist();
+    await expect(element(by.text(E2E_TOPIC_TITLE))).toExist();
+    await expect(element(by.text('przerwano'))).toBeVisible();
   });
 });

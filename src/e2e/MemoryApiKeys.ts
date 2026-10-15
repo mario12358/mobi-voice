@@ -1,6 +1,7 @@
-import type { ApiKeyStore } from '../../createCloudEngines';
-import type { CloudProvider } from '../../../state/SecretStore';
+import type { ApiKeyStore } from '../cloud/createCloudEngines';
+import type { CloudProvider } from '../state/SecretStore';
 
+// e2e builds and Jest: API keys kept in memory instead of the Keychain/Keystore.
 export class MemoryApiKeys implements ApiKeyStore {
   readonly keys = new Map<CloudProvider, string>();
 

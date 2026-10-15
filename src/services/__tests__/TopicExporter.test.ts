@@ -1,4 +1,4 @@
-import { MemoryApiKeys } from '../../cloud/__tests__/support/memoryApiKeys';
+import { MemoryApiKeys } from '../../e2e/MemoryApiKeys';
 import { openNodeSqlDatabase } from '../../db/__tests__/support/nodeSqlDatabase';
 import { prepareDatabase } from '../../db/migrate';
 import { MessageRepository } from '../../db/repositories/MessageRepository';

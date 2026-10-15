@@ -7,6 +7,7 @@ const {
   withAndroidManifest,
   withAppBuildGradle,
   withDangerousMod,
+  withGradleProperties,
   withPlugins,
   withProjectBuildGradle,
 } = require('expo/config-plugins');
@@ -115,8 +116,24 @@ const withDetoxNetworkSecurity = (config) =>
     return mod;
   });
 
+// The release app plus the instrumentation APK outgrow Gradle's default 2 GiB heap when dexing
+// on CI runners ("Java heap space" in :app:mergeDexRelease).
+const GRADLE_JVM_ARGS = '-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8';
+
+function withDetoxGradleMemory(config) {
+  return withGradleProperties(config, (props) => {
+    const entry = props.modResults.find(
+      (item) => item.type === 'property' && item.key === 'org.gradle.jvmargs',
+    );
+    if (entry) entry.value = GRADLE_JVM_ARGS;
+    else props.modResults.push({ type: 'property', key: 'org.gradle.jvmargs', value: GRADLE_JVM_ARGS });
+    return props;
+  });
+}
+
 module.exports = (config) =>
   withPlugins(config, [
+    withDetoxGradleMemory,
     withDetoxProjectGradle,
     withDetoxAppGradle,
     withDetoxTestClass,

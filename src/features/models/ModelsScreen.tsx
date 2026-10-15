@@ -110,7 +110,7 @@ export function ModelsScreen() {
 
   return (
     <Screen testID="models-screen">
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView testID="models.scroll" contentContainerStyle={styles.content}>
         <WifiOnlySwitch />
         {manager.error !== null && (
           <Text accessibilityRole="alert" style={[styles.warning, { color: palette.accent }]}>
