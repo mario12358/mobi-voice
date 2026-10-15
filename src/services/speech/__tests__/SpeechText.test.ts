@@ -42,6 +42,34 @@ describe('toSpeakable', () => {
 });
 
 describe('SentenceSplitter', () => {
+  it('starts the voice after the first words: the first piece ends at a clause break', () => {
+    const answer = 'Na weekend polecam Mazury, bo jest tam cicho i pięknie. Weź kurtkę, wieczory są chłodne.';
+    const { sentences, doneAt } = stream(answer);
+
+    expect(sentences).toEqual([
+      'Na weekend polecam Mazury,',
+      'bo jest tam cicho i pięknie.',
+      // Later pieces are whole sentences again.
+      'Weź kurtkę, wieczory są chłodne.',
+    ]);
+    expect(doneAt[0]).toBeLessThan(answer.indexOf('cicho'));
+  });
+
+  it('cuts a long first sentence without punctuation after ten words', () => {
+    const answer =
+      'To jest bardzo długie zdanie bez żadnych przecinków które ciągnie się dalej i dalej aż do końca.';
+    const { sentences } = stream(answer);
+
+    expect(sentences).toEqual([
+      'To jest bardzo długie zdanie bez żadnych przecinków które ciągnie',
+      'się dalej i dalej aż do końca.',
+    ]);
+  });
+
+  it('keeps a short first clause with the rest of its sentence', () => {
+    expect(stream('Tak, to dobry pomysł. Jedź.').sentences).toEqual(['Tak, to dobry pomysł.', 'Jedź.']);
+  });
+
   it('hands out the first full sentence before the answer is complete', () => {
     const answer = 'Proponuję Mazury. Jeziora są tam piękne! Czy lubisz żeglować?';
     const { sentences, doneAt } = stream(answer);

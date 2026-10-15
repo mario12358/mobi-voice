@@ -27,7 +27,7 @@ function utterance(): Float32Array {
 
 // Interrupted mode: two parts of one utterance, the second closed with the end word.
 export const E2E_PART = 'Planuję wyjazd na Mazury';
-export const E2E_CLOSING = 'co polecasz? Odbiór.';
+export const E2E_CLOSING = 'co polecasz? Stop.';
 // The fake model answers a question with "długo" at length — time to say "stop" while it is read.
 export const E2E_LONG_QUESTION = 'Opowiedz długo o Mazurach';
 export const E2E_SUMMARIZE = 'Podsumuj rozmowę';

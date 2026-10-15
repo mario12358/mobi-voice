@@ -109,7 +109,7 @@ describe('conversation on a cloud model', () => {
       await until(() => services.voice.current === 'listening');
 
       useSettingsStore.getState().update({ conversationMode: 'interrupted' });
-      stt.enqueue('A zimą? Odbiór.');
+      stt.enqueue('A zimą? Stop.');
       source.enqueueWav(encodeWav(synthesize([{ tone: 500 }, { silence: 1_600 }])));
       await until(() => tts.spoken.includes('Głosem przerywanym.'));
       await services.voice.stop();

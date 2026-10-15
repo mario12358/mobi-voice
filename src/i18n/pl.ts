@@ -34,6 +34,7 @@ export const pl = {
   },
   conversation: {
     title: 'Rozmowa',
+    preparingAnswer: 'Przygotowuję odpowiedź… Pierwsza po uruchomieniu wczytuje model i trwa dłużej.',
     emptyHistory: 'Zacznij rozmowę — napisz albo powiedz, o czym chcesz porozmawiać.',
     openSummary: 'Podsumuj',
     inputPlaceholder: 'Napisz wiadomość',
@@ -114,7 +115,8 @@ export const pl = {
     modeTitle: 'Tryb rozmowy głosowej',
     modeContinuous: 'Ciągły',
     modeInterrupted: 'Przerywany',
-    modeHint: 'Ciągły: wysyła po chwili ciszy. Przerywany: czeka, aż powiesz „odbiór”.',
+    modeHint:
+      'Ciągły: wysyła po chwili ciszy. Przerywany: czeka, aż na końcu powiesz „stop”. „Stop” przerywa też odpowiedź.',
     silenceTitle: 'Cisza kończąca wypowiedź',
     silenceValue: (seconds: string) => `${seconds} s`,
     silenceLess: 'Krócej',

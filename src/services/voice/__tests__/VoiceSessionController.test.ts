@@ -274,7 +274,7 @@ describe('VoiceSessionController (continuous mode)', () => {
     }
 
     // specky: crit 01M4TPSC2XBWSY7997NWZGCE5K
-    it('does not send on pauses, however long, while "odbiór" has not been said', async () => {
+    it('does not send on pauses, however long, while "stop" has not been said', async () => {
       stt.enqueue('Planuję wyjazd', 'na Mazury w lipcu', 'z dziećmi');
 
       await speakPart();
@@ -290,8 +290,8 @@ describe('VoiceSessionController (continuous mode)', () => {
     });
 
     // specky: crit 01M4TPSC2XMDVW605VXF879XN8
-    it('sends everything said so far once the utterance ends with "odbiór", without the word', async () => {
-      stt.enqueue('Planuję wyjazd na Mazury.', 'Co polecasz? Odbiór.');
+    it('sends everything said so far once the utterance ends with "stop", without the word', async () => {
+      stt.enqueue('Planuję wyjazd na Mazury.', 'Co polecasz? Stop.');
       llm.answerWith('Polecam Mikołajki.');
 
       await speakPart();
@@ -312,17 +312,17 @@ describe('VoiceSessionController (continuous mode)', () => {
       ]);
     });
 
-    it('treats "odbiór" in the middle of a sentence as an ordinary word', async () => {
-      stt.enqueue('Odbiór paczki jutro', 'i co dalej? Odbiór');
+    it('treats "stop" in the middle of a sentence as an ordinary word', async () => {
+      stt.enqueue('Stop na żądanie przy szkole', 'i co dalej? Stop');
       llm.answerWith('Dobrze.');
 
       await speakPart();
-      expect(heard).toEqual(['Odbiór paczki jutro']);
+      expect(heard).toEqual(['Stop na żądanie przy szkole']);
       expect(llm.requests).toHaveLength(0);
 
       await speakPart();
       await until(() => llm.requests.length === 1);
-      expect(llm.requests[0]?.messages.at(-1)?.content).toBe('Odbiór paczki jutro i co dalej?');
+      expect(llm.requests[0]?.messages.at(-1)?.content).toBe('Stop na żądanie przy szkole i co dalej?');
       llm.finish();
     });
   });

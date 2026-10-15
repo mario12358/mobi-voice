@@ -73,7 +73,8 @@ describe('system prompt', () => {
 
     expect(llm.requests[0]?.systemPrompt).toBe(DEFAULT_SYSTEM_PROMPT);
     expect(DEFAULT_SYSTEM_PROMPT).toMatch(/po polsku/);
-    expect(DEFAULT_SYSTEM_PROMPT).toMatch(/zwięźle/);
+    expect(DEFAULT_SYSTEM_PROMPT).toMatch(/krótko/);
+    expect(DEFAULT_SYSTEM_PROMPT).toMatch(/jedno–dwa zdania/);
     expect(DEFAULT_SYSTEM_PROMPT).toMatch(/czytana na głos/);
   });
 

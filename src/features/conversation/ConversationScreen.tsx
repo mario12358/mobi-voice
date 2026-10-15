@@ -225,37 +225,45 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
         </View>
         {/* e2e builds only; at the top, where small CI emulator screens still show it whole. */}
         <E2EVoiceControls />
-        <FlatList
-          // Inverted, newest first: the latest message sits at the bottom without any scrolling, also when a
-          // topic is reopened on a small screen (scrollToEnd did not reach the end there).
-          inverted
-          testID="conversation.messages"
-          style={styles.fill}
-          contentContainerStyle={styles.messages}
-          data={newestFirst}
-          keyExtractor={(message) => String(message.id)}
-          // A tap on a row button must act even while the keyboard (search/message field) is open.
-          keyboardShouldPersistTaps="handled"
-          renderItem={({ item }) => (
-            <MessageBubble
-              testID={`conversation.message-${item.id}`}
-              role={item.role}
-              content={item.content}
-              interrupted={item.interrupted}
-            />
-          )}
-          ListEmptyComponent={streaming !== null ? null : <BodyText>{pl.conversation.emptyHistory}</BodyText>}
-          ListHeaderComponent={
-            streaming !== null ? (
+        {/* Outside the list: an inverted list turns its empty component upside down (and on Android also
+            mirrors it). */}
+        {newestFirst.length === 0 && streaming === null ? (
+          <View style={styles.empty}>
+            <BodyText testID="conversation.empty">{pl.conversation.emptyHistory}</BodyText>
+          </View>
+        ) : (
+          <FlatList
+            // Inverted, newest first: the latest message sits at the bottom without any scrolling, also when a
+            // topic is reopened on a small screen (scrollToEnd did not reach the end there).
+            inverted
+            testID="conversation.messages"
+            style={styles.fill}
+            contentContainerStyle={styles.messages}
+            data={newestFirst}
+            keyExtractor={(message) => String(message.id)}
+            // A tap on a row button must act even while the keyboard (search/message field) is open.
+            keyboardShouldPersistTaps="handled"
+            renderItem={({ item }) => (
               <MessageBubble
-                testID="conversation.streaming"
-                role="assistant"
-                content={streaming}
-                interrupted={false}
+                testID={`conversation.message-${item.id}`}
+                role={item.role}
+                content={item.content}
+                interrupted={item.interrupted}
               />
-            ) : null
-          }
-        />
+            )}
+            ListHeaderComponent={
+              streaming !== null ? (
+                <MessageBubble
+                  testID="conversation.streaming"
+                  role="assistant"
+                  // Before the first word: the model may still be loading into memory (first answer after start).
+                  content={streaming.length === 0 ? pl.conversation.preparingAnswer : streaming}
+                  interrupted={false}
+                />
+              ) : null
+            }
+          />
+        )}
         {error !== null && (
           <Text accessibilityRole="alert" style={[styles.error, { color: palette.accent }]}>
             {error.userMessage}
@@ -322,6 +330,7 @@ export function ConversationScreen({ navigation, route }: RootScreenProps<'Conve
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  empty: { flex: 1, justifyContent: 'flex-end' },
   toolbar: { flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm },
   messages: { gap: SPACING.sm, paddingVertical: SPACING.sm },
   notice: { gap: SPACING.sm },

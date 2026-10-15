@@ -169,9 +169,9 @@ describe('ConversationScreen voice mode', () => {
     );
   });
 
-  it('in interrupted mode shows what was said so far and sends only after "odbiór"', async () => {
+  it('in interrupted mode shows what was said so far and sends only after "stop"', async () => {
     useSettingsStore.getState().update({ conversationMode: 'interrupted' });
-    stt = new FakeSttEngine(['Jadę nad morze', 'gdzie nocować? Odbiór.']);
+    stt = new FakeSttEngine(['Jadę nad morze', 'gdzie nocować? Stop.']);
     await renderConversation();
     await fireEvent.press(screen.getByTestId('conversation.mic'));
     await waitFor(() => expect(stateLabel()).toHaveTextContent(pl.conversation.voiceState.listening));

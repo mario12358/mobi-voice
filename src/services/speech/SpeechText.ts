@@ -109,13 +109,40 @@ function nextCut(text: string): number | null {
   return candidates.length === 0 ? null : Math.min(...candidates);
 }
 
+// The first piece of an answer may end early, so the voice starts after the first words, not after the
+// whole first sentence: at a clause break once it has a few words, or after a run of words without one.
+const FIRST_PIECE_MIN_WORDS = 4;
+const FIRST_PIECE_MAX_WORDS = 10;
+
+function wordCount(text: string): number {
+  return text.split(/\s+/).filter((word) => /[\p{L}\p{N}]/u.test(word)).length;
+}
+
+function firstPieceCut(text: string): number | null {
+  if (text.includes('```')) return null;
+  for (const match of text.matchAll(/[,;:–—](?=\s+\S)/gu)) {
+    const end = match.index + match[0].length;
+    if (wordCount(text.slice(0, end)) >= FIRST_PIECE_MIN_WORDS) return end;
+  }
+  // Words followed by a space are complete; the last one may still be growing.
+  const words = [...text.matchAll(/\S+(?=\s)/gu)];
+  const last = words[FIRST_PIECE_MAX_WORDS - 1];
+  return last === undefined ? null : last.index + last[0].length;
+}
+
 // Collects streamed tokens and hands out complete, speakable sentences as soon as they are known.
 export class SentenceSplitter {
   private buffer = '';
+  private started = false;
 
   push(token: string): string[] {
     this.buffer += token;
     const sentences: string[] = [];
+    const early = this.started ? null : (nextCut(this.buffer) ?? firstPieceCut(this.buffer));
+    if (early !== null) {
+      this.emit(this.buffer.slice(0, early), sentences);
+      this.buffer = this.buffer.slice(early).trimStart();
+    }
     for (let end = nextCut(this.buffer); end !== null; end = nextCut(this.buffer)) {
       this.emit(this.buffer.slice(0, end), sentences);
       this.buffer = this.buffer.slice(end).trimStart();
@@ -133,11 +160,15 @@ export class SentenceSplitter {
 
   reset(): void {
     this.buffer = '';
+    this.started = false;
   }
 
   private emit(raw: string, into: string[]): void {
     const speakable = toSpeakable(raw);
     // Nothing left to say once Markdown and emoji are gone (e.g. a lone "👍").
-    if (/[\p{L}\p{N}]/u.test(speakable)) into.push(speakable);
+    if (/[\p{L}\p{N}]/u.test(speakable)) {
+      into.push(speakable);
+      this.started = true;
+    }
   }
 }
