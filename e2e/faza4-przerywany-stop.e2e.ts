@@ -1,7 +1,8 @@
 import { by, device, element, expect, waitFor } from 'detox';
 
-import { E2E_CLOSING, E2E_PART } from '../src/e2e/testHooks';
+import { E2E_CLOSING, E2E_LONG_QUESTION, E2E_PART } from '../src/e2e/testHooks';
 import { pl } from '../src/i18n/pl';
+import { sayText } from './helpers/voice';
 
 const TIMEOUT = 20000;
 
@@ -33,7 +34,7 @@ describe('Faza 4: tryb przerywany i STOP', () => {
     await element(by.id('conversation.mic')).tap();
     await expectVoiceState(pl.conversation.voiceState.listening);
 
-    await element(by.id('e2e.speak-part')).tap();
+    await sayText(E2E_PART);
     await waitFor(element(by.text(pl.conversation.youSaid(E2E_PART))))
       .toBeVisible()
       .withTimeout(TIMEOUT);
@@ -43,7 +44,7 @@ describe('Faza 4: tryb przerywany i STOP', () => {
     const sent = `${E2E_PART} co polecasz?`;
     await device.disableSynchronization();
     try {
-      await element(by.id('e2e.speak-closing')).tap();
+      await sayText(E2E_CLOSING);
       await waitFor(element(by.text(`Odpowiedź testowa na: ${sent}. To jest drugie zdanie.`)))
         .toExist()
         .withTimeout(TIMEOUT);
@@ -61,7 +62,7 @@ describe('Faza 4: tryb przerywany i STOP', () => {
 
     await device.disableSynchronization();
     try {
-      await element(by.id('e2e.speak-long')).tap();
+      await sayText(E2E_LONG_QUESTION);
       await expectVoiceState(pl.conversation.voiceState.speaking);
       await element(by.id('e2e.say-stop')).tap();
       await expectVoiceState(pl.conversation.voiceState.listening);
@@ -81,7 +82,7 @@ describe('Faza 4: tryb przerywany i STOP', () => {
 
     await device.disableSynchronization();
     try {
-      await element(by.id('e2e.speak-long')).tap();
+      await sayText(E2E_LONG_QUESTION);
       await expectVoiceState(pl.conversation.voiceState.speaking);
       await element(by.id('conversation.voice-stop')).tap();
       await expectVoiceState(pl.conversation.voiceState.listening);

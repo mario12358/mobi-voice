@@ -30,6 +30,7 @@ export const E2E_PART = 'Planuję wyjazd na Mazury';
 export const E2E_CLOSING = 'co polecasz? Odbiór.';
 // The fake model answers a question with "długo" at length — time to say "stop" while it is read.
 export const E2E_LONG_QUESTION = 'Opowiedz długo o Mazurach';
+export const E2E_SUMMARIZE = 'Podsumuj rozmowę';
 
 // `transcript` is what the fake STT recognizes in this utterance (default: the fixed e2e sentence).
 export function injectUtterance(engines: EngineRegistry, transcript?: string): void {

@@ -6,6 +6,8 @@ import { deviceAudioPorts } from './audio/deviceAudio';
 import { expoFetch } from './cloud/expoFetch';
 import { DatabaseProvider } from './db/DatabaseProvider';
 import { CatalogFileSystem } from './e2e/CatalogFileSystem';
+import { E2EShareLog } from './e2e/E2EShareLog';
+import { E2ESpokenLog } from './e2e/E2ESpokenLog';
 import { e2eApiKeys, e2eProviderFetch } from './e2e/fakeProvider';
 import { E2E_MEMORY_BYTES, e2eAudioPorts, e2eShareSheet } from './e2e/testHooks';
 import { openAppDatabase } from './db/openDatabase';
@@ -50,7 +52,8 @@ const devicePorts = (): DevicePorts =>
         share: deviceShareSheet,
       };
 
-// e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID.
+// e2e hooks: Detox cannot read colours, so test builds expose the active theme as a testID. The logs of
+// what was shared and said sit here, over the screens, so they never take room from a screen's layout.
 function TestModeBadge() {
   const engines = useEngines();
   const palette = usePalette();
@@ -59,6 +62,8 @@ function TestModeBadge() {
     <View style={styles.badge} pointerEvents="none">
       <Text testID="engine-mode-test">{pl.common.testMode}</Text>
       <View testID={`theme-${palette.scheme}`} collapsable={false} style={styles.marker} />
+      <E2EShareLog />
+      <E2ESpokenLog />
     </View>
   );
 }

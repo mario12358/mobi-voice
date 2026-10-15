@@ -12,6 +12,7 @@ export class FakeTtsEngine implements TtsEngine {
   private readonly queue: Utterance[] = [];
   private current: Utterance | null = null;
   private timer: ReturnType<typeof setTimeout> | null = null;
+  private readonly listeners = new Set<() => void>();
 
   constructor(private readonly speechDurationMs = 0) {}
 
@@ -21,8 +22,15 @@ export class FakeTtsEngine implements TtsEngine {
 
   beginAnswer(): void {}
 
+  // e2e builds show the last sentence given to the voice, for Detox to wait on.
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
   speak(text: string, onStart?: () => void): Promise<void> {
     this.spoken.push(text);
+    for (const listener of this.listeners) listener();
     return new Promise((resolve) => {
       this.queue.push({ text, finish: resolve, onStart });
       if (this.current === null) this.playNext();
