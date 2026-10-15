@@ -1,0 +1,72 @@
+# Buildy dystrybucji wewnętrznej (9.2): release APK arm64 dla testerów (instalacja poza sklepem albo
+# Firebase App Distribution) i kompilacja release iOS na urządzenie — bez kont EAS/Apple w CI.
+# Uruchamiany ręcznie albo przy tagu wersji. Podpis: APK ma klucz debug z szablonu Expo (tylko do
+# testów wewnętrznych); iOS do TestFlight przez EAS (eas.json, profil testflight) — patrz docs/DYSTRYBUCJA.md.
+
+name: internal-build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+  # Zmiana samej konfiguracji dystrybucji sprawdza oba buildy już w PR.
+  pull_request:
+    paths:
+      - .github/workflows/internal-build.yml
+      - eas.json
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      # Raporty awarii działają tylko w buildzie z DSN; bez sekretu aplikacja ich nie uruchomi.
+      EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+      - run: npm ci
+      - run: CI=1 npx expo prebuild --platform android --clean
+      - run: ./gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a -Dorg.gradle.jvmargs=-Xmx4g --console=plain
+        working-directory: android
+      - run: mv android/app/build/outputs/apk/release/app-release.apk "mobivoice-${GITHUB_REF_NAME//\//-}.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mobivoice-android
+          path: mobivoice-*.apk
+          retention-days: 30
+      - name: Firebase App Distribution (gdy skonfigurowane)
+        if: ${{ env.FIREBASE_APP_ID != '' }}
+        env:
+          FIREBASE_TOKEN_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          echo "$FIREBASE_TOKEN_JSON" > "$RUNNER_TEMP/firebase.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/firebase.json" npx --yes firebase-tools@14.20.0 \
+            appdistribution:distribute mobivoice-*.apk --app "$FIREBASE_APP_ID" --groups testerzy
+
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      EXPO_PUBLIC_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: CI=1 npx expo prebuild --platform ios --clean
+      # Release na urządzenie bez podpisu: dowód, że wydanie kompiluje się na iOS; podpisany build
+      # do TestFlight robi EAS (wymaga konta Apple Developer).
+      - run: >
+          xcodebuild -workspace ios/MobiVoice.xcworkspace -scheme MobiVoice -configuration Release
+          -sdk iphoneos -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
