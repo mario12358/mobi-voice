@@ -23,7 +23,7 @@ export interface VoiceListener {
   onState?(state: VoiceState): void;
   // What the user said, as recognized, right before it is sent to the model.
   onTranscript?(text: string): void;
-  // Interrupted mode: what has been said so far, still waiting for the closing "odbiór".
+  // Interrupted mode: what has been said so far, still waiting for the closing "stop".
   onHeard?(text: string): void;
   // A voice command moved the session to another topic (switched to or newly created).
   onTopicChange?(topic: Topic): void;
@@ -56,7 +56,7 @@ interface Deps {
 // Continuous voice mode (MV-VOICE-1): listen → end of utterance after the silence threshold → STT →
 // model with the topic's context → answer in the chat and read aloud sentence by sentence → listen again.
 // "Stop" (MV-VOICE-3), said or tapped while the answer is prepared or read, ends it and listens at once.
-// Interrupted mode (MV-VOICE-2): pauses only add to the utterance; it is sent once it ends with "odbiór".
+// Interrupted mode (MV-VOICE-2): pauses only add to the utterance; it is sent once it ends with "stop".
 export class VoiceSessionController {
   private state: VoiceState = 'idle';
   private topicId: number | null = null;

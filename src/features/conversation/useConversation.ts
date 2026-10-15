@@ -62,6 +62,18 @@ export function useConversation(topicId: number): ConversationState {
       const controller = new AbortController();
       abort.current = controller;
       setError(null);
+      // The question shows at once, while the answer streams in under it; the reload brings the stored one.
+      setMessages((current) => [
+        ...current,
+        {
+          id: -Date.now(),
+          topicId,
+          role: 'user',
+          content: text.trim(),
+          createdAt: Date.now(),
+          interrupted: false,
+        },
+      ]);
       setStreaming('');
       try {
         await services.conversation.send(topicId, text, {

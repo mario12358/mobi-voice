@@ -133,6 +133,9 @@ describe('ConversationScreen', () => {
     await type('Gdzie jechać?');
     await waitFor(() => expect(llm.requests).toHaveLength(1));
 
+    // The question is in the chat right away, before the first word of the answer.
+    expect(screen.getByText('Gdzie jechać?')).toBeTruthy();
+    expect(screen.getByTestId('conversation.streaming')).toHaveTextContent(pl.conversation.preparingAnswer);
     llm.next();
     await waitFor(() => expect(screen.getByTestId('conversation.streaming')).toHaveTextContent('Proponuję'));
     llm.next();
@@ -146,6 +149,7 @@ describe('ConversationScreen', () => {
     llm.next();
     await waitFor(() => expect(screen.queryByTestId('conversation.streaming')).toBeNull());
     expect(screen.getByText('Proponuję Mazury. Są piękne.')).toBeTruthy();
+    expect(screen.getAllByText('Gdzie jechać?')).toHaveLength(1);
     expect(screen.getByTestId('conversation.send')).toBeTruthy();
   });
 

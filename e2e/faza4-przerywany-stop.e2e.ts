@@ -27,7 +27,7 @@ describe('Faza 4: tryb przerywany i STOP', () => {
       .withTimeout(30000);
   });
 
-  it('in interrupted mode waits through a pause and sends the whole utterance after "odbiór"', async () => {
+  it('in interrupted mode waits through a pause and sends the whole utterance after "stop"', async () => {
     await startVoiceInNewTopic();
     await element(by.id('conversation.mode-toggle')).tap();
     await expect(element(by.text(pl.conversation.modeInterrupted))).toBeVisible();

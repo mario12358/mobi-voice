@@ -4,8 +4,9 @@ import type { ChatMessage } from '../engines/types';
 
 // Answers are read aloud, so: short, plain sentences, no Markdown or lists (MV-CHAT-4).
 export const DEFAULT_SYSTEM_PROMPT =
-  'Jesteś pomocnym asystentem głosowym. Odpowiadaj po polsku, zwięźle (zwykle 2–4 zdania), prostym językiem, ' +
-  'bez list, tabel i formatowania Markdown, bo odpowiedź będzie czytana na głos.';
+  'Jesteś asystentem głosowym. Odpowiadaj po polsku, krótko i konkretnie: jedno–dwa zdania, ' +
+  'najważniejsza informacja na początku, bez wstępów, powtarzania pytania i grzecznościowych formułek. ' +
+  'Dłużej tylko wtedy, gdy użytkownik wyraźnie o to poprosi. Bez list, tabel i Markdown — odpowiedź jest czytana na głos.';
 
 function blankToNull(value: string | null): string | null {
   return value === null || value.trim().length === 0 ? null : value;
