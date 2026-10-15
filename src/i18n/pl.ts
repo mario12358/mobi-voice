@@ -6,10 +6,10 @@ export const pl = {
     e2eSpeak: 'Test: wypowiedź',
     e2eOnboarding: 'Test: kreator',
     e2eDenyMic: 'Test: odmowa mikrofonu',
-    e2ePart: 'Test: część wypowiedzi',
-    e2eClosing: 'Test: koniec z „odbiór”',
     e2eSayStop: 'Test: „stop”',
-    e2eLong: 'Test: długie pytanie',
+    e2eSayText: 'Test: powiedz',
+    e2eSpoken: (sentence: string) => `Test: powiedziano: ${sentence}`,
+    e2eShared: (count: number, firstLine: string) => `Test: udostępniono ${count}: ${firstLine}`,
     back: 'Wstecz',
   },
   topicList: {

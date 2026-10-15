@@ -91,7 +91,7 @@ describe('SummaryScreen', () => {
     await fireEvent.press(screen.getByTestId('summary.generate'));
 
     expect(await screen.findByTestId('summary.content')).toHaveTextContent(
-      /Forma: Dwa zdania dla rodziny\.$/,
+      /Forma: Dwa zdania dla rodziny\. Wiadomości: 2\.$/,
     );
 
     await fireEvent.changeText(screen.getByTestId('summary.template-name'), 'Dla rodziny');

@@ -13,14 +13,16 @@ export const E2E_LONG_ANSWER_TRIGGER = 'długo';
 
 export const E2E_TOPIC_TITLE = 'Rozmowa testowa';
 
-// A summary names the form it was asked for (the first line of the prompt is the instruction).
+// A summary names the form it was asked for (the first line of the prompt is the instruction) and
+// counts the messages it covered.
 export const E2E_SUMMARY_PREFIX = 'Podsumowanie testowe';
 
 export const E2E_SCRIPT: LlmScript = (request) => {
   if (request.systemPrompt === TITLE_SYSTEM_PROMPT) return E2E_TOPIC_TITLE;
   if (request.systemPrompt === SUMMARY_SYSTEM_PROMPT) {
-    const instruction = request.messages[0]?.content.split('\n')[0] ?? '';
-    return `${E2E_SUMMARY_PREFIX}. Forma: ${instruction}`;
+    const prompt = request.messages[0]?.content ?? '';
+    const messages = prompt.match(/^(Użytkownik|Asystent): /gm)?.length ?? 0;
+    return `${E2E_SUMMARY_PREFIX}. Forma: ${prompt.split('\n')[0]} Wiadomości: ${messages}.`;
   }
   const lastUser = [...request.messages].reverse().find((message) => message.role === 'user');
   if (lastUser?.content.includes(E2E_LONG_ANSWER_TRIGGER)) {
