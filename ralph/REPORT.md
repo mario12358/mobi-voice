@@ -15,9 +15,9 @@
 
 - **Start**: 2026-10-13
 - **Status**: W trakcie
-- **Postęp**: Fazy 1–6 ukończone (tagi `ralph/faza-1` … `ralph/faza-6`); Fazy 7–8: kod zmergowany (7.1–7.3, 8.1–8.5), e2e 7.4 + 8.6 w PR #51; Faza 1 wydana jako v0.1.0; v0.2.0 odłożona przez człowieka; dalej Faza 9
+- **Postęp**: Fazy 1–8 zmergowane (tagi do Fazy 6; regresja na main dla Faz 7–8 jeszcze przed nami); Faza 9: 9.1–9.3 zmergowane, 9.4 w PR; Faza 1 wydana jako v0.1.0; sesja 2026-11-03 zatrzymana na prośbę człowieka po 9.4
 - Specky: pracuję jako mariusz.iskra (mariusz.iskra@gmail.com), organizacja mariusz.iskra's Organization
-- Specky 2026-10-15: kursor what_changed 816; w toku: MV-CMD-1, MV-SUM-1, MV-SUM-2 (czekają na e2e #51), MV-SEC-2 (raporty awarii — Faza 9)
+- Specky 2026-11-03: kursor what_changed 816 (brak zmian, to_fix 0; czekają propozycje człowieka: „stop” zamiast „odbiór”, Whistle STT); w toku: MV-CMD-1, MV-SUM-1, MV-SUM-2 (czekają na e2e #51), MV-SEC-2 (raporty awarii — Faza 9)
 
 ## Stan testów
 
@@ -98,7 +98,11 @@ na zawsze i rośnie w prompcie każdej sesji.
 | 8.4 Eksport tematu do Markdown | ✅ zmergowane (PR #49) | 382/382 | 1 | b9fcb12 | 2026-10-14 |
 | 8.5 Polecenie „podsumuj rozmowę" | ✅ zmergowane (PR #50) | 385/385 | 1 | 6c52bf7 | 2026-10-14 |
 | 7.3 Function calling dla modeli chmurowych | ✅ zmergowane (PR #52) | 392/392 | 1 | 12d7223 | 2026-10-14 |
-| 7.4 + 8.6 e2e poleceń głosowych i Fazy 8 | 🔄 PR #51 (CI) | lokalnie Fazy 1–4, 7, 8 zielone | 4 | 4c3de63 | 2026-10-15 |
+| 7.4 + 8.6 e2e poleceń głosowych i Fazy 8 | ✅ zmergowane (PR #51) | e2e Android i iOS w CI | 4 | 578eff7 | 2026-10-15 |
+| 9.1 Raporty awarii za zgodą | ✅ zmergowane (PR #55) | zielone | 1 | 6b65d4a | 2026-10-15 |
+| 9.2 Dystrybucja wewnętrzna (EAS, APK, iOS) | ✅ zmergowane (PR #56) | zielone | 1 | f3431f9 | 2026-10-15 |
+| 9.3 Scenariusze testów ręcznych | ✅ zmergowane (PR #57) | — | 1 | ca16e77 | 2026-10-15 |
+| 9.4 e2e zgody na raporty awarii i pełnej ścieżki | 🔄 PR #59 (CI) | tsc, lint zielone; e2e w CI | 1 | — | 2026-11-03 |
 
 ## Historia zmian
 
@@ -239,3 +243,4 @@ poniżej tabeli z prefiksem `> ⚠ Info:` tak żeby user widział co poszło "po
 - [2026-10-15] [check] PR #51 — e2e: każda dodatkowa linia haków e2e zabierała wysokość liście rozmowy na 320×640 i testy STOP padały powtarzalnie (potwierdzone eksperymentem: bez jednego przycisku zielone). Haki zredukowane do pola transkryptu (bez klawiatury ekranowej — `showSoftInputOnFocus={false}`; klawiatura zasłaniała przyciski) i przycisku „powiedz"; podglądy udostępnienia i mowy w absolutnej plakietce trybu testowego. Na wolnym symulatorze iOS testy nie łapały krótkiego stanu „Mówię…" — czekają na zdanie podane atrapie głosu (`E2ESpokenLog`).
 - [2026-10-15] PR #53 (7.4) zamknięty jako włączony do #51 — oba zestawy e2e potrzebowały wspólnych zmian haków. Gałąź #51 odtworzona jednym commitem na aktualnym main (force push), bo commit zrobiony w złożonym poleceniu nie miał dowodu kontroli hooka.
 - [2026-10-15] e2e lokalnie niestabilne: Faza 5 (przycisk usuwania modelu po pobraniu bywa niewidoczny w 75%), Faza 4 (pojedynczy przebieg STOP), Faza 7 po Fazie 4 (raz). Po restarcie lokalnego emulatora Fazy 5–6 padają także na czystym main (na CI zielone) — środowisko, nie kod; do obserwacji.
+- [2026-11-03] Sesja: w głównym katalogu na gałęzi `zadanie-whistle-stt` leży niezacommitowana praca nad Whistle STT (propozycja w Specky czeka na decyzję) i otwarty PR #58 (poprawki po testach właściciela, check android czerwony) — nie ruszane; 9.4 zrobione w osobnym worktree `../mobi_voice-ralph`.
