@@ -292,7 +292,7 @@
   - AC: model chmurowy wywołujący switch_topic przełącza temat; modele lokalne nie dostają narzędzi
   - Specky: (req: 01M4TPSD8Z5ZMZVRA1HNQPSQ6H v1.0 @c878c58)
 - [x] Test: 7.3 — obsługa wywołań narzędzi w adapterach (nagrane odpowiedzi) (pr: #52)
-- [ ] Zadanie 7.4: Test e2e — polecenia głosowe (WAV): nowy temat, przełączenie, lista tematów, niejednoznaczna nazwa z dopytaniem (wymaga: 7.1, 7.2, 7.3) (spec: spec.md) (tech: detox, typescript) (pr: #51)
+- [x] Zadanie 7.4: Test e2e — polecenia głosowe (WAV): nowy temat, przełączenie, lista tematów, niejednoznaczna nazwa z dopytaniem (wymaga: 7.1, 7.2, 7.3) (spec: spec.md) (tech: detox, typescript) (pr: #51)
 
 ### Faza 8: Podsumowania i eksport
 
@@ -321,21 +321,21 @@
   - AC: polecenie zapisuje podsumowanie przy temacie i odtwarza je przez TTS
   - Specky: (req: 01M4TPSDBF9Y2BDFX8X4Q6AEZY v1.0 @bc832e9)
 - [x] Test: 8.5 — obsługa polecenia z atrapami (pr: #50)
-- [ ] Zadanie 8.6: Test e2e — podsumowanie wbudowanym szablonem, własną instrukcją, ponowne generowanie, udostępnienie, polecenie głosowe, eksport tematu (wymaga: 8.1, 8.2, 8.3, 8.4, 8.5) (spec: spec.md) (tech: detox, typescript) (pr: #51)
+- [x] Zadanie 8.6: Test e2e — podsumowanie wbudowanym szablonem, własną instrukcją, ponowne generowanie, udostępnienie, polecenie głosowe, eksport tematu (wymaga: 8.1, 8.2, 8.3, 8.4, 8.5) (spec: spec.md) (tech: detox, typescript) (pr: #51)
 
 ### Faza 9: Wydanie wewnętrzne
 
-- [ ] Zadanie 9.1: Raporty awarii opt-in (Sentry) — domyślnie wyłączone, zgoda w Ustawieniach, usuwanie treści rozmów i kluczy z raportów (wymaga: 5.4) (tech: react-native, typescript)
+- [x] Zadanie 9.1: Raporty awarii opt-in (Sentry) — domyślnie wyłączone, zgoda w Ustawieniach, usuwanie treści rozmów i kluczy z raportów (wymaga: 5.4) (tech: react-native, typescript) (pr: #55)
   - AC: bez zgody żaden raport nie jest wysyłany; raport nie zawiera treści wiadomości ani kluczy
   - Specky: (req: 01M4TPSDHTZC5AEGMSK9NKR4X2 v1.0 @580efcb)
   - Specky kryteria: (crit: 01M4TPSDJ6PJ22Z0HREFQQ1Z00) (crit: 01M4TPSDJ68G318A44NBBN2F31)
-- [ ] Test: 9.1 — filtr beforeSend usuwa wrażliwe pola; brak inicjalizacji bez zgody
-- [ ] Zadanie 9.2: Konfiguracja buildów dystrybucji wewnętrznej — EAS profile (development/preview), TestFlight (iOS) i Firebase App Distribution / APK (Android), opisy uprawnień mikrofonu (wymaga: 1.2) (tech: react-native)
+- [x] Test: 9.1 — filtr beforeSend usuwa wrażliwe pola; brak inicjalizacji bez zgody (pr: #55)
+- [x] Zadanie 9.2: Konfiguracja buildów dystrybucji wewnętrznej — EAS profile (development/preview), TestFlight (iOS) i Firebase App Distribution / APK (Android), opisy uprawnień mikrofonu (wymaga: 1.2) (tech: react-native) (pr: #56)
   - Specky: (req: 01M4TPSAN97DVJH98SGHWK0JB5 v1.0 @4c3b1e3)
-- [ ] Test: 9.2 — build preview przechodzi dla obu platform (lokalnie lub w CI)
-- [ ] Zadanie 9.3: Scenariusze testów ręcznych — słowa kluczowe na głośniku/słuchawkach, opóźnienia vs cele (chmura < 3 s, lokalny 1–2B < 5 s), przerwania audio, modele 3B na urządzeniu referencyjnym (wymaga: 4.4, 3.8) (tech: react-native)
+- [x] Test: 9.2 — build preview przechodzi dla obu platform (lokalnie lub w CI) (pr: #56)
+- [x] Zadanie 9.3: Scenariusze testów ręcznych — słowa kluczowe na głośniku/słuchawkach, opóźnienia vs cele (chmura < 3 s, lokalny 1–2B < 5 s), przerwania audio, modele 3B na urządzeniu referencyjnym (wymaga: 4.4, 3.8) (tech: react-native) (pr: #57)
   - Specky: (req: 01M4TPSCJAAVY8EMNC2X7SAZ3Y v1.0 @32b1379)
-- [ ] Zadanie 9.4: Test e2e — zgoda na raporty awarii w Ustawieniach, pełna ścieżka: kreator → temat → rozmowa głosowa → STOP → podsumowanie (wymaga: 9.1, 9.2, 9.3) (tech: detox, typescript)
+- [ ] Zadanie 9.4: Test e2e — zgoda na raporty awarii w Ustawieniach, pełna ścieżka: kreator → temat → rozmowa głosowa → STOP → podsumowanie (wymaga: 9.1, 9.2, 9.3) (tech: detox, typescript) (pr: #59)
 
 ## Pokrycie spec
 
